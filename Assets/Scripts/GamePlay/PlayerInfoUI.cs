@@ -1,0 +1,91 @@
+using System.Collections;
+using System.Collections.Generic;
+using DG.Tweening;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class PlayerInforUI : MonoBehaviour
+{
+    [SerializeField] Image imgTimer;
+    private float duration = 20;
+
+    [SerializeField] private TextMeshProUGUI txtNickname;
+    [SerializeField] Image imgAvatar;
+    private bool isAvatarLoaded = false;
+
+    [SerializeField] private Image imgMom;
+    [SerializeField] private List<GameObject> rankUIs;
+
+    public void Init(string nickname)
+    {
+        imgTimer.fillAmount = 0;
+        txtNickname.text = nickname;
+
+        LoadRandomAvatar(nickname);
+
+        //reset rank
+        imgMom.gameObject.SetActive(false);
+        foreach (var rank in rankUIs)
+        {
+            if (rank != null) rank.SetActive(false);
+        }
+    }
+
+    public void LoadRandomAvatar(string nickname)
+    {
+        string avatarName = PlayerPrefs.GetString(nickname, "");
+        if (string.IsNullOrEmpty(avatarName))
+        {
+            int randomIndex = Random.Range(0, 21);
+            avatarName = "avatar_" + randomIndex;
+            PlayerPrefs.SetString(nickname, avatarName);
+        }
+
+        // Try loading the avatar
+        Sprite loadedAvatar = Resources.Load<Sprite>("Avatar/" + avatarName);
+
+        if (loadedAvatar != null)
+        {
+            imgAvatar.sprite = loadedAvatar;
+            isAvatarLoaded = true;
+        }
+        else
+        {
+            Debug.LogError("Failed to load avatar: " + avatarName);
+        }
+    }
+
+    public void StartTimer()
+    {
+        imgTimer.enabled = true;
+        imgTimer.DOKill();
+        imgTimer.fillAmount = 1;
+        imgTimer.DOFillAmount(0, duration).SetEase(Ease.Linear);
+    }
+
+    public void StopTimer()
+    {
+        imgTimer.DOKill();
+        imgTimer.fillAmount = 1;
+        imgTimer.enabled = false;
+    }
+
+    public void ShowMom()
+    {
+        if (imgMom != null)
+        {
+            imgMom.gameObject.SetActive(true);
+            imgMom.transform.DOPunchScale(Vector3.one * 0.5f, 0.2f).SetEase(Ease.OutQuad);
+        }
+    }
+
+    public void ShowRank(int rank)
+    {
+        if (imgMom.gameObject.activeSelf) return;
+        if (rank >= rankUIs.Count) return;
+
+        rankUIs[rank].SetActive(true);
+        rankUIs[rank].transform.DOPunchScale(Vector3.one * 0.5f, 0.2f).SetEase(Ease.OutQuad);
+    }
+}
