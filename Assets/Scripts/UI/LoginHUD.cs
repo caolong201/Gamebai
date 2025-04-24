@@ -10,31 +10,22 @@ using DG.Tweening;
 
 public class LoginHUD : MonoBehaviour
 {
-    [SerializeField] GameObject btnLogin, btnPlay;
-    [SerializeField] GameObject imgDn;
-    public TMP_InputField inputField;
-    public TMP_InputField passwordInput;
-    private RectTransform textArea;
-    //public InputField inputField;
+    [SerializeField] GameObject btnLoginGuess, btnPlay,btnLogin,btnDK;
+    [SerializeField] LoginPopup loginPopup;
+
     private int randomID;
 
     private void Start()
     {
-        //textArea = inputField.transform.Find("Text").GetComponent<RectTransform>();
-        //inputField.onSelect.AddListener(OnFocus);
-        //inputField.onDeselect.AddListener(OnUnfocus);
-
-
-
         Application.targetFrameRate = 60;
-        
+
 #if UNITY_EDITOR
         randomID = 0;
 #else
         randomID = UnityEngine.Random.Range(0, 9999);
 #endif
-        
-        btnLogin.SetActive(true);
+
+        btnLoginGuess.SetActive(true);
         btnPlay.SetActive(false);
         NetworkManager.Instance.JoinPhomGame.OnDataUpdated += JoinPhomGame;
     }
@@ -44,7 +35,7 @@ public class LoginHUD : MonoBehaviour
         NetworkManager.Instance.JoinPhomGame.OnDataUpdated -= JoinPhomGame;
     }
 
-    public void OnbtnLoginClick()
+    public void OnbtnLoginGuessClicked()
     {
         string json = JsonMapper.ToJson(new LoginModel((int)ENetworkHeader.LoginGuest, new LoginData()
         {
@@ -66,39 +57,15 @@ public class LoginHUD : MonoBehaviour
     public void JoinPhomGame(bool success)
     {
         btnPlay.SetActive(true);
+        
+        btnLogin.SetActive(false);
+        btnLoginGuess.SetActive(false);
+        btnDK.SetActive(false);
+        loginPopup.HidePopup();
     }
 
-
-
-    //long
-    public void OnbtnDangnhap ()
+    public void OnbtnLoginClicked()
     {
-        Debug.Log("c");
-        imgDn.SetActive(true);
-      
+        loginPopup.ShowPopup();
     }
-    public void btnClose()
-    {
-        imgDn.SetActive(false);
-    }
-    public void PrintInput()
-    {
-        string userInput = inputField.text;
-        string userInputpassword = passwordInput.text;
-
-        Debug.Log("Ten dang nhập: " + userInput);
-        Debug.Log ("mat khau:" + userInputpassword);
-    }
-
-
-
-    //void OnFocus(string text)
-    //{
-    //    textArea.DOScale(1.1f, 0.2f).SetEase(Ease.OutBack); // scale lên 110%
-    //}
-
-    //void OnUnfocus(string text)
-    //{
-    //    textArea.DOScale(1f, 0.2f).SetEase(Ease.OutBack); // trả lại kích thước gốc
-    //}
 }
