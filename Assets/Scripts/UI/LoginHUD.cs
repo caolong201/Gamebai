@@ -1,17 +1,31 @@
-using System;
+﻿using System;
 using BestHTTP.JSON.LitJson;
 using Suni.Enum;
 using Suni.Network;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using TMPro;
+using DG.Tweening;
 
 public class LoginHUD : MonoBehaviour
 {
     [SerializeField] GameObject btnLogin, btnPlay;
+    [SerializeField] GameObject imgDn;
+    public TMP_InputField inputField;
+    public TMP_InputField passwordInput;
+    private RectTransform textArea;
+    //public InputField inputField;
     private int randomID;
 
     private void Start()
     {
+        //textArea = inputField.transform.Find("Text").GetComponent<RectTransform>();
+        //inputField.onSelect.AddListener(OnFocus);
+        //inputField.onDeselect.AddListener(OnUnfocus);
+
+
+
         Application.targetFrameRate = 60;
         
 #if UNITY_EDITOR
@@ -53,4 +67,38 @@ public class LoginHUD : MonoBehaviour
     {
         btnPlay.SetActive(true);
     }
+
+
+
+    //long
+    public void OnbtnDangnhap ()
+    {
+        Debug.Log("c");
+        imgDn.SetActive(true);
+      
+    }
+    public void btnClose()
+    {
+        imgDn.SetActive(false);
+    }
+    public void PrintInput()
+    {
+        string userInput = inputField.text;
+        string userInputpassword = passwordInput.text;
+
+        Debug.Log("Ten dang nhập: " + userInput);
+        Debug.Log ("mat khau:" + userInputpassword);
+    }
+
+
+
+    //void OnFocus(string text)
+    //{
+    //    textArea.DOScale(1.1f, 0.2f).SetEase(Ease.OutBack); // scale lên 110%
+    //}
+
+    //void OnUnfocus(string text)
+    //{
+    //    textArea.DOScale(1f, 0.2f).SetEase(Ease.OutBack); // trả lại kích thước gốc
+    //}
 }
