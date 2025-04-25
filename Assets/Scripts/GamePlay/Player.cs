@@ -21,6 +21,11 @@ public class Player : MonoBehaviour
         this.seatInfo = info;
         inforUI.Init(info.nickname);
         hand.Clear();
+
+        if (info.position == 0)
+        {
+            inforUI.transform.localPosition = new Vector2(200, 16);
+        }
     }
     
     // Thêm lá bài vào tay

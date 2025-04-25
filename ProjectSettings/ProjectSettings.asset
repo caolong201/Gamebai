@@ -42,8 +42,8 @@ PlayerSettings:
   m_SplashScreenLogos: []
   m_VirtualRealitySplashScreen: {fileID: 0}
   m_HolographicTrackingLossScreen: {fileID: 0}
-  defaultScreenWidth: 2960
-  defaultScreenHeight: 1440
+  defaultScreenWidth: 320
+  defaultScreenHeight: 240
   defaultScreenWidthWeb: 960
   defaultScreenHeightWeb: 600
   m_StereoRenderingPath: 0
@@ -164,7 +164,7 @@ PlayerSettings:
     Android: com.Suni.Phom
     Standalone: com.Suni.Phom
   buildNumber:
-    Standalone: 86
+    Standalone: 93
     VisionOS: 0
     iPhone: 0
     tvOS: 0

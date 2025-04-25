@@ -118,6 +118,7 @@ namespace Suni.Network
 
             switch (respBase.eventType)
             {
+                case (int)ENetworkHeader.Login://1
                 case (int)ENetworkHeader.LoginGuest: //2
                     string json =
                         JsonMapper.ToJson(new JoinPhomGameModel((int)ENetworkHeader.JoinPhomGame, (int)EGameType.PHOM));

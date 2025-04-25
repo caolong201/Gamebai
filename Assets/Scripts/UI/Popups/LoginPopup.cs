@@ -30,10 +30,10 @@ public class LoginPopup : MonoBehaviour
             return;
         
         Debug.Log("ipUsername: " + ipUsername.text + ", ipPassword: " + ipPassword.text);
-        string json = JsonMapper.ToJson(new LoginModel((int)ENetworkHeader.LoginGuest, new LoginData()
+        string json = JsonMapper.ToJson(new LoginUsernameModel((int)ENetworkHeader.Login, new LoginUsernameModelData()
         {
-            username = SystemInfo.deviceUniqueIdentifier + ipUsername.text,
-            deviceId = SystemInfo.deviceUniqueIdentifier + ipUsername.text,
+            username = ipUsername.text.Trim(),
+            password = ipPassword.text.Trim(),
             gameType = (int)EGameType.PHOM
         }));
         NetworkManager.Instance.SendJsonData(json);

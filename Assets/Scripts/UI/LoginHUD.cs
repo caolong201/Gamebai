@@ -10,7 +10,7 @@ using DG.Tweening;
 
 public class LoginHUD : MonoBehaviour
 {
-    [SerializeField] GameObject btnLoginGuess, btnPlay,btnLogin,btnDK;
+    [SerializeField] GameObject btnLoginGuess, btnPlay, btnLogin, btnDK;
     [SerializeField] LoginPopup loginPopup;
 
     private int randomID;
@@ -45,7 +45,6 @@ public class LoginHUD : MonoBehaviour
         }));
         NetworkManager.Instance.SendJsonData(json);
 
-        btnLogin.SetActive(false);
     }
 
     public void OnbtnEnterGameClick()
@@ -57,7 +56,7 @@ public class LoginHUD : MonoBehaviour
     public void JoinPhomGame(bool success)
     {
         btnPlay.SetActive(true);
-        
+
         btnLogin.SetActive(false);
         btnLoginGuess.SetActive(false);
         btnDK.SetActive(false);

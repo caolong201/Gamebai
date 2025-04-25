@@ -7,6 +7,7 @@ using UnityEngine;
 using DG.Tweening;
 using Suni.Enum;
 using Suni.Network;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -16,6 +17,8 @@ public class PhomGameManager : MonoBehaviour
     [SerializeField] GamePlayHUD gamePlayHUD;
 
     public Transform deckPosition; // Vị trí bộ bài
+    public Transform deckCardCountObject;
+    
     public List<Player> playerHands; // Danh sách người chơi
     public Transform playerHandArea; // Khu vực bài của Player
     public GameObject cardPrefab; // Prefab lá bài
@@ -36,7 +39,7 @@ public class PhomGameManager : MonoBehaviour
 
     private bool isFirstRound = false;
     public bool isCanSelectCard = false;
-
+    
     //drop phom
     public Transform[] dropPhomPositions;
     private DropPhomRespone haPhomData;
@@ -44,12 +47,15 @@ public class PhomGameManager : MonoBehaviour
     //result - show all cards
     public Transform[] showAllCardsPositions;
 
+    [SerializeField] private TextMeshProUGUI txtdrawPileCardCount;
+    private int drawPileCardCount = 0;
+    
     private bool isEndGame = false;
 
     private void Start()
     {
         NetworkManager.Instance.EnterGameRespone.OnDataUpdated += EnterGameRespone;
-        NetworkManager.Instance.StartPlayRespone.OnDataUpdated += StartPlayRespone;
+        NetworkManager.Instance.StartPlayRespone.OnDataUpdated += StartPlayRespone;//2006
         //NetworkManager.Instance.PlayerReadyRespone.OnDataUpdated += PlayerReadyRespone;
         NetworkManager.Instance.PlayerLeftRespone.OnDataUpdated += PlayerLeftRespone; //2002
         NetworkManager.Instance.PlayCardModelRespone.OnDataUpdated += PlayCardModelRespone; //2007
@@ -64,6 +70,8 @@ public class PhomGameManager : MonoBehaviour
         }
 
         isEndGame = false;
+        txtdrawPileCardCount.text = "";
+        deckCardCountObject.gameObject.SetActive(false);
     }
 
     private void OnDestroy()
@@ -148,7 +156,6 @@ public class PhomGameManager : MonoBehaviour
                 showAllCardsPositions[player.seatInfo.position].GetComponent<LayoutGroup>().enabled = true;
             }
 
-            deckPosition.gameObject.SetActive(false);
             isEndGame = true;
             gamePlayHUD.ShowXepBai(false);
 
@@ -270,6 +277,9 @@ public class PhomGameManager : MonoBehaviour
                 drawnCard.transform.localScale = Vector3.one;
             }
         }
+
+        drawPileCardCount -= 1;
+        txtdrawPileCardCount.text = drawPileCardCount + "";
     }
 
     private void DrawFromDiscardRespone(PlayCardModelRespone obj)
@@ -329,6 +339,7 @@ public class PhomGameManager : MonoBehaviour
 
     private void StartPlayRespone(StartPlayRespone obj)
     {
+        drawPileCardCount = obj.data.drawPileCardCount;
         isFirstRound = true;
         myCardValues = obj.data.playerCards;
         foreach (var playerHands in playerHands)
@@ -365,13 +376,16 @@ public class PhomGameManager : MonoBehaviour
 
     public void ChiaBai()
     {
+        
+        playerHands[0].inforUI.transform.DOLocalMoveX(-616, 0.4f).SetEase(Ease.OutQuad);
         InitializeDeck();
         InitializeDiscardPiles();
         StartCoroutine(DealCards(() =>
         {
             gamePlayHUD.ShowXepBai(true);
             isCanSelectCard = true;
-
+            deckCardCountObject.gameObject.SetActive(true);
+            deckCardCountObject.SetAsLastSibling();
             StartTurn();
         }));
     }
@@ -391,6 +405,8 @@ public class PhomGameManager : MonoBehaviour
                 deck.Add(card);
             }
         }
+
+        txtdrawPileCardCount.text = drawPileCardCount + "";
     }
 
     // Xáo trộn bộ bài
@@ -431,7 +447,11 @@ public class PhomGameManager : MonoBehaviour
 
                 if (j == 0) // Nếu là Player, xếp bài thành hàng ngang
                 {
-                    if (i >= myCardValues.Count) continue;
+                    if (i >= myCardValues.Count)
+                    {
+                        Destroy(card.gameObject);
+                        continue;
+                    }
 
                     float xOffset = i * cardSpacing;
                     playerTargetPosition = playerHandArea.localPosition + new Vector3(xOffset, 0, 0);
