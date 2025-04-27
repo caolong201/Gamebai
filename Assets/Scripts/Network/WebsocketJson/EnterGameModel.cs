@@ -47,6 +47,7 @@ public class PlayerPosition
     public string nickname { get; set; }
     public int position { get; set; }
     public bool isPlayer { get; set; }
-    public string avartarUrl { get; set; }
+    public string avatarUrl { get; set; }
+    public int coin { get; set; }
 }
 

@@ -5,6 +5,7 @@ namespace Suni.Enum
         Success = 0,
         Login = 1,
         LoginGuest = 2,
+        Register = 4,
         RecieveMyInfo = 7,
         JoinPhomGame = 8,
         EnterGame = 2000,

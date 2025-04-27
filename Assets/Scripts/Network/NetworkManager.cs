@@ -99,8 +99,7 @@ namespace Suni.Network
             if (respBase.status != 200)
             {
                 Debug.LogError("Lỗi " + respBase.error);
-                // UIController.Instance.ShowLoadingModal(false);
-                // UIController.Instance.ShowConfirmModal("Lỗi!", respBase.error, "OK", "");
+                UIManager.Instance.ShowDialog(DialogName.UIMessageBox, new MessageBoxData(respBase.error));
                 return;
             }
 
@@ -130,7 +129,8 @@ namespace Suni.Network
                     GameManager.Instance.NickName = resp.nickname;
                     GameManager.Instance.AvatarUrl = resp.avatarUrl;
 
-                    string json = JsonMapper.ToJson(new JoinPhomGameModel((int)ENetworkHeader.JoinPhomGame, (int)EGameType.PHOM));
+                    string json =
+                        JsonMapper.ToJson(new JoinPhomGameModel((int)ENetworkHeader.JoinPhomGame, (int)EGameType.PHOM));
                     SendJsonData(json);
                     break;
                 case (int)ENetworkHeader.JoinPhomGame: //8
@@ -236,35 +236,14 @@ namespace Suni.Network
 
             networkStatus = ENetworkStatus.Connecting;
 
-            // UIController.Instance.ShowConfirmModal("Error!",
-            //     "Có vấn đề về kết nối!\n Vui lòng kiểm tra lại mạng và Đăng Nhập lại.",
-            //     "OK",
-            //     null,
-            //     () =>
-            //     {
-            //         UniTask.Create(async () =>
-            //         {
-            //             await UniTask.Yield();
-            //             await UniTask.Yield();
-            //             await GameController.Instance.LoadSceneAsync(EScene.LoginScene);
-            //             GameController.Instance.SetupNetwork();
-            //         });
-            //     });
+            UIManager.Instance.ShowDialog(DialogName.UIMessageBox, new MessageBoxData(
+                "Có vấn đề về kết nối!\n Vui lòng kiểm tra lại mạng và Đăng Nhập lại.", "OK",
+                () =>
+                {
+                    SceneFader.Instance.LoadScene(ESceneName.Login);
+                    SetupNetwork();
+                }));
         }
-
-        // public async UniTask HandleLogout()
-        // {
-        //     UIController.Instance.guiManager.HideAllDialog();
-        //     await UniTask.Yield();
-        //
-        //     await GameController.Instance.LoadSceneAsync(EScene.LoginScene);
-        //     
-        //     if (m_webSocket != null)
-        //     {
-        //         m_webSocket.Close();
-        //         m_webSocket = null;
-        //     }
-        // }
 
         public void InitNetwork(string url)
         {

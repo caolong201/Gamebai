@@ -19,7 +19,7 @@ public class Player : MonoBehaviour
     public void Init(PlayerPosition info)
     {
         this.seatInfo = info;
-        inforUI.Init(info.nickname, info.avartarUrl);
+        inforUI.Init(info);
         hand.Clear();
 
         if (info.position == 0)

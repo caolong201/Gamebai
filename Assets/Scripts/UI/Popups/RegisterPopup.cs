@@ -7,12 +7,15 @@ using Suni.Network;
 using TMPro;
 using UnityEngine;
 
-public class LoginPopup : MonoBehaviour
+public class RegisterPopup : MonoBehaviour
 {
     [SerializeField] private GameObject black, root;
 
     public TMP_InputField ipUsername;
     public TMP_InputField ipPassword;
+    public TMP_InputField ipConfirmPassword;
+    public TMP_InputField ipDisplayName;
+    
     public void ShowPopup()
     {
         gameObject.SetActive(true);
@@ -22,9 +25,11 @@ public class LoginPopup : MonoBehaviour
 
         ipUsername.text = "";
         ipPassword.text = "";
+        ipConfirmPassword.text = "";
+        ipDisplayName.text = "";
     }
 
-    public void OnbtnLoginClicked()
+    public void OnbtnRegisterClicked()
     {
         string err = String.Empty;
         
@@ -33,20 +38,35 @@ public class LoginPopup : MonoBehaviour
         
         if(string.IsNullOrEmpty(ipPassword.text))
             err = "Mật khẩu bắt buộc";
-       
+        
+        if(ipPassword.text != ipConfirmPassword.text)
+            err = "Mật khẩu không khớp";
+        
+        if(ipUsername.text.Length < 6 || ipUsername.text.Length > 128)
+            err = "Tên đăng nhập độ dài từ 6 đến 128 ký tự";
+        
+        if(ipPassword.text.Length < 6)
+            err = "Mật khẩu độ dài từ 6 ký tự trở lên";
+
+        if (!string.IsNullOrEmpty(ipDisplayName.text))
+        {
+            if(ipDisplayName.text.Length < 6 || ipDisplayName.text.Length > 128)
+                err = "Tên hiển thị độ dài từ 6 đến 128 ký tự";
+        }
+
         if (!string.IsNullOrEmpty(err))
         {
             UIManager.Instance.ShowDialog(DialogName.UIMessageBox, new MessageBoxData(err));
             return;
         }
-        
+
         Debug.Log("ipUsername: " + ipUsername.text + ", ipPassword: " + ipPassword.text);
-        string json = JsonMapper.ToJson(new LoginUsernameModel((int)ENetworkHeader.Login, new LoginUsernameModelData()
+        string json = JsonMapper.ToJson(new RegisterModel((int)ENetworkHeader.Register, new RegisterModelData()
         {
             username = ipUsername.text.Trim(),
             password = ipPassword.text.Trim(),
             gameType = (int)EGameType.PHOM,
-            version = "0.1"
+            nickname = ipDisplayName.text.Trim(),
         }));
         NetworkManager.Instance.SendJsonData(json);
     }

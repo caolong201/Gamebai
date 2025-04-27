@@ -11,7 +11,8 @@ using DG.Tweening;
 public class LoginHUD : MonoBehaviour
 {
     [SerializeField] LoginPopup loginPopup;
-
+    [SerializeField] RegisterPopup registerPopup;
+    
     private int randomID;
 
     private void Start()
@@ -47,11 +48,6 @@ public class LoginHUD : MonoBehaviour
 
     public void JoinPhomGame(bool success)
     {
-        // btnPlay.SetActive(true);
-        //
-        // btnLogin.SetActive(false);
-        // btnLoginGuess.SetActive(false);
-        // btnDK.SetActive(false);
         loginPopup.HidePopup();
         SceneFader.Instance.LoadScene(ESceneName.Room);
     }
@@ -59,5 +55,10 @@ public class LoginHUD : MonoBehaviour
     public void OnbtnLoginClicked()
     {
         loginPopup.ShowPopup();
+    }
+    
+    public void OnbtnRegisterClicked()
+    {
+        registerPopup.ShowPopup();
     }
 }

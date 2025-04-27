@@ -312,6 +312,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   imgTimer: {fileID: 78375309}
   txtNickname: {fileID: 1257898412}
+  txtCoin: {fileID: 1248502877}
   imgAvatar: {fileID: 469556948}
   imgMom: {fileID: 2047965422}
   rankUIs:
@@ -1841,7 +1842,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gamePlayHUD: {fileID: 1641734096}
   deckPosition: {fileID: 1049484673}
-  deckCardCountObject: {fileID: 1383479832}
   playerHands:
   - {fileID: 1698094369}
   - {fileID: 1237472327}
@@ -1866,6 +1866,7 @@ MonoBehaviour:
   - {fileID: 1700490383}
   - {fileID: 61536769}
   txtdrawPileCardCount: {fileID: 1878185663}
+  deckCardCountObject: {fileID: 1383479832}
 --- !u!1 &550067532
 GameObject:
   m_ObjectHideFlags: 0
@@ -3451,6 +3452,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   imgTimer: {fileID: 966573899}
   txtNickname: {fileID: 868384357}
+  txtCoin: {fileID: 516313062}
   imgAvatar: {fileID: 361331572}
   imgMom: {fileID: 1495922552}
   rankUIs:
@@ -4218,6 +4220,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   imgTimer: {fileID: 1110767817}
   txtNickname: {fileID: 1631301330}
+  txtCoin: {fileID: 1012435000}
   imgAvatar: {fileID: 978701956}
   imgMom: {fileID: 1850939383}
   rankUIs:
@@ -6746,6 +6749,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   imgTimer: {fileID: 1918872430}
   txtNickname: {fileID: 1839899881}
+  txtCoin: {fileID: 1707656366}
   imgAvatar: {fileID: 1368520787}
   imgMom: {fileID: 1916074117}
   rankUIs:

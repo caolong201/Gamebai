@@ -10,19 +10,19 @@ public class PlayerInforUI : MonoBehaviour
     [SerializeField] Image imgTimer;
     private float duration = 60;
 
-    [SerializeField] private TextMeshProUGUI txtNickname;
+    [SerializeField] private TextMeshProUGUI txtNickname, txtCoin;
     [SerializeField] Image imgAvatar;
     private bool isAvatarLoaded = false;
 
     [SerializeField] private Image imgMom;
     [SerializeField] private List<GameObject> rankUIs;
 
-    public void Init(string nickname, string avatar)
+    public void Init(PlayerPosition info)
     {
         imgTimer.fillAmount = 0;
-        txtNickname.text = nickname;
-
-        LoadRandomAvatar(avatar);
+        txtNickname.text = info.nickname;
+        LoadRandomAvatar(info.avatarUrl);
+        txtCoin.text = info.coin.FormatCoins();
         StopTimer();
         //reset rank
         imgMom.gameObject.SetActive(false);

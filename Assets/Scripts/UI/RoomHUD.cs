@@ -16,7 +16,7 @@ public class RoomHUD : MonoBehaviour
     private void Start()
     {
         LoadAvatar();
-        txtCoin.text = GameManager.Instance.Coin.ToString();
+        txtCoin.text = ((int)GameManager.Instance.Coin).FormatCoins();
         txtNickname.text = GameManager.Instance.NickName;
         
         header.anchoredPosition = new Vector2(0, 150);

@@ -9,20 +9,7 @@ public enum DialogName
 {
 	None = 0,
 	UIMessageBox = 1,
-	LoseDialog,
-    ResultDialog,
-	Achievement,
-	Leaderboard,
-	Gift,
-	Skin,
-	Settings,
-    Pause,
-    NoInteret,
-    Language,
-    Credits,
-	Support,
-    NoAdsIOS
-
+	
 }
 
 public class UIManager : SingletonMonoAwake<UIManager>
@@ -33,8 +20,6 @@ public class UIManager : SingletonMonoAwake<UIManager>
 
     [SerializeField] private Transform MatchWidthCanvas;
     [SerializeField] private Transform MatchHeightCanvas;
-    
-	public UICreditsDialog creditsDialog;
 
     public override void OnAwake()
 	{
@@ -109,8 +94,7 @@ public class UIManager : SingletonMonoAwake<UIManager>
 			return null;
 		}
 		Debug.Log ("Start show dialog:" + dlgName);
-	
-	
+		
 		if (!foundDlg.TryShow (param)) {
 			Debug.LogError ("Ko the show dialog:" + dlgName);
 		} else {
@@ -184,9 +168,6 @@ public class UIManager : SingletonMonoAwake<UIManager>
 		{
 			listDialogs[i].Init();
 		}
-
-	
-		creditsDialog = GetComponentInChildren<UICreditsDialog>();
     }
 
 }

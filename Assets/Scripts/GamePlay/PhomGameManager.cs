@@ -193,10 +193,10 @@ public class PhomGameManager : MonoBehaviour
 
     private void DropPhomRespone(DropPhomRespone obj)
     {
+        haPhomData = obj;
         var player = FindPlayer(obj.data.nickname);
         if (GameManager.Instance.IsMyself(obj.data.nickname))
         {
-            haPhomData = obj;
             if (player != null && haPhomData != null)
             {
                 if (haPhomData.data.cards == null || haPhomData.data.cards.Count == 0)
@@ -785,8 +785,11 @@ public class PhomGameManager : MonoBehaviour
                 }
 
                 // Xuống dòng cho phỏm tiếp theo
-                startY -= 50;
+                startY -= 70;
             }
+            
+            string json = JsonMapper.ToJson(new DropPhomModel((int)ENetworkHeader.DropPhom, haPhomData.data.cards));
+            NetworkManager.Instance.SendJsonData(json);
         }
     }
 }
