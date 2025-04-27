@@ -17,7 +17,6 @@ public class PhomGameManager : MonoBehaviour
     [SerializeField] GamePlayHUD gamePlayHUD;
 
     public Transform deckPosition; // Vị trí bộ bài
-    public Transform deckCardCountObject;
     
     public List<Player> playerHands; // Danh sách người chơi
     public Transform playerHandArea; // Khu vực bài của Player
@@ -28,7 +27,6 @@ public class PhomGameManager : MonoBehaviour
 
     private List<Stack<Card>> discardPiles = new List<Stack<Card>>(); // Danh sách discard pile của mỗi người chơi
 
-    //private string[] suits = { "♠", "♥", "♦", "♣" };
     private string[] suits = { "♥", "♦", "♣", "♠" };
     private List<CardValue> myCardValues;
     private int cardsPerPlayer = 10; // Số lượng bài mỗi người chơi nhận
@@ -49,12 +47,13 @@ public class PhomGameManager : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI txtdrawPileCardCount;
     private int drawPileCardCount = 0;
+    public Transform deckCardCountObject;
     
     private bool isEndGame = false;
 
     private void Start()
     {
-        NetworkManager.Instance.EnterGameRespone.OnDataUpdated += EnterGameRespone;
+        NetworkManager.Instance.EnterGameRespone.OnDataUpdated += EnterGameRespone;//2000
         NetworkManager.Instance.StartPlayRespone.OnDataUpdated += StartPlayRespone;//2006
         //NetworkManager.Instance.PlayerReadyRespone.OnDataUpdated += PlayerReadyRespone;
         NetworkManager.Instance.PlayerLeftRespone.OnDataUpdated += PlayerLeftRespone; //2002
@@ -71,7 +70,7 @@ public class PhomGameManager : MonoBehaviour
 
         isEndGame = false;
         txtdrawPileCardCount.text = "";
-        deckCardCountObject.gameObject.SetActive(false);
+        deckPosition.gameObject.SetActive(false);
     }
 
     private void OnDestroy()
@@ -174,15 +173,16 @@ public class PhomGameManager : MonoBehaviour
                             DestroyImmediate(cards[i].gameObject);
                     }
                 }
-
+            
                 deck.Clear();
                 discardPiles.Clear();
                 myCardValues.Clear();
                 isEndGame = false;
                 gamePlayHUD.ResetUI();
-
+                deckPosition.gameObject.SetActive(false);
+            
                 ArrangeSeats();
-
+            
                 if (GameManager.Instance.GetPlayersCount() >= 2 && GameManager.Instance.IsRoomMaster())
                 {
                     gamePlayHUD.ShowChiaBai(true);
@@ -244,7 +244,7 @@ public class PhomGameManager : MonoBehaviour
                     }
 
                     // Xuống dòng cho phỏm tiếp theo
-                    startY -= 50;
+                    startY -= 70;
                 }
             }
         }
@@ -280,6 +280,7 @@ public class PhomGameManager : MonoBehaviour
 
         drawPileCardCount -= 1;
         txtdrawPileCardCount.text = drawPileCardCount + "";
+        if(drawPileCardCount <= 0) deckPosition.gameObject.SetActive(false);
     }
 
     private void DrawFromDiscardRespone(PlayCardModelRespone obj)
@@ -376,7 +377,7 @@ public class PhomGameManager : MonoBehaviour
 
     public void ChiaBai()
     {
-        
+        deckPosition.gameObject.SetActive(true);
         playerHands[0].inforUI.transform.DOLocalMoveX(-616, 0.4f).SetEase(Ease.OutQuad);
         InitializeDeck();
         InitializeDiscardPiles();
@@ -384,7 +385,6 @@ public class PhomGameManager : MonoBehaviour
         {
             gamePlayHUD.ShowXepBai(true);
             isCanSelectCard = true;
-            deckCardCountObject.gameObject.SetActive(true);
             deckCardCountObject.SetAsLastSibling();
             StartTurn();
         }));
@@ -407,18 +407,6 @@ public class PhomGameManager : MonoBehaviour
         }
 
         txtdrawPileCardCount.text = drawPileCardCount + "";
-    }
-
-    // Xáo trộn bộ bài
-    void ShuffleDeck()
-    {
-        for (int i = 0; i < deck.Count; i++)
-        {
-            int randIndex = Random.Range(0, deck.Count);
-            Card temp = deck[i];
-            deck[i] = deck[randIndex];
-            deck[randIndex] = temp;
-        }
     }
 
     // Khởi tạo discard pile cho mỗi người chơi
@@ -517,7 +505,6 @@ public class PhomGameManager : MonoBehaviour
         // Tính toán vị trí x mới
         float startX = ((cardCount - 1) * (cardWidth + spacing)) / 2f; // Canh giữa các lá bài
         //Vector3 newPosition = discardPilePositions[currentPlayerIndex].localPosition +  new Vector3(startX + (cardCount - 1) * (cardWidth + spacing), 0, 0);
-        Debug.Log(startX);
         // Di chuyển lá bài đến vị trí mới với animation
         card.transform.DOLocalMove(new Vector3(startX, 0, 0), 0.3f).SetEase(Ease.OutQuad);
 
@@ -564,11 +551,9 @@ public class PhomGameManager : MonoBehaviour
 
     public int GetPreviousPlayerIndex(int currIndex)
     {
-        Debug.LogError("currIndex: " + currIndex);
         for (int i = 1; i <= playerHands.Count; i++)
         {
             int prevIndex = (currIndex - i + 4) % 4; // +4 để tránh số âm
-            Debug.LogError("prevIndex: " + prevIndex);
             Player prevPlayer =
                 playerHands.Find(p => p != null && p.gameObject.activeSelf && p.seatInfo.position == prevIndex);
 
@@ -722,7 +707,16 @@ public class PhomGameManager : MonoBehaviour
         {
             Vector3 targetPosition = playerHandArea.localPosition + new Vector3(i * cardSpacing, 0, 0);
             playerHands[0].GetHand()[i].transform.SetSiblingIndex(i);
-            playerHands[0].GetHand()[i].transform.DOLocalMove(targetPosition, 0.3f).SetEase(Ease.OutQuad);
+
+            if (selectedCard!= null && PhomChecker.IsSameCard(playerHands[0].GetHand()[i], selectedCard))
+            {
+                //card selected
+                playerHands[0].GetHand()[i].transform.DOLocalMove(new Vector2(targetPosition.x, targetPosition.y + 50), 0.3f).SetEase(Ease.OutQuad);
+            }
+            else
+            {
+                playerHands[0].GetHand()[i].transform.DOLocalMove(targetPosition, 0.3f).SetEase(Ease.OutQuad);
+            }
 
             playerTargetPosition = targetPosition;
         }
@@ -768,7 +762,6 @@ public class PhomGameManager : MonoBehaviour
             {
                 float startX = -(phom.Count + (phom.Count - 1) * cardSpacing) / 2f;
 
-                // Tạo từng lá bài trong phỏm
                 for (int i = 0; i < phom.Count; i++)
                 {
                     Card card = player.GetHand().Find(x =>

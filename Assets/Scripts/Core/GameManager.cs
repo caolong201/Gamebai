@@ -34,6 +34,14 @@ public class GameManager : SingletonMonoAwake<GameManager>
         set { _nickname = value; }
         get { return _nickname; }
     }
+    
+    private string _avatarUrl = "";
+
+    public string AvatarUrl
+    {
+        set { _avatarUrl = value; }
+        get { return _avatarUrl; }
+    }
 
     public override void OnAwake()
     {

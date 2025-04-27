@@ -34,7 +34,8 @@ public class LoginPopup : MonoBehaviour
         {
             username = ipUsername.text.Trim(),
             password = ipPassword.text.Trim(),
-            gameType = (int)EGameType.PHOM
+            gameType = (int)EGameType.PHOM,
+            version = "0.1"
         }));
         NetworkManager.Instance.SendJsonData(json);
     }

@@ -42,15 +42,21 @@ namespace Suni.Network
         public ObservableProperty<bool> JoinPhomGame = new ObservableProperty<bool>();
         public ObservableProperty<EnterGameRespone> EnterGameRespone = new ObservableProperty<EnterGameRespone>();
 
-        public ObservableProperty<OtherPlayerReadyRespone> PlayerReadyRespone = new ObservableProperty<OtherPlayerReadyRespone>();
+        public ObservableProperty<OtherPlayerReadyRespone> PlayerReadyRespone =
+            new ObservableProperty<OtherPlayerReadyRespone>();
 
         public ObservableProperty<StartPlayRespone> StartPlayRespone = new ObservableProperty<StartPlayRespone>();
         public ObservableProperty<PlayerLeftRespone> PlayerLeftRespone = new ObservableProperty<PlayerLeftRespone>();
-        
-        public ObservableProperty<PlayCardModelRespone> PlayCardModelRespone = new ObservableProperty<PlayCardModelRespone>();
-        public ObservableProperty<PlayCardModelRespone> DrawFromDiscardRespone = new ObservableProperty<PlayCardModelRespone>();
-        public ObservableProperty<PlayCardModelRespone> DrawFromDeckRespone = new ObservableProperty<PlayCardModelRespone>();
-        
+
+        public ObservableProperty<PlayCardModelRespone> PlayCardModelRespone =
+            new ObservableProperty<PlayCardModelRespone>();
+
+        public ObservableProperty<PlayCardModelRespone> DrawFromDiscardRespone =
+            new ObservableProperty<PlayCardModelRespone>();
+
+        public ObservableProperty<PlayCardModelRespone> DrawFromDeckRespone =
+            new ObservableProperty<PlayCardModelRespone>();
+
         public ObservableProperty<ResultRespone> ResultRespone = new ObservableProperty<ResultRespone>();
         public ObservableProperty<DropPhomRespone> DropPhomRespone = new ObservableProperty<DropPhomRespone>();
 
@@ -118,22 +124,37 @@ namespace Suni.Network
 
             switch (respBase.eventType)
             {
-                case (int)ENetworkHeader.Login://1
+                case (int)ENetworkHeader.Login: //1
                 case (int)ENetworkHeader.LoginGuest: //2
-                    string json =
-                        JsonMapper.ToJson(new JoinPhomGameModel((int)ENetworkHeader.JoinPhomGame, (int)EGameType.PHOM));
+                    var resp = JsonMapper.ToObject<LoginModelRespone>(_receivedMessage).data;
+                    GameManager.Instance.NickName = resp.nickname;
+                    GameManager.Instance.AvatarUrl = resp.avatarUrl;
+
+                    string json = JsonMapper.ToJson(new JoinPhomGameModel((int)ENetworkHeader.JoinPhomGame, (int)EGameType.PHOM));
                     SendJsonData(json);
-                    break;
-                case (int)ENetworkHeader.RecieveMyInfo: //7
-                    GameManager.Instance.NickName = JsonMapper.ToObject<MyInfoRespone>(_receivedMessage).data.nickname;
                     break;
                 case (int)ENetworkHeader.JoinPhomGame: //8
                     JoinPhomGame.Value = true;
                     break;
                 case (int)ENetworkHeader.EnterGame: //2000
-                    SceneManager.LoadScene(1);
-                    DOVirtual.DelayedCall(0.2f,
-                        () => { EnterGameRespone.Value = JsonMapper.ToObject<EnterGameRespone>(_receivedMessage); });
+                    if (SceneFader.Instance.CurrentScene == ESceneName.GamePlay)
+                    {
+                        EnterGameRespone.Value = JsonMapper.ToObject<EnterGameRespone>(_receivedMessage);
+                    }
+                    else
+                    {
+                        SceneFader.Instance.LoadScene(ESceneName.GamePlay,
+                            () =>
+                            {
+                                DOVirtual.DelayedCall(0.05f,
+                                    () =>
+                                    {
+                                        EnterGameRespone.Value =
+                                            JsonMapper.ToObject<EnterGameRespone>(_receivedMessage);
+                                    });
+                            });
+                    }
+
                     break;
                 case (int)ENetworkHeader.PlayerLeft: //2002
                     PlayerLeftRespone.Value = JsonMapper.ToObject<PlayerLeftRespone>(_receivedMessage);

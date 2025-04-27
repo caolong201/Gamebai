@@ -47,5 +47,6 @@ public class PlayerPosition
     public string nickname { get; set; }
     public int position { get; set; }
     public bool isPlayer { get; set; }
+    public string avartarUrl { get; set; }
 }
 

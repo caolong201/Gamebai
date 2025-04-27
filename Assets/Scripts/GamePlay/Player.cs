@@ -19,15 +19,15 @@ public class Player : MonoBehaviour
     public void Init(PlayerPosition info)
     {
         this.seatInfo = info;
-        inforUI.Init(info.nickname);
+        inforUI.Init(info.nickname, info.avartarUrl);
         hand.Clear();
 
         if (info.position == 0)
         {
-            inforUI.transform.localPosition = new Vector2(200, 16);
+            inforUI.transform.position = new Vector2(Screen.width / 2, inforUI.transform.position.y);
         }
     }
-    
+
     // Thêm lá bài vào tay
     public void AddCardToHand(Card card)
     {
@@ -46,7 +46,7 @@ public class Player : MonoBehaviour
     {
         return hand;
     }
-    
+
     public void SetHand(List<Card> sortHand)
     {
         hand = sortHand;
@@ -124,9 +124,10 @@ public class Player : MonoBehaviour
         {
             if (phom.Contains(card)) return true;
         }
+
         return false;
     }
-    
+
     public int CalculateHandScore()
     {
         int score = 0;
@@ -134,8 +135,10 @@ public class Player : MonoBehaviour
         {
             score += card.value; // Tính tổng giá trị bài rác
         }
+
         return score;
     }
+
     public bool HasCompletedPhom()
     {
         // Kiểm tra xem có tập hợp Phỏm nào hợp lệ không

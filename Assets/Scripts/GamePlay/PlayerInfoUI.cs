@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class PlayerInforUI : MonoBehaviour
 {
     [SerializeField] Image imgTimer;
-    private float duration = 20;
+    private float duration = 60;
 
     [SerializeField] private TextMeshProUGUI txtNickname;
     [SerializeField] Image imgAvatar;
@@ -17,13 +17,13 @@ public class PlayerInforUI : MonoBehaviour
     [SerializeField] private Image imgMom;
     [SerializeField] private List<GameObject> rankUIs;
 
-    public void Init(string nickname)
+    public void Init(string nickname, string avatar)
     {
         imgTimer.fillAmount = 0;
         txtNickname.text = nickname;
 
-        LoadRandomAvatar(nickname);
-
+        LoadRandomAvatar(avatar);
+        StopTimer();
         //reset rank
         imgMom.gameObject.SetActive(false);
         foreach (var rank in rankUIs)
@@ -32,23 +32,15 @@ public class PlayerInforUI : MonoBehaviour
         }
     }
 
-    public void LoadRandomAvatar(string nickname)
+    public void LoadRandomAvatar(string avatar)
     {
-        string avatarName = PlayerPrefs.GetString(nickname, "");
-        if (string.IsNullOrEmpty(avatarName))
-        {
-            int randomIndex = Random.Range(0, 21);
-            avatarName = "avatar_" + randomIndex;
-            PlayerPrefs.SetString(nickname, avatarName);
-        }
-
+        string avatarName = "avatar_" + (string.IsNullOrEmpty(avatar)? "0" : avatar);
         // Try loading the avatar
         Sprite loadedAvatar = Resources.Load<Sprite>("Avatar/" + avatarName);
 
         if (loadedAvatar != null)
         {
             imgAvatar.sprite = loadedAvatar;
-            isAvatarLoaded = true;
         }
         else
         {

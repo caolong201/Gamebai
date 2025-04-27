@@ -10,7 +10,6 @@ using DG.Tweening;
 
 public class LoginHUD : MonoBehaviour
 {
-    [SerializeField] GameObject btnLoginGuess, btnPlay, btnLogin, btnDK;
     [SerializeField] LoginPopup loginPopup;
 
     private int randomID;
@@ -25,8 +24,6 @@ public class LoginHUD : MonoBehaviour
         randomID = UnityEngine.Random.Range(0, 9999);
 #endif
 
-        btnLoginGuess.SetActive(true);
-        btnPlay.SetActive(false);
         NetworkManager.Instance.JoinPhomGame.OnDataUpdated += JoinPhomGame;
     }
 
@@ -41,26 +38,22 @@ public class LoginHUD : MonoBehaviour
         {
             username = SystemInfo.deviceUniqueIdentifier + randomID,
             deviceId = SystemInfo.deviceUniqueIdentifier + randomID,
-            gameType = (int)EGameType.PHOM
+            gameType = (int)EGameType.PHOM,
+            version = "0.1"
         }));
         NetworkManager.Instance.SendJsonData(json);
 
     }
 
-    public void OnbtnEnterGameClick()
-    {
-        string json = JsonMapper.ToJson(new EnterGameModel((int)ENetworkHeader.EnterGame, 100));
-        NetworkManager.Instance.SendJsonData(json);
-    }
-
     public void JoinPhomGame(bool success)
     {
-        btnPlay.SetActive(true);
-
-        btnLogin.SetActive(false);
-        btnLoginGuess.SetActive(false);
-        btnDK.SetActive(false);
+        // btnPlay.SetActive(true);
+        //
+        // btnLogin.SetActive(false);
+        // btnLoginGuess.SetActive(false);
+        // btnDK.SetActive(false);
         loginPopup.HidePopup();
+        SceneFader.Instance.LoadScene(ESceneName.Room);
     }
 
     public void OnbtnLoginClicked()
