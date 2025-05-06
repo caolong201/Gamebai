@@ -87,16 +87,15 @@ public class GamePlayHUD : MonoBehaviour
     public void OnbtnDanhBaiClick()
     {
         phomGameManager.OnDiscardCard();
-        ShowDanhBai(false);
         ShowRutBai(false);
         ShowAnBai(false);
-        phomGameManager.isCanSelectCard = false;
     }
 
     public void OnbtnRutBaiClick()
     {
         ShowRutBai(false);
         ShowAnBai(false);
+        ShowDanhBai(true);
 
         phomGameManager.OnDrawFromDeck();
         phomGameManager.isCanSelectCard = true;
@@ -106,6 +105,7 @@ public class GamePlayHUD : MonoBehaviour
     {
         ShowRutBai(false);
         ShowAnBai(false);
+        ShowDanhBai(true);
 
         phomGameManager.OnDrawFromDiscard();
         phomGameManager.isCanSelectCard = true;

@@ -42,17 +42,17 @@ public class RegisterPopup : MonoBehaviour
         if(ipPassword.text != ipConfirmPassword.text)
             err = "Mật khẩu không khớp";
         
+        if(string.IsNullOrEmpty(ipDisplayName.text))
+            err = "Tên hiển thị bắt buộc";
+        
         if(ipUsername.text.Length < 6 || ipUsername.text.Length > 128)
             err = "Tên đăng nhập độ dài từ 6 đến 128 ký tự";
         
         if(ipPassword.text.Length < 6)
             err = "Mật khẩu độ dài từ 6 ký tự trở lên";
 
-        if (!string.IsNullOrEmpty(ipDisplayName.text))
-        {
-            if(ipDisplayName.text.Length < 6 || ipDisplayName.text.Length > 128)
-                err = "Tên hiển thị độ dài từ 6 đến 128 ký tự";
-        }
+        if(ipDisplayName.text.Length < 6 || ipDisplayName.text.Length > 64)
+            err = "Tên hiển thị độ dài từ 6 đến 64 ký tự";
 
         if (!string.IsNullOrEmpty(err))
         {

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class PhomChecker
 {
@@ -10,7 +11,34 @@ public class PhomChecker
         // Tạo danh sách bài tạm thời (bài trên tay + bài đối phương đánh)
         List<Card> tempHand = new List<Card>(myCards) { discardedCard };
 
-        var (phoms, remainingCards) = FindAllPossiblePhoms(tempHand);
+        List<List<Card>> phoms = new List<List<Card>>();
+
+        // Tìm phỏm cùng hàng (3-4 lá cùng rank)
+        var rankGroups = tempHand.GroupBy(c => c.value)
+            .Where(g => g.Count() >= 3);
+        foreach (var group in rankGroups)
+        {
+            var phom = group.ToList();
+            phoms.Add(phom);
+        }
+
+        // Tìm phỏm sảnh (3+ lá liên tiếp cùng chất)
+        var suitedGroups = tempHand.GroupBy(c => c.suit)
+            .Where(g => g.Count() >= 3);
+        foreach (var suitGroup in suitedGroups)
+        {
+            var sortedCards = suitGroup.OrderBy(c => c.value).ToList();
+            for (int i = 0; i <= sortedCards.Count - 3; i++)
+            {
+                // Kiểm tra nhóm 3+ lá liên tiếp
+                if (IsConsecutive(sortedCards, i, 3))
+                {
+                    var phom = sortedCards.GetRange(i, 3);
+                    phoms.Add(phom);
+                }
+            }
+        }
+        
         foreach (var phom in phoms)
         {
             foreach (var c in phom)
@@ -22,16 +50,16 @@ public class PhomChecker
 
         return false;
     }
-    
+
     public static List<List<CardValue>> FindPhoms(List<CardValue> cards)
     {
         List<List<CardValue>> phoms = new List<List<CardValue>>();
-    
+
         if (cards == null || cards.Count < 3)
             return phoms;
 
         List<CardValue> remainingCards = new List<CardValue>(cards);
-    
+
         // Find rank phoms (3-4 cards of same value)
         var rankGroups = cards.GroupBy(c => c.value)
             .Where(g => g.Count() >= 3);
@@ -41,16 +69,16 @@ public class PhomChecker
             phoms.Add(phom);
             remainingCards = remainingCards.Except(phom).ToList();
         }
-    
+
         // Find sequence phoms (3+ consecutive cards of same suit)
         var suitedGroups = remainingCards
             .GroupBy(c => c.type)
             .Where(g => g.Count() >= 3);
-    
+
         foreach (var suitGroup in suitedGroups)
         {
             var sortedCards = suitGroup.OrderBy(c => c.value).ToList();
-        
+
             // Find all possible sequences of length 3 or more
             for (int sequenceLength = sortedCards.Count; sequenceLength >= 3; sequenceLength--)
             {
@@ -60,12 +88,66 @@ public class PhomChecker
                     {
                         var phom = sortedCards.GetRange(startIndex, sequenceLength);
                         phoms.Add(phom);
-                    
+
                         // Remove these cards from further consideration
                         for (int i = startIndex; i < startIndex + sequenceLength; i++)
                         {
                             remainingCards.Remove(sortedCards[i]);
                         }
+
+                        break; // Move to next suit group after finding a sequence
+                    }
+                }
+            }
+        }
+
+        return phoms;
+    }
+    
+    public static List<List<Card>> FindPhoms(List<Card> cards)
+    {
+        List<List<Card>> phoms = new List<List<Card>>();
+
+        if (cards == null || cards.Count < 3)
+            return phoms;
+
+        List<Card> remainingCards = new List<Card>(cards);
+
+        // Find rank phoms (3-4 cards of same value)
+        var rankGroups = cards.GroupBy(c => c.value)
+            .Where(g => g.Count() >= 3);
+        foreach (var group in rankGroups)
+        {
+            var phom = group.ToList();
+            phoms.Add(phom);
+            remainingCards = remainingCards.Except(phom).ToList();
+        }
+
+        // Find sequence phoms (3+ consecutive cards of same suit)
+        var suitedGroups = remainingCards
+            .GroupBy(c => c.suit)
+            .Where(g => g.Count() >= 3);
+
+        foreach (var suitGroup in suitedGroups)
+        {
+            var sortedCards = suitGroup.OrderBy(c => c.value).ToList();
+
+            // Find all possible sequences of length 3 or more
+            for (int sequenceLength = sortedCards.Count; sequenceLength >= 3; sequenceLength--)
+            {
+                for (int startIndex = 0; startIndex <= sortedCards.Count - sequenceLength; startIndex++)
+                {
+                    if (IsConsecutive(sortedCards, startIndex, sequenceLength))
+                    {
+                        var phom = sortedCards.GetRange(startIndex, sequenceLength);
+                        phoms.Add(phom);
+
+                        // Remove these cards from further consideration
+                        for (int i = startIndex; i < startIndex + sequenceLength; i++)
+                        {
+                            remainingCards.Remove(sortedCards[i]);
+                        }
+
                         break; // Move to next suit group after finding a sequence
                     }
                 }
@@ -89,22 +171,20 @@ public class PhomChecker
     }
 
     //////////////////
+    
     public static List<Card> SortCards(List<Card> hand)
     {
         // Bước 1: Tìm tất cả phỏm có thể có trong bài
         var (phoms, remainingCards) = FindAllPossiblePhoms(hand);
 
         // Bước 2: Sắp xếp phỏm theo độ ưu tiên
-        // var sortedPhoms = phoms.OrderByDescending(p => p.Count) // Ưu tiên phỏm dài (4 lá > 3 lá)
-        //     .ThenByDescending<List<Card>, object>(p => IsStraightPhom(p).ToList();
-
         var sortedPhoms = phoms
             .OrderByDescending(p => p.Count)
             .ThenByDescending(p => IsStraightPhom(p)) // sắp theo số lượng lá trong phỏm sảnh
             .ToList();
 
         // Bước 3: Sắp xếp bài rác có thể tạo phỏm
-        var (potentialPhomCards, pureRacCards) = FindPotentialPhomCards2(remainingCards);
+        var (potentialPhomCards, pureRacCards) = FindPotentialPhomCards(remainingCards);
 
         // Bước 4: Sắp xếp bài rác theo điểm (ưu tiên tổng điểm nhỏ -> lớn)
         var sortedRac = pureRacCards.OrderBy(c => c.value) // Nhỏ -> lớn
@@ -115,8 +195,9 @@ public class PhomChecker
         foreach (var phom in sortedPhoms) finalHand.AddRange(phom);
         finalHand.AddRange(potentialPhomCards);
         finalHand.AddRange(sortedRac);
+        finalHand = finalHand.Distinct().ToList();
 
-        return finalHand.Distinct().ToList();
+        return finalHand;
     }
 
     // Tìm tất cả phỏm có thể trong bài
@@ -157,25 +238,48 @@ public class PhomChecker
     }
 
     // Kiểm tra bài rác có tiềm năng tạo phỏm
-    private static (List<Card> potentialPhomCards, List<Card> pureRacCards) FindPotentialPhomCards2(List<Card> cards)
+    private static (List<Card> potentialPhomCards, List<Card> pureRacCards) FindPotentialPhomCards(List<Card> cards)
     {
         List<Card> potential = new List<Card>();
         List<Card> pureRac = new List<Card>();
 
-        foreach (var card in cards)
-        {
-            // Đếm số lá bài cùng rank hoặc có thể tạo sảnh
-            int sameRankCount = cards.Count(c => c.value == card.value);
-            int sameSuitPotential = GetStraightPotential(cards, card);
+        // Nhóm các lá bài theo giá trị (value)
+        var groupedByValue = cards.GroupBy(c => c.value)
+            .OrderBy(g => g.Key)
+            .ToList();
 
-            if (sameRankCount >= 2 || sameSuitPotential >= 2)
-                potential.Add(card);
+        foreach (var group in groupedByValue)
+        {
+            // Nếu có từ 2 lá bài cùng value thì thêm vào potential
+            if (group.Count() >= 2)
+            {
+                potential.AddRange(group.OrderBy(c => c.suit).ToList());
+            }
             else
-                pureRac.Add(card);
+            {
+                // Kiểm tra xem lá bài đơn lẻ này có thể tạo sảnh với các lá khác không
+                var card = group.First();
+                int straightPotential = GetStraightPotential(cards, card);
+
+                if (straightPotential >= 2)
+                    potential.Add(card);
+                else
+                    pureRac.Add(card);
+            }
         }
 
-        // Sắp xếp bài tiềm năng theo điểm (rank nhỏ -> lớn)
-        potential = potential.OrderBy(c => c.value).ToList();
+        // Sắp xếp lại potential để các lá cùng value đứng cạnh nhau và gần với các lá liên tiếp
+        potential = potential.OrderBy(c => c.value)
+            .ThenBy(c =>
+            {
+                // Ưu tiên sắp xếp các lá có value liên tiếp gần nhau
+                var nextCard = cards.FirstOrDefault(x => x.value == c.value + 1);
+                var prevCard = cards.FirstOrDefault(x => x.value == c.value - 1);
+                return (nextCard != null || prevCard != null) ? 0 : 1;
+            })
+            .ThenBy(c => c.suit)
+            .ToList();
+
         return (potential, pureRac);
     }
 
@@ -207,7 +311,7 @@ public class PhomChecker
 
         return true;
     }
-    
+
     private static bool IsConsecutive(List<CardValue> cards, int startIndex, int length)
     {
         for (int i = 1; i < length; i++)

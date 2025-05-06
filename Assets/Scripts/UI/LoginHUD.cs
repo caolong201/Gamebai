@@ -17,7 +17,6 @@ public class LoginHUD : MonoBehaviour
 
     private void Start()
     {
-        Application.targetFrameRate = 60;
 
 #if UNITY_EDITOR
         randomID = 0;
@@ -26,11 +25,13 @@ public class LoginHUD : MonoBehaviour
 #endif
 
         NetworkManager.Instance.JoinPhomGame.OnDataUpdated += JoinPhomGame;
+        NetworkManager.Instance.Register.OnDataUpdated += RegisterSuccess;
     }
-
+    
     private void OnDestroy()
     {
         NetworkManager.Instance.JoinPhomGame.OnDataUpdated -= JoinPhomGame;
+        NetworkManager.Instance.Register.OnDataUpdated -= RegisterSuccess;
     }
 
     public void OnbtnLoginGuessClicked()
@@ -61,4 +62,15 @@ public class LoginHUD : MonoBehaviour
     {
         registerPopup.ShowPopup();
     }
+    
+    private void RegisterSuccess(bool obj)
+    {
+        registerPopup.HidePopup();
+        UIManager.Instance.ShowDialog(DialogName.UIMessageBox, new MessageBoxData("Đăng ký thành công!","OK", () =>
+        {
+            loginPopup.ShowPopup();
+        }));
+       
+    }
+
 }

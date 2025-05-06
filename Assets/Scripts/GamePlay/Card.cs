@@ -38,7 +38,6 @@ public class Card : MonoBehaviour
     {
         cardFront.SetActive(true);
     }
-
     public void ShowEffect(bool isShow)
     {
         cardEffect.gameObject.SetActive(isShow);

@@ -17,7 +17,7 @@ public class PhomGameManager : MonoBehaviour
     [SerializeField] GamePlayHUD gamePlayHUD;
 
     public Transform deckPosition; // Vị trí bộ bài
-    
+
     public List<Player> playerHands; // Danh sách người chơi
     public Transform playerHandArea; // Khu vực bài của Player
     public GameObject cardPrefab; // Prefab lá bài
@@ -37,7 +37,7 @@ public class PhomGameManager : MonoBehaviour
 
     private bool isFirstRound = false;
     public bool isCanSelectCard = false;
-    
+
     //drop phom
     public Transform[] dropPhomPositions;
     private DropPhomRespone haPhomData;
@@ -48,13 +48,18 @@ public class PhomGameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI txtdrawPileCardCount;
     private int drawPileCardCount = 0;
     public Transform deckCardCountObject;
-    
+
+    //Arrow point to card
+    [SerializeField] private GameObject arrowPointCard;
+    [SerializeField] private GameObject arrowPointCardDeck;
+
+    private List<List<Card>> myPhoms = null;
     private bool isEndGame = false;
 
     private void Start()
     {
-        NetworkManager.Instance.EnterGameRespone.OnDataUpdated += EnterGameRespone;//2000
-        NetworkManager.Instance.StartPlayRespone.OnDataUpdated += StartPlayRespone;//2006
+        NetworkManager.Instance.EnterGameRespone.OnDataUpdated += EnterGameRespone; //2000
+        NetworkManager.Instance.StartPlayRespone.OnDataUpdated += StartPlayRespone; //2006
         //NetworkManager.Instance.PlayerReadyRespone.OnDataUpdated += PlayerReadyRespone;
         NetworkManager.Instance.PlayerLeftRespone.OnDataUpdated += PlayerLeftRespone; //2002
         NetworkManager.Instance.PlayCardModelRespone.OnDataUpdated += PlayCardModelRespone; //2007
@@ -102,7 +107,6 @@ public class PhomGameManager : MonoBehaviour
         {
             playerHands[seat.position].gameObject.SetActive(true);
             playerHands[seat.position].Init(seat);
-            Debug.LogError(seat.nickname + " # seat: " + seat.position);
         }
     }
 
@@ -112,6 +116,7 @@ public class PhomGameManager : MonoBehaviour
     {
         if (isEndGame) return;
 
+        myPhoms = null;
         DOVirtual.DelayedCall(1, () =>
         {
             for (int i = 0; i < obj.data.winArray.Count; i++)
@@ -122,7 +127,7 @@ public class PhomGameManager : MonoBehaviour
                     continue;
                 }
 
-                player.inforUI.ShowRank(i);
+                player.inforUI.ShowRank(i, obj.data.winArray[i].winAmount);
 
                 if (GameManager.Instance.IsMyself(obj.data.winArray[i].nickname))
                     continue;
@@ -161,7 +166,7 @@ public class PhomGameManager : MonoBehaviour
 
             DOVirtual.DelayedCall(5, () =>
             {
-              //Clear all
+                //Clear all
                 var cards = transform.GetComponentsInChildren<Card>(true);
                 for (int i = cards.Length - 1; i >= 0; i--) // Backward iteration to avoid issues
                 {
@@ -173,16 +178,16 @@ public class PhomGameManager : MonoBehaviour
                             DestroyImmediate(cards[i].gameObject);
                     }
                 }
-            
+
                 deck.Clear();
                 discardPiles.Clear();
                 myCardValues.Clear();
                 isEndGame = false;
                 gamePlayHUD.ResetUI();
                 deckPosition.gameObject.SetActive(false);
-            
+
                 ArrangeSeats();
-            
+
                 if (GameManager.Instance.GetPlayersCount() >= 2 && GameManager.Instance.IsRoomMaster())
                 {
                     gamePlayHUD.ShowChiaBai(true);
@@ -207,6 +212,23 @@ public class PhomGameManager : MonoBehaviour
             }
 
             gamePlayHUD.ShowHaPhom(true);
+
+            //show phom
+            DOVirtual.DelayedCall(0.4f, () =>
+            {
+                var myCards = playerHands[0].GetHand();
+                var phoms = PhomChecker.FindPhoms(myCards);
+                foreach (var cards in phoms)
+                {
+                    foreach (var c in cards)
+                    {
+                        Debug.Log(c.value + " # " + c.suit);
+                        c.transform.DOLocalMoveY(c.transform.localPosition.y + 50, 0.1f).SetEase(Ease.OutQuad);
+                    }
+                }
+
+                myPhoms = phoms;
+            });
         }
         else
         {
@@ -241,6 +263,15 @@ public class PhomGameManager : MonoBehaviour
                             startY
                         );
                         rt.DOAnchorPos(target, 0.3f);
+                    }
+
+                    //down toan bo cac la bai con lai
+                    for (int i = 0; i < player.GetHand().Count; i++)
+                    {
+                        Card card = player.GetHand()[i];
+                        card.Down();
+                        card.ShowEffect(false);
+                        card.transform.localPosition = Vector3.zero;
                     }
 
                     // Xuống dòng cho phỏm tiếp theo
@@ -280,11 +311,22 @@ public class PhomGameManager : MonoBehaviour
 
         drawPileCardCount -= 1;
         txtdrawPileCardCount.text = drawPileCardCount + "";
-        if(drawPileCardCount <= 0) deckPosition.gameObject.SetActive(false);
+        if (drawPileCardCount <= 0) deckPosition.gameObject.SetActive(false);
     }
 
     private void DrawFromDiscardRespone(PlayCardModelRespone obj)
     {
+        if (obj == null || obj.data == null) return;
+        //money effects
+        if (obj.data.coinAmount != 0)
+        {
+            var player = FindPlayer(obj.data.nickname);
+            player.inforUI.ShowMoneyEffect(obj.data.coinAmount);
+
+            player = FindPlayer(obj.data.fromNickname);
+            player.inforUI.ShowMoneyEffect(-obj.data.coinAmount);
+        }
+
         if (GameManager.Instance.IsMyself(obj.data.nickname)) return;
 
         int previousPlayerIndex = GetPreviousPlayerIndex(currentPlayerIndex);
@@ -343,6 +385,55 @@ public class PhomGameManager : MonoBehaviour
         drawPileCardCount = obj.data.drawPileCardCount;
         isFirstRound = true;
         myCardValues = obj.data.playerCards;
+        // Debug.LogError("Cheat cards de xep bai");
+        // myCardValues = new();
+        // myCardValues.Add(new CardValue()
+        // {
+        //     value = 4,
+        //     type = 3
+        // });
+        //
+        // myCardValues.Add(new CardValue()
+        // {
+        //     value = 4,
+        //     type = 4
+        // });
+        // myCardValues.Add(new CardValue()
+        // {
+        //     value = 2,
+        //     type = 2
+        // });
+        // myCardValues.Add(new CardValue()
+        // {
+        //     value = 4,
+        //     type = 1
+        // });
+        // myCardValues.Add(new CardValue()
+        // {
+        //     value = 10,
+        //     type = 4
+        // });
+        // myCardValues.Add(new CardValue()
+        // {
+        //     value = 3,
+        //     type = 2
+        // });
+        // myCardValues.Add(new CardValue()
+        // {
+        //     value = 2,
+        //     type = 1
+        // });
+        // myCardValues.Add(new CardValue()
+        // {
+        //     value = 6,
+        //     type = 3
+        // });
+        // myCardValues.Add(new CardValue()
+        // {
+        //     value = 8,
+        //     type = 3
+        // });
+
         foreach (var playerHands in playerHands)
         {
             if (!playerHands.gameObject.activeSelf) continue;
@@ -384,9 +475,24 @@ public class PhomGameManager : MonoBehaviour
         StartCoroutine(DealCards(() =>
         {
             gamePlayHUD.ShowXepBai(true);
+            gamePlayHUD.ShowDanhBai(true);
+
             isCanSelectCard = true;
             deckCardCountObject.SetAsLastSibling();
             StartTurn();
+
+
+            // GameObject cardObj = Instantiate(cardPrefab, deckPosition.position, Quaternion.identity);
+            // Card card = cardObj.GetComponent<Card>();
+            // card.SetCard(3, suits[1 - 1]);
+            // if (PhomChecker.CanFormPhom(playerHands[0].GetHand(), card))
+            // {
+            //     gamePlayHUD.ShowAnBai(true);
+            // }
+            // else
+            // {
+            //     Debug.LogError("k the tao phom");
+            // }
         }));
     }
 
@@ -395,7 +501,7 @@ public class PhomGameManager : MonoBehaviour
     {
         foreach (string suit in suits)
         {
-            for (int value = 1; value <= 13; value++)
+            for (int value = 1; value <= 15; value++)
             {
                 GameObject cardObj = Instantiate(cardPrefab, deckPosition.position, Quaternion.identity);
                 Card card = cardObj.GetComponent<Card>();
@@ -548,7 +654,6 @@ public class PhomGameManager : MonoBehaviour
         return currIndex;
     }
 
-
     public int GetPreviousPlayerIndex(int currIndex)
     {
         for (int i = 1; i <= playerHands.Count; i++)
@@ -578,7 +683,7 @@ public class PhomGameManager : MonoBehaviour
         {
             if (!isFirstRound)
             {
-                gamePlayHUD.ShowRutBai(true);
+                if (drawPileCardCount > 0) gamePlayHUD.ShowRutBai(true);
 
                 int previousPlayerIndex = GetPreviousPlayerIndex(currentPlayerIndex);
                 Stack<Card> previousDiscardPile = discardPiles[previousPlayerIndex];
@@ -588,6 +693,17 @@ public class PhomGameManager : MonoBehaviour
                     if (PhomChecker.CanFormPhom(playerHands[0].GetHand(), topDiscard))
                     {
                         gamePlayHUD.ShowAnBai(true);
+                        DOVirtual.DelayedCall(0.5f, () =>
+                        {
+                            arrowPointCard.transform.position = new Vector3(topDiscard.transform.position.x,
+                                topDiscard.transform.position.y + 115, topDiscard.transform.position.z);
+                            arrowPointCard.SetActive(true);
+                        });
+                    }
+                    else if (drawPileCardCount > 0)
+                    {
+                        arrowPointCardDeck.SetActive(true);
+                        arrowPointCardDeck.transform.localPosition = new Vector3(0, 110);
                     }
                 }
             }
@@ -604,10 +720,11 @@ public class PhomGameManager : MonoBehaviour
     {
         Player myPlayer = playerHands[0];
         var sortedCards = PhomChecker.SortCards(myPlayer.GetHand());
-        foreach (var card in sortedCards)
-        {
-            Debug.Log(card.value + " : " + card.suit + " pos: ");
-        }
+        // foreach (var card in sortedCards)
+        // {
+        //     Debug.Log(card.value + " : " + card.suit + " pos: ");
+        // }
+
         myPlayer.SetHand(sortedCards);
         SapXepViTriBai();
     }
@@ -621,6 +738,9 @@ public class PhomGameManager : MonoBehaviour
     // Xử lý khi người chơi rút bài từ nọc
     public void OnDrawFromDeck()
     {
+        arrowPointCardDeck.SetActive(false);
+        arrowPointCard.SetActive(false);
+
         string json = JsonMapper.ToJson(new BaseWebsocketRequest((int)ENetworkHeader.DrawFromDeck));
         NetworkManager.Instance.SendJsonData(json);
     }
@@ -628,6 +748,8 @@ public class PhomGameManager : MonoBehaviour
     // Xử lý khi người chơi rút bài từ discard pile
     public void OnDrawFromDiscard()
     {
+        arrowPointCard.SetActive(false);
+
         int previousPlayerIndex = GetPreviousPlayerIndex(currentPlayerIndex);
 
         Debug.Log("previousPlayerIndex: " + previousPlayerIndex + " # currentPlayerIndex: " + currentPlayerIndex);
@@ -663,13 +785,16 @@ public class PhomGameManager : MonoBehaviour
         {
             // Đưa lá bài đã chọn trước đó về vị trí ban đầu
             selectedCard.transform.DOLocalMoveY(0, 0.1f).SetEase(Ease.OutQuad);
+            if (PhomChecker.IsSameCard(card, selectedCard))
+            {
+                selectedCard = null;
+                return;
+            }
         }
 
         // Chọn lá bài mới và di chuyển nó lên trên
         selectedCard = card;
         selectedCard.transform.DOLocalMoveY(selectedCard.transform.localPosition.y + 50, 0.1f).SetEase(Ease.OutQuad);
-
-        gamePlayHUD.ShowDanhBai(true);
     }
 
     // Xử lý khi người chơi nhấn nút "Đánh bài"
@@ -677,6 +802,8 @@ public class PhomGameManager : MonoBehaviour
     {
         if (selectedCard != null)
         {
+            isCanSelectCard = false;
+            gamePlayHUD.ShowDanhBai(false);
             string json = JsonMapper.ToJson(new PlayCardModel((int)ENetworkHeader.PlayCard, new CardValue()
             {
                 value = selectedCard.value,
@@ -708,10 +835,24 @@ public class PhomGameManager : MonoBehaviour
             Vector3 targetPosition = playerHandArea.localPosition + new Vector3(i * cardSpacing, 0, 0);
             playerHands[0].GetHand()[i].transform.SetSiblingIndex(i);
 
-            if (selectedCard!= null && PhomChecker.IsSameCard(playerHands[0].GetHand()[i], selectedCard))
+            if (selectedCard != null && PhomChecker.IsSameCard(playerHands[0].GetHand()[i], selectedCard))
             {
                 //card selected
                 playerHands[0].GetHand()[i].transform.DOLocalMove(new Vector2(targetPosition.x, targetPosition.y + 50), 0.3f).SetEase(Ease.OutQuad);
+            }
+            else if(myPhoms != null)
+            {
+                foreach (var phom in myPhoms)
+                {
+                    foreach (var c in phom)
+                    {
+                        if (c.value == playerHands[0].GetHand()[i].value && c.suit == playerHands[0].GetHand()[i].suit)
+                        {
+                            playerHands[0].GetHand()[i].transform.DOLocalMove(new Vector2(targetPosition.x, targetPosition.y + 50), 0.3f).SetEase(Ease.OutQuad);
+                            break;
+                        }
+                    }
+                }
             }
             else
             {
@@ -724,7 +865,8 @@ public class PhomGameManager : MonoBehaviour
 
     private void OnCardClicked(Card card)
     {
-        if (currentPlayerIndex != 0 || !isCanSelectCard || isEndGame) return;
+        if (currentPlayerIndex != 0 || !isCanSelectCard || isEndGame || myPhoms != null) return;
+        
         Debug.Log("OnCardClicked: " + card.value);
         OnCardSelected(card);
     }
@@ -787,7 +929,7 @@ public class PhomGameManager : MonoBehaviour
                 // Xuống dòng cho phỏm tiếp theo
                 startY -= 70;
             }
-            
+
             string json = JsonMapper.ToJson(new DropPhomModel((int)ENetworkHeader.DropPhom, haPhomData.data.cards));
             NetworkManager.Instance.SendJsonData(json);
         }

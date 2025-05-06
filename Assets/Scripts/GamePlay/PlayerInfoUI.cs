@@ -17,8 +17,19 @@ public class PlayerInforUI : MonoBehaviour
     [SerializeField] private Image imgMom;
     [SerializeField] private List<GameObject> rankUIs;
 
+    //money effects
+    [SerializeField] private Transform moneyEffectRoot;
+    [SerializeField] private GameObject bgWin, bgLose;
+    [SerializeField] private TextMeshProUGUI txtMoneyEffect;
+
+    //win eff
+    [SerializeField] private GameObject winBG;
+
+    private PlayerPosition mInfo;
+
     public void Init(PlayerPosition info)
     {
+        mInfo = info;
         imgTimer.fillAmount = 0;
         txtNickname.text = info.nickname;
         LoadRandomAvatar(info.avatarUrl);
@@ -30,11 +41,14 @@ public class PlayerInforUI : MonoBehaviour
         {
             if (rank != null) rank.SetActive(false);
         }
+
+        moneyEffectRoot.gameObject.SetActive(false);
+        winBG.SetActive(false);
     }
 
     public void LoadRandomAvatar(string avatar)
     {
-        string avatarName = "avatar_" + (string.IsNullOrEmpty(avatar)? "0" : avatar);
+        string avatarName = "avatar_" + (string.IsNullOrEmpty(avatar) ? "0" : avatar);
         // Try loading the avatar
         Sprite loadedAvatar = Resources.Load<Sprite>("Avatar/" + avatarName);
 
@@ -72,12 +86,43 @@ public class PlayerInforUI : MonoBehaviour
         }
     }
 
-    public void ShowRank(int rank)
+    public void ShowRank(int rank, int winAmout)
     {
         if (imgMom.gameObject.activeSelf) return;
         if (rank >= rankUIs.Count) return;
 
         rankUIs[rank].SetActive(true);
         rankUIs[rank].transform.DOPunchScale(Vector3.one * 0.5f, 0.2f).SetEase(Ease.OutQuad);
+
+        if (winAmout > 0) winBG.SetActive(true);
+        else
+        {
+            winBG.SetActive(false);
+        }
+
+        ShowMoneyEffect(winAmout);
+        mInfo.coin += winAmout;
+        txtCoin.text = mInfo.coin.FormatCoins();
+    }
+
+    public void ShowMoneyEffect(int money)
+    {
+        moneyEffectRoot.DOKill();
+        moneyEffectRoot.gameObject.SetActive(true);
+        moneyEffectRoot.DOPunchScale(new Vector3(0.5f, 0.5f, 0.5f), 0.2f).SetEase(Ease.OutQuad);
+        if (money > 0)
+        {
+            bgWin.SetActive(true);
+            bgLose.SetActive(false);
+        }
+        else
+        {
+            bgWin.SetActive(false);
+            bgLose.SetActive(true);
+        }
+
+        txtMoneyEffect.text = money.ToString();
+
+        DOVirtual.DelayedCall(3f, () => { moneyEffectRoot.gameObject.SetActive(false); });
     }
 }

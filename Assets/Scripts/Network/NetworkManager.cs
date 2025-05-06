@@ -39,6 +39,8 @@ namespace Suni.Network
 
     public class NetworkManager : SingletonMonoAwake<NetworkManager>
     {
+        public ObservableProperty<bool> Register = new ObservableProperty<bool>();
+        
         public ObservableProperty<bool> JoinPhomGame = new ObservableProperty<bool>();
         public ObservableProperty<EnterGameRespone> EnterGameRespone = new ObservableProperty<EnterGameRespone>();
 
@@ -120,7 +122,6 @@ namespace Suni.Network
                 }
             }
 
-
             switch (respBase.eventType)
             {
                 case (int)ENetworkHeader.Login: //1
@@ -132,6 +133,9 @@ namespace Suni.Network
                     string json =
                         JsonMapper.ToJson(new JoinPhomGameModel((int)ENetworkHeader.JoinPhomGame, (int)EGameType.PHOM));
                     SendJsonData(json);
+                    break;
+                case (int)ENetworkHeader.Register: //4
+                    Register.Value = true;
                     break;
                 case (int)ENetworkHeader.JoinPhomGame: //8
                     JoinPhomGame.Value = true;

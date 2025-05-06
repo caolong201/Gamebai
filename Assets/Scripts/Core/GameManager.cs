@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class GameManager : SingletonMonoAwake<GameManager>
 {
+   
+    public override void OnAwake()
+    {
+        base.OnAwake();
+        Application.targetFrameRate = 60;
+    }
+    
     private float _gold = 0;
     public float Gold
     {
@@ -41,11 +48,6 @@ public class GameManager : SingletonMonoAwake<GameManager>
     {
         set { _avatarUrl = value; }
         get { return _avatarUrl; }
-    }
-
-    public override void OnAwake()
-    {
-        base.OnAwake();
     }
 
     public bool IsMyself(string nickname)

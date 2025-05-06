@@ -33,6 +33,7 @@ public class PlayCardModelRespone : BaseWebsocketRespone
 public class PlayCardModelResponeData
 {
     public string nickname { get; set; }
-    public string toNickname { get; set; }
+    public string fromNickname { get; set; }
     public CardValue card { get; set; }
+    public int coinAmount { get; set; }
 }

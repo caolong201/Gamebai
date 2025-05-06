@@ -20,4 +20,5 @@ public class WinArray
     public string nickname { get; set; }
     public int point { get; set; }
     public List<CardValue> cards { get; set; }
+    public int winAmount { get; set; }
 }
