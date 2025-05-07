@@ -55,6 +55,7 @@ public class PhomGameManager : MonoBehaviour
 
     private List<List<Card>> myPhoms = null;
     private bool isEndGame = false;
+    [SerializeField] TextMeshProUGUI betlv;
 
     private void Start()
     {
@@ -76,6 +77,12 @@ public class PhomGameManager : MonoBehaviour
         isEndGame = false;
         txtdrawPileCardCount.text = "";
         deckPosition.gameObject.SetActive(false);
+
+        if (betlv != null)
+        {
+            float currentBet = GameManager.Instance.Bet;
+            betlv.text = ((int)currentBet).FormatCoins();       
+        }
     }
 
     private void OnDestroy()
@@ -93,7 +100,6 @@ public class PhomGameManager : MonoBehaviour
             NetworkManager.Instance.DropPhomRespone.OnDataUpdated -= DropPhomRespone; //2011
         }
     }
-
     private void ArrangeSeats(float delay = 0)
     {
         foreach (var playerHands in playerHands)

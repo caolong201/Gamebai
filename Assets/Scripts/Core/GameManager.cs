@@ -18,6 +18,14 @@ public class GameManager : SingletonMonoAwake<GameManager>
         get { return _gold; }
     }
 
+    private float _bet = 0;
+    public float Bet
+    {
+        set { _bet = value; }
+        get { return _bet; }
+    }
+
+
     private float _coin = 0;
 
     public float Coin

@@ -15,7 +15,6 @@ public class RoomBetLevel : MonoBehaviour
     public GameObject btnPrefab;
     public Transform content;
     [SerializeField] RectTransform footer;
-
     private List<RoomTableInfo> roomDatas;
     RomItem romclick;
     void Start()
@@ -26,26 +25,21 @@ public class RoomBetLevel : MonoBehaviour
         footer.DOAnchorPosY(119, .8f).SetEase(Ease.OutCirc);
 
         for (int i = 0; i < roomDatas.Count; i++)
-        {
-            
+        {         
             GameObject btnObj = Instantiate(btnPrefab, content);
-
             RomItem bet = btnObj.GetComponent<RomItem>();
             if (bet != null)
             {
-
-                bet.Init(roomDatas[i] , OnRoomItemClicked);
-                 
+                bet.Init(roomDatas[i] ,OnRoomItemClicked);    
             }
         }
     }
-
     private void OnRoomItemClicked(RoomTableInfo selectedRoom)
     {
         Debug.Log("Clicked room with bet amount: " + selectedRoom.betAmount);
-
+        GameManager.Instance.Bet = selectedRoom.betAmount;
         string json = JsonMapper.ToJson(new EnterGameModel((int)ENetworkHeader.EnterGame, selectedRoom.betAmount));
         NetworkManager.Instance.SendJsonData(json);
     }
-
 }
+
