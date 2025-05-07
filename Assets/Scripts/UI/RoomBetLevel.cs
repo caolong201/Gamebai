@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using BestHTTP.JSON.LitJson;
 using DG.Tweening;
 using Suni.Enum;
@@ -10,27 +11,27 @@ using UnityEngine.UIElements;
 
 public class RoomBetLevel : MonoBehaviour
 {
-   
     public GameObject btnPrefab;
     public Transform content;
-    [SerializeField] RectTransform  footer;
+    [SerializeField] RectTransform footer;
+
+    private List<RoomTableInfo> roomDatas;
     void Start()
-    {     
+    {
+        roomDatas = NetworkManager.Instance.JoinPhomGame.Value.data.roomList;
+        
         footer.anchoredPosition = new Vector2(0, -150);
         footer.DOAnchorPosY(119, .8f).SetEase(Ease.OutCirc);
 
-        int basePrice = 100;
-        for (int i = 0; i < 15; i++) 
+        for (int i = 0; i < roomDatas.Count; i++)
         {
-            //Instantiate(btnPrefab, content);
             GameObject btnObj = Instantiate(btnPrefab, content);
-
             RomItem bet = btnObj.GetComponent<RomItem>();
             if (bet != null)
             {
-                bet.SetPrice(basePrice + i);
-                bet.SetDescription(i + 1);
+                bet.Init(roomDatas[i]);
             }
         }
     }
+
 }

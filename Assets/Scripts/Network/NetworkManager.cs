@@ -41,7 +41,7 @@ namespace Suni.Network
     {
         public ObservableProperty<bool> Register = new ObservableProperty<bool>();
         
-        public ObservableProperty<bool> JoinPhomGame = new ObservableProperty<bool>();
+        public ObservableProperty<JoinPhomGameRespone> JoinPhomGame = new ObservableProperty<JoinPhomGameRespone>();
         public ObservableProperty<EnterGameRespone> EnterGameRespone = new ObservableProperty<EnterGameRespone>();
 
         public ObservableProperty<OtherPlayerReadyRespone> PlayerReadyRespone =
@@ -138,7 +138,7 @@ namespace Suni.Network
                     Register.Value = true;
                     break;
                 case (int)ENetworkHeader.JoinPhomGame: //8
-                    JoinPhomGame.Value = true;
+                    JoinPhomGame.Value = JsonMapper.ToObject<JoinPhomGameRespone>(_receivedMessage);
                     break;
                 case (int)ENetworkHeader.EnterGame: //2000
                     if (SceneFader.Instance.CurrentScene == ESceneName.GamePlay)

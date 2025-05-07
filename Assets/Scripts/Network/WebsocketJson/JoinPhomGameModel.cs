@@ -21,3 +21,23 @@ public class JoinPhomGameData
 {
     public int gameType { get; set; }
 }
+
+//resp
+[Serializable]
+public class JoinPhomGameRespone : BaseWebsocketRespone
+{
+    public JoinPhomGameResponeData data { get; set; }
+}
+
+[Serializable]
+public class JoinPhomGameResponeData
+{
+    public List<RoomTableInfo> roomList { get; set; }
+}
+
+[Serializable]
+public class RoomTableInfo
+{
+    public int betAmount { get; set; }
+    public int clientCount { get; set; }
+}

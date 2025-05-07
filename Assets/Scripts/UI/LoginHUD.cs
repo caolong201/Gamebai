@@ -47,7 +47,7 @@ public class LoginHUD : MonoBehaviour
 
     }
 
-    public void JoinPhomGame(bool success)
+    public void JoinPhomGame(JoinPhomGameRespone success)
     {
         loginPopup.HidePopup();
         SceneFader.Instance.LoadScene(ESceneName.Room);

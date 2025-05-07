@@ -13,7 +13,7 @@ public class RoomHUD : MonoBehaviour
     [SerializeField] private Image imgAvatar;
     [SerializeField] private TextMeshProUGUI txtCoin, txtNickname;
     [SerializeField] RectTransform header, footer;
-    [SerializeField] GameObject Phom;
+    [SerializeField] GameObject mainObject, roomListObject;
 
     private void Start()
     {
@@ -47,9 +47,9 @@ public class RoomHUD : MonoBehaviour
 
     public void OnbtnPhomClicked()
     {
-        //string json = JsonMapper.ToJson(new EnterGameModel((int)ENetworkHeader.EnterGame, 100));
-        //NetworkManager.Instance.SendJsonData(json);
-        Phom.SetActive(true);
+        roomListObject.SetActive(true);
+        mainObject.SetActive(false);
+        footer.gameObject.SetActive(false);
        
     }
 }
