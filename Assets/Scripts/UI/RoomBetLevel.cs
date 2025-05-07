@@ -8,6 +8,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
+using Button = UnityEngine.UI.Button;
 
 public class RoomBetLevel : MonoBehaviour
 {
@@ -16,6 +17,7 @@ public class RoomBetLevel : MonoBehaviour
     [SerializeField] RectTransform footer;
 
     private List<RoomTableInfo> roomDatas;
+    RomItem romclick;
     void Start()
     {
         roomDatas = NetworkManager.Instance.JoinPhomGame.Value.data.roomList;
@@ -25,13 +27,25 @@ public class RoomBetLevel : MonoBehaviour
 
         for (int i = 0; i < roomDatas.Count; i++)
         {
+            
             GameObject btnObj = Instantiate(btnPrefab, content);
+
             RomItem bet = btnObj.GetComponent<RomItem>();
             if (bet != null)
             {
-                bet.Init(roomDatas[i]);
+
+                bet.Init(roomDatas[i] , OnRoomItemClicked);
+                 
             }
         }
+    }
+
+    private void OnRoomItemClicked(RoomTableInfo selectedRoom)
+    {
+        Debug.Log("Clicked room with bet amount: " + selectedRoom.betAmount);
+
+        string json = JsonMapper.ToJson(new EnterGameModel((int)ENetworkHeader.EnterGame, selectedRoom.betAmount));
+        NetworkManager.Instance.SendJsonData(json);
     }
 
 }

@@ -4,6 +4,8 @@ using Suni.Enum;
 using Suni.Network;
 using UnityEngine;
 using TMPro;
+using System;
+using UnityEngine.UI;
 
 public class RomItem : MonoBehaviour
 {
@@ -11,10 +13,11 @@ public class RomItem : MonoBehaviour
     [SerializeField] TextMeshProUGUI textperson;
 
     private RoomTableInfo mData;
-
-    public void Init(RoomTableInfo data)
+    private Action<RoomTableInfo> onClickedCallback;
+    public void Init(RoomTableInfo data, Action<RoomTableInfo> onClicked)
     {
         mData = data;
+        onClickedCallback = onClicked;
         if (priceText != null)
         {
             priceText.text = data.betAmount.FormatCoins();
@@ -24,12 +27,19 @@ public class RomItem : MonoBehaviour
         {
             textperson.text = data.clientCount.ToString();
         }
+        Button btn = GetComponent<Button>();
+        if (btn != null)
+        {
+            btn.onClick.RemoveAllListeners(); 
+            btn.onClick.AddListener(OnItemClicked);
+        }
+
     }
 
     public void OnItemClicked()
     {
-        Debug.Log("Bet amount: " + mData.betAmount);
-        string json = JsonMapper.ToJson(new EnterGameModel((int)ENetworkHeader.EnterGame, mData.betAmount));
-        NetworkManager.Instance.SendJsonData(json);
+        onClickedCallback?.Invoke(mData);
     }
 }
+
+
