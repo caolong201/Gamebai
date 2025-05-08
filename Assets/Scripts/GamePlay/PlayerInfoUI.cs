@@ -114,14 +114,14 @@ public class PlayerInforUI : MonoBehaviour
         {
             bgWin.SetActive(true);
             bgLose.SetActive(false);
+            txtMoneyEffect.text = money.FormatCoins();
         }
         else
         {
             bgWin.SetActive(false);
             bgLose.SetActive(true);
+            txtMoneyEffect.text = "-" + (Mathf.Abs(money).FormatCoins());
         }
-
-        txtMoneyEffect.text = money.ToString();
 
         DOVirtual.DelayedCall(3f, () => { moneyEffectRoot.gameObject.SetActive(false); });
     }

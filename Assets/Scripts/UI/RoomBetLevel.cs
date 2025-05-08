@@ -22,7 +22,7 @@ public class RoomBetLevel : MonoBehaviour
         roomDatas = NetworkManager.Instance.JoinPhomGame.Value.data.roomList;
         
         footer.anchoredPosition = new Vector2(0, -150);
-        footer.DOAnchorPosY(119, .8f).SetEase(Ease.OutCirc);
+        footer.DOAnchorPosY(88, .8f).SetEase(Ease.OutCirc);
 
         for (int i = 0; i < roomDatas.Count; i++)
         {         

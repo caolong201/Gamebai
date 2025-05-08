@@ -55,7 +55,7 @@ public class PhomGameManager : MonoBehaviour
 
     private List<List<Card>> myPhoms = null;
     private bool isEndGame = false;
-    [SerializeField] TextMeshProUGUI betlv;
+    [SerializeField] TextMeshProUGUI tableInfo;
 
     private void Start()
     {
@@ -78,10 +78,10 @@ public class PhomGameManager : MonoBehaviour
         txtdrawPileCardCount.text = "";
         deckPosition.gameObject.SetActive(false);
 
-        if (betlv != null)
+        if (tableInfo != null)
         {
             float currentBet = GameManager.Instance.Bet;
-            betlv.text = ((int)currentBet).FormatCoins();       
+            tableInfo.text = "Bàn: VIP - Cược: " + ((int)currentBet).FormatCoins();       
         }
     }
 
@@ -938,6 +938,8 @@ public class PhomGameManager : MonoBehaviour
 
             string json = JsonMapper.ToJson(new DropPhomModel((int)ENetworkHeader.DropPhom, haPhomData.data.cards));
             NetworkManager.Instance.SendJsonData(json);
+
+            myPhoms = null;
         }
     }
 }

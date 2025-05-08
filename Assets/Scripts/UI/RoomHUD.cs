@@ -47,9 +47,14 @@ public class RoomHUD : MonoBehaviour
 
     public void OnbtnPhomClicked()
     {
-        roomListObject.SetActive(true);
-        mainObject.SetActive(false);
-        footer.gameObject.SetActive(false);
+        SceneFader.Instance.FadeIn(() =>
+        {
+            roomListObject.SetActive(true);
+            mainObject.SetActive(false);
+            footer.gameObject.SetActive(false);
+            SceneFader.Instance.FadeOut();
+        });
+       
        
     }
 }
