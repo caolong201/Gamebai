@@ -61,6 +61,7 @@ namespace Suni.Network
 
         public ObservableProperty<ResultRespone> ResultRespone = new ObservableProperty<ResultRespone>();
         public ObservableProperty<DropPhomRespone> DropPhomRespone = new ObservableProperty<DropPhomRespone>();
+        public ObservableProperty<GuiBaiRespone> GuiBaiRespone = new ObservableProperty<GuiBaiRespone>();
 
 
         public ENetworkStatus networkStatus = ENetworkStatus.None;
@@ -188,6 +189,7 @@ namespace Suni.Network
                     break;
                 case (int)ENetworkHeader.GuiBai: //2012
                     Debug.LogError("GuiBai");
+                    GuiBaiRespone.Value = JsonMapper.ToObject<GuiBaiRespone>(_receivedMessage);
                     break;
             }
         }

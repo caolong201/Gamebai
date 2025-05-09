@@ -68,6 +68,7 @@ public class PhomGameManager : MonoBehaviour
         NetworkManager.Instance.DrawFromDeckRespone.OnDataUpdated += DrawFromDeckRespone; //2009
         NetworkManager.Instance.ResultRespone.OnDataUpdated += ResultRespone; //2010
         NetworkManager.Instance.DropPhomRespone.OnDataUpdated += DropPhomRespone; //2011
+        NetworkManager.Instance.GuiBaiRespone.OnDataUpdated += GuiBaiRespone; //2012
 
         foreach (var playerHands in playerHands)
         {
@@ -81,7 +82,7 @@ public class PhomGameManager : MonoBehaviour
         if (tableInfo != null)
         {
             float currentBet = GameManager.Instance.Bet;
-            tableInfo.text = "Bàn: VIP - Cược: " + ((int)currentBet).FormatCoins();       
+            tableInfo.text = "Bàn: VIP - Cược: " + ((int)currentBet).FormatCoins();
         }
     }
 
@@ -98,8 +99,10 @@ public class PhomGameManager : MonoBehaviour
             NetworkManager.Instance.DrawFromDeckRespone.OnDataUpdated -= DrawFromDeckRespone;
             NetworkManager.Instance.ResultRespone.OnDataUpdated -= ResultRespone; //2010
             NetworkManager.Instance.DropPhomRespone.OnDataUpdated -= DropPhomRespone; //2011
+            NetworkManager.Instance.GuiBaiRespone.OnDataUpdated -= GuiBaiRespone; //2012
         }
     }
+
     private void ArrangeSeats(float delay = 0)
     {
         foreach (var playerHands in playerHands)
@@ -117,6 +120,37 @@ public class PhomGameManager : MonoBehaviour
     }
 
     #region Event BE
+
+    private void GuiBaiRespone(GuiBaiRespone obj)
+    {
+        if (obj.data == null || obj.data.sendCards == null || obj.data.sendCards.Count == 0) return;
+        foreach (var info in obj.data.sendCards)
+        {
+            var from = FindPlayer(info.fromNickname);
+            if (GameManager.Instance.IsMyself(info.fromNickname))
+            {
+                from.SendCards = info;
+                gamePlayHUD.ShowGuiBai(true);
+            }
+            else
+            {
+               
+                var to = FindPlayer(info.toNickname);
+                foreach (var card in info.cards)
+                {
+                    var cardObj = from.GetHand()[0];
+                    cardObj.SetCard(card.value, suits[card.type - 1]);
+                    cardObj.Up();
+                    from.GetHand().Remove(cardObj);
+                    cardObj.transform.SetParent(dropPhomPositions[to.seatInfo.position]);
+
+                    to.AddPhoms(cardObj);
+                }
+                
+                to.SortPhoms();
+            }
+        }
+    }
 
     private void ResultRespone(ResultRespone obj)
     {
@@ -269,6 +303,9 @@ public class PhomGameManager : MonoBehaviour
                             startY
                         );
                         rt.DOAnchorPos(target, 0.3f);
+                        
+                        //add phom card to list
+                        player.AddPhoms(card);
                     }
 
                     //down toan bo cac la bai con lai
@@ -844,9 +881,10 @@ public class PhomGameManager : MonoBehaviour
             if (selectedCard != null && PhomChecker.IsSameCard(playerHands[0].GetHand()[i], selectedCard))
             {
                 //card selected
-                playerHands[0].GetHand()[i].transform.DOLocalMove(new Vector2(targetPosition.x, targetPosition.y + 50), 0.3f).SetEase(Ease.OutQuad);
+                playerHands[0].GetHand()[i].transform
+                    .DOLocalMove(new Vector2(targetPosition.x, targetPosition.y + 50), 0.3f).SetEase(Ease.OutQuad);
             }
-            else if(myPhoms != null)
+            else if (myPhoms != null)
             {
                 foreach (var phom in myPhoms)
                 {
@@ -854,7 +892,9 @@ public class PhomGameManager : MonoBehaviour
                     {
                         if (c.value == playerHands[0].GetHand()[i].value && c.suit == playerHands[0].GetHand()[i].suit)
                         {
-                            playerHands[0].GetHand()[i].transform.DOLocalMove(new Vector2(targetPosition.x, targetPosition.y + 50), 0.3f).SetEase(Ease.OutQuad);
+                            playerHands[0].GetHand()[i].transform
+                                .DOLocalMove(new Vector2(targetPosition.x, targetPosition.y + 50), 0.3f)
+                                .SetEase(Ease.OutQuad);
                             break;
                         }
                     }
@@ -872,7 +912,7 @@ public class PhomGameManager : MonoBehaviour
     private void OnCardClicked(Card card)
     {
         if (currentPlayerIndex != 0 || !isCanSelectCard || isEndGame || myPhoms != null) return;
-        
+
         Debug.Log("OnCardClicked: " + card.value);
         OnCardSelected(card);
     }
@@ -912,8 +952,7 @@ public class PhomGameManager : MonoBehaviour
 
                 for (int i = 0; i < phom.Count; i++)
                 {
-                    Card card = player.GetHand().Find(x =>
-                        x.value == phom[i].value && PhomChecker.GetSuitNumber(x.suit) == phom[i].type);
+                    Card card = player.FindCard(phom[i]);
                     if (card == null)
                     {
                         Debug.LogError("could not found: " + phom[i].value + " : " + phom[i].type);
@@ -930,6 +969,9 @@ public class PhomGameManager : MonoBehaviour
                         startY
                     );
                     rt.DOAnchorPos(target, 0.3f);
+                    
+                    //add phom card to list
+                    player.AddPhoms(card);
                 }
 
                 // Xuống dòng cho phỏm tiếp theo
@@ -941,5 +983,26 @@ public class PhomGameManager : MonoBehaviour
 
             myPhoms = null;
         }
+    }
+
+    public void GuiBai()
+    {
+        var from = playerHands[0];
+        var to = FindPlayer(from.SendCards.toNickname);
+        foreach (var card in from.SendCards.cards)
+        {
+            var cardObj = from.FindCard(card);
+            if (cardObj != null)
+            {
+                cardObj.Up();
+                from.GetHand().Remove(cardObj);
+                cardObj.transform.SetParent(dropPhomPositions[to.seatInfo.position]);
+
+                to.AddPhoms(cardObj);
+            }
+        }
+        to.SortPhoms();
+        
+        
     }
 }

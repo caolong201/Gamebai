@@ -10,11 +10,12 @@ using UnityEngine;
 public class GamePlayHUD : MonoBehaviour
 {
     [SerializeField] PhomGameManager phomGameManager;
-    [SerializeField] private GameObject btnDanhBai, btnRutBai, btnAnBai, btnChiaBai, btnXepBai, btnHaPhom;
+    [SerializeField] private GameObject btnDanhBai, btnRutBai, btnAnBai, btnChiaBai, btnXepBai, btnHaPhom, btnGuiBai;
 
     private void Start()
     {
         btnChiaBai.SetActive(false);
+        ResetUI();
         NetworkManager.Instance.EnterGameRespone.OnDataUpdated += EnterGameRespone;
         NetworkManager.Instance.PlayerLeftRespone.OnDataUpdated += PlayerLeftRespone;
     }
@@ -52,6 +53,8 @@ public class GamePlayHUD : MonoBehaviour
         ShowAnBai(false);
         ShowXepBai(false);
         ShowHaPhom(false);
+        ShowHaPhom(false);
+        ShowGuiBai(false);
     }
 
     public void ShowChiaBai(bool isShow)
@@ -82,6 +85,11 @@ public class GamePlayHUD : MonoBehaviour
     public void ShowHaPhom(bool isShow)
     {
         btnHaPhom.SetActive(isShow);
+    }
+    
+    public void ShowGuiBai(bool isShow)
+    {
+        btnGuiBai.SetActive(isShow);
     }
 
     public void OnbtnDanhBaiClick()
@@ -122,5 +130,11 @@ public class GamePlayHUD : MonoBehaviour
     {
         btnHaPhom.SetActive(false);
         phomGameManager.HaPhom();
+    }
+    
+    public void OnbtnGuiBaiClick()
+    {
+        btnGuiBai.SetActive(false);
+        phomGameManager.GuiBai();
     }
 }
