@@ -8,11 +8,25 @@ public class TabChatManager : MonoBehaviour
 {
     public Button chatButton;
     public TMP_InputField chatInputField;
-    public GameObject[] tabContents; // Gán các content panel vào đây theo thứ tự
-    public Button[] tabButtons; // Gán các nút tab tương ứng
+    public GameObject[] tabContents; 
+    public Button[] tabButtons; 
     public Button[] iconButtons;
     public Button[] ChatButtons;
+    [SerializeField] TMP_Text chatDisplayText;
     [SerializeField] GameObject showChat;
+
+    private string[] chatContents = new string[]
+    {
+        "Đánh lẹ đi pa",
+        "Cho xin cây chốt",
+        "Sắp ù rồi",
+        "Ăn nhiều thế",
+        "Móm nè",
+        "Giờ thì ăn đi",
+        "Đen vãi hàng",
+        "Chơi khô máu luôn",
+        "Thắng rồi yeah yeah",    
+    };
     void Start()
     {
         chatButton.onClick.AddListener(OnChatButtonClicked);
@@ -64,11 +78,19 @@ public class TabChatManager : MonoBehaviour
     {
        Debug.Log( index);
     }    
-
-
     public void OnbtnClickchat(int index)
     {
-        Debug.Log("chat"+index);
+
+        if (index >= 0 && index < chatContents.Length)
+        {
+            chatDisplayText.text = chatContents[index]; 
+            Debug.Log(chatContents[index]);              
+
+        }
+        else
+        {
+            chatDisplayText.text = "No content available.";
+        }
     }
     public void CloseChat()
     {
