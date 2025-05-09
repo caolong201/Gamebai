@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using BestHTTP.JSON.LitJson;
@@ -11,6 +11,15 @@ public class GamePlayHUD : MonoBehaviour
 {
     [SerializeField] PhomGameManager phomGameManager;
     [SerializeField] private GameObject btnDanhBai, btnRutBai, btnAnBai, btnChiaBai, btnXepBai, btnHaPhom, btnGuiBai;
+    [SerializeField] GameObject showChat;
+
+
+
+    //public RectTransform panel; // Gán trong Inspector
+    //public Vector2 shownPosition;   // Vị trí khi hiện (VD: Vector2.zero)
+    //public Vector2 hiddenPosition;  // Vị trí ngoài màn hình bên phải
+    //public float duration = 0.5f;
+    //private bool isShown = false;
 
     private void Start()
     {
@@ -18,6 +27,7 @@ public class GamePlayHUD : MonoBehaviour
         ResetUI();
         NetworkManager.Instance.EnterGameRespone.OnDataUpdated += EnterGameRespone;
         NetworkManager.Instance.PlayerLeftRespone.OnDataUpdated += PlayerLeftRespone;
+       /* panel.anchoredPosition = hiddenPosition; */// Ẩn ban đầu
     }
 
     private void OnDestroy()
@@ -136,5 +146,25 @@ public class GamePlayHUD : MonoBehaviour
     {
         btnGuiBai.SetActive(false);
         phomGameManager.GuiBai();
+    }
+
+    public void ShowChat()
+    {
+        showChat.SetActive(true);
+        //if (isShown)
+        //{
+        //    panel.DOAnchorPos(hiddenPosition, duration);
+        //}
+        //else
+        //{
+        //    panel.DOAnchorPos(shownPosition, duration);
+        //}
+
+        //isShown = !isShown;
+    }
+
+    public void CloseChat()
+    {
+        showChat.SetActive(false);
     }
 }
