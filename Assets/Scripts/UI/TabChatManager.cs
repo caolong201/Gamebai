@@ -12,7 +12,7 @@ public class TabChatManager : MonoBehaviour
     public Button[] tabButtons; 
     public Button[] iconButtons;
     public Button[] ChatButtons;
-    [SerializeField] TMP_Text chatDisplayText;
+    //[SerializeField] TMP_Text chatDisplayText;
     [SerializeField] GameObject showChat;
 
     private string[] chatContents = new string[]
@@ -83,14 +83,11 @@ public class TabChatManager : MonoBehaviour
 
         if (index >= 0 && index < chatContents.Length)
         {
-            chatDisplayText.text = chatContents[index]; 
+            //chatDisplayText.text = chatContents[index]; 
             Debug.Log(chatContents[index]);              
 
         }
-        else
-        {
-            chatDisplayText.text = "No content available.";
-        }
+       
     }
     public void CloseChat()
     {
