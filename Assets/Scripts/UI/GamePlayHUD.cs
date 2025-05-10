@@ -12,13 +12,15 @@ public class GamePlayHUD : MonoBehaviour
     [SerializeField] PhomGameManager phomGameManager;
     [SerializeField] private GameObject btnDanhBai, btnRutBai, btnAnBai, btnChiaBai, btnXepBai, btnHaPhom, btnGuiBai;
     [SerializeField] GameObject showChat;
-
+    public RectTransform panelParent;
     private void Start()
     {
         btnChiaBai.SetActive(false);
         ResetUI();
         NetworkManager.Instance.EnterGameRespone.OnDataUpdated += EnterGameRespone;
         NetworkManager.Instance.PlayerLeftRespone.OnDataUpdated += PlayerLeftRespone;
+
+        panelParent.anchoredPosition = new Vector2(-354, 894f);
     }
 
     private void OnDestroy()
@@ -140,6 +142,8 @@ public class GamePlayHUD : MonoBehaviour
     }
     public void ShowChat()
     {
-        showChat.SetActive(true);
+        //showChat.SetActive(true);
+
+        panelParent.DOAnchorPos(new Vector2 (-1086f, 894f), 1f).SetEase(Ease.OutCubic);
     }
 }

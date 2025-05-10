@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using DG.Tweening;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -13,7 +14,7 @@ public class TabChatManager : MonoBehaviour
     public Button[] iconButtons;
     public Button[] ChatButtons;
     //[SerializeField] TMP_Text chatDisplayText;
-    [SerializeField] GameObject showChat;
+    public RectTransform panelParent;
 
     private string[] chatContents = new string[]
     {
@@ -87,10 +88,9 @@ public class TabChatManager : MonoBehaviour
             Debug.Log(chatContents[index]);              
 
         }
-       
     }
     public void CloseChat()
     {
-        showChat.SetActive(false);
+        panelParent.DOAnchorPos(new Vector2(-354f, 894f), 1f).SetEase(Ease.OutCubic);
     }
 }
