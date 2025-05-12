@@ -9,7 +9,8 @@ public enum DialogName
 {
 	None = 0,
 	UIMessageBox = 1,
-	
+    UIAnonymous = 2,
+
 }
 
 public class UIManager : SingletonMonoAwake<UIManager>

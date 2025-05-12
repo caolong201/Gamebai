@@ -13,6 +13,8 @@ public class GamePlayHUD : MonoBehaviour
     [SerializeField] private GameObject btnDanhBai, btnRutBai, btnAnBai, btnChiaBai, btnXepBai, btnHaPhom, btnGuiBai,bntChat;
     [SerializeField] GameObject showChat;
     public RectTransform panelParent;
+    float timeShow = 2f;
+
     private void Start()
     {
         btnChiaBai.SetActive(false);
@@ -23,6 +25,10 @@ public class GamePlayHUD : MonoBehaviour
         panelParent.anchoredPosition = new Vector2(-354, 894f);
     }
 
+    private void Update()
+    {
+        showAnonymous();
+    }
     private void OnDestroy()
     {
         NetworkManager.Instance.EnterGameRespone.OnDataUpdated -= EnterGameRespone;
@@ -145,5 +151,31 @@ public class GamePlayHUD : MonoBehaviour
         bntChat.SetActive(false);
         //showChat.SetActive(true);
         panelParent.DOAnchorPos(new Vector2 (-1086f, 894f), 1f).SetEase(Ease.OutCubic);
+    }
+
+
+
+    public void showAnonymous()
+    {
+#if UNITY_EDITOR
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            ShowAnonymousPopup();
+        }
+#endif
+    }
+
+    public void ShowAnonymousPopup()
+    {
+        UIManager.Instance.ShowDialog(DialogName.UIAnonymous, new AnonymousData(() =>
+        {
+            Debug.Log("OK Clicked from Anonymous");
+        }));
+
+     
+        DOVirtual.DelayedCall(timeShow, () =>
+        {
+            UIManager.Instance.HideDialog(DialogName.UIAnonymous);
+        });
     }
 }
