@@ -10,10 +10,12 @@ using UnityEngine;
 public class GamePlayHUD : MonoBehaviour
 {
     [SerializeField] PhomGameManager phomGameManager;
-    [SerializeField] private GameObject btnDanhBai, btnRutBai, btnAnBai, btnChiaBai, btnXepBai, btnHaPhom, btnGuiBai,bntChat;
+
+    [SerializeField]
+    private GameObject btnDanhBai, btnRutBai, btnAnBai, btnChiaBai, btnXepBai, btnHaPhom, btnGuiBai, bntChat;
+
     [SerializeField] GameObject showChat;
     public RectTransform panelParent;
-    float timeShow = 2f;
 
     private void Start()
     {
@@ -22,13 +24,9 @@ public class GamePlayHUD : MonoBehaviour
         NetworkManager.Instance.EnterGameRespone.OnDataUpdated += EnterGameRespone;
         NetworkManager.Instance.PlayerLeftRespone.OnDataUpdated += PlayerLeftRespone;
 
-        panelParent.anchoredPosition = new Vector2(-354, 894f);
+        panelParent.anchoredPosition = new Vector2(500, 625);
     }
-
-    private void Update()
-    {
-        showAnonymous();
-    }
+    
     private void OnDestroy()
     {
         NetworkManager.Instance.EnterGameRespone.OnDataUpdated -= EnterGameRespone;
@@ -42,7 +40,7 @@ public class GamePlayHUD : MonoBehaviour
             btnChiaBai.SetActive(true);
         }
     }
-    
+
     private void PlayerLeftRespone(PlayerLeftRespone obj)
     {
         Debug.Log("PlayerLeft");
@@ -70,7 +68,7 @@ public class GamePlayHUD : MonoBehaviour
     {
         btnChiaBai.SetActive(isShow);
     }
-    
+
     public void ShowXepBai(bool isShow)
     {
         btnXepBai.SetActive(isShow);
@@ -90,12 +88,12 @@ public class GamePlayHUD : MonoBehaviour
     {
         btnAnBai.SetActive(isShow);
     }
-    
+
     public void ShowHaPhom(bool isShow)
     {
         btnHaPhom.SetActive(isShow);
     }
-    
+
     public void ShowGuiBai(bool isShow)
     {
         btnGuiBai.SetActive(isShow);
@@ -134,48 +132,22 @@ public class GamePlayHUD : MonoBehaviour
         NetworkManager.Instance.SendJsonData(json);
         btnChiaBai.SetActive(false);
     }
-    
+
     public void OnbtnHaPhomClick()
     {
         btnHaPhom.SetActive(false);
         phomGameManager.HaPhom();
     }
-    
+
     public void OnbtnGuiBaiClick()
     {
         btnGuiBai.SetActive(false);
         phomGameManager.GuiBai();
     }
+
     public void ShowChat()
     {
         bntChat.SetActive(false);
-        //showChat.SetActive(true);
-        panelParent.DOAnchorPos(new Vector2 (-1086f, 894f), 1f).SetEase(Ease.OutCubic);
-    }
-
-
-
-    public void showAnonymous()
-    {
-#if UNITY_EDITOR
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            ShowAnonymousPopup();
-        }
-#endif
-    }
-
-    public void ShowAnonymousPopup()
-    {
-        UIManager.Instance.ShowDialog(DialogName.UIAnonymous, new AnonymousData(() =>
-        {
-            Debug.Log("OK Clicked from Anonymous");
-        }));
-
-     
-        DOVirtual.DelayedCall(timeShow, () =>
-        {
-            UIManager.Instance.HideDialog(DialogName.UIAnonymous);
-        });
+        panelParent.DOAnchorPos(new Vector2(-413, 625), .5f).SetEase(Ease.OutExpo);
     }
 }

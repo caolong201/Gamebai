@@ -867,7 +867,7 @@ public class PhomGameManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("Vui lòng chọn lá bài để đánh!");
+            UIManager.Instance.ShowDialog(DialogName.UINotification, "Vui lòng chọn lá bài để đánh!");
         }
     }
 

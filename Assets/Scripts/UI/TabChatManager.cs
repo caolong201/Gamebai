@@ -7,13 +7,12 @@ using UnityEngine.UI;
 
 public class TabChatManager : MonoBehaviour
 {
-    public Button chatButton;
     public TMP_InputField chatInputField;
-    public GameObject[] tabContents; 
-    public Button[] tabButtons; 
+    public GameObject[] tabContents;
+    public Button[] tabButtons;
     public Button[] iconButtons;
     public Button[] ChatButtons;
-    //[SerializeField] TMP_Text chatDisplayText;
+
     public RectTransform panelParent;
     public GameObject bntChat;
 
@@ -27,22 +26,17 @@ public class TabChatManager : MonoBehaviour
         "Giờ thì ăn đi",
         "Đen vãi hàng",
         "Chơi khô máu luôn",
-        "Thắng rồi yeah yeah",    
+        "Thắng rồi yeah yeah",
     };
+
     void Start()
     {
-        chatButton.onClick.AddListener(OnChatButtonClicked);
         InitTabs();
 
         ShowTab(0);
         InitItemIcon();
         InitItemChat();
         UpdateTabButtonAlpha(0);
-    }
-   public void OnChatButtonClicked()
-    {
-        chatInputField.gameObject.SetActive(true); // hiện input
-        chatInputField.ActivateInputField();
     }
 
     private void InitTabs()
@@ -66,7 +60,7 @@ public class TabChatManager : MonoBehaviour
             Image img = tabButtons[i].GetComponent<Image>();
             if (img != null)
             {
-                img.DOFade(targetAlpha, 0.5f);
+                img.DOFade(targetAlpha, 0.2f);
             }
         }
     }
@@ -80,6 +74,7 @@ public class TabChatManager : MonoBehaviour
             Debug.Log($"Tab {i} active: {i == index}");
         }
     }
+
     public void InitItemIcon()
     {
         for (int i = 0; i < iconButtons.Length; i++)
@@ -98,23 +93,23 @@ public class TabChatManager : MonoBehaviour
         }
     }
 
-   public void OnIconClicked(int index)
+    public void OnIconClicked(int index)
     {
-       Debug.Log( index);
-    }    
+        Debug.Log(index);
+    }
+
     public void OnbtnClickchat(int index)
     {
-
         if (index >= 0 && index < chatContents.Length)
         {
-            //chatDisplayText.text = chatContents[index]; 
-            Debug.Log(chatContents[index]);              
-
+            Debug.Log(chatContents[index]);
+            CloseChat();        
         }
     }
-        public void CloseChat()
+
+    public void CloseChat()
     {
         bntChat.SetActive(true);
-        panelParent.DOAnchorPos(new Vector2(-354f, 894f), 0.01f).SetEase(Ease.OutCubic);
+        panelParent.anchoredPosition = new Vector2(500, 625);
     }
 }
