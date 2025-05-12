@@ -15,6 +15,7 @@ public class TabChatManager : MonoBehaviour
     public Button[] ChatButtons;
     //[SerializeField] TMP_Text chatDisplayText;
     public RectTransform panelParent;
+    public GameObject bntChat;
 
     private string[] chatContents = new string[]
     {
@@ -31,24 +32,46 @@ public class TabChatManager : MonoBehaviour
     void Start()
     {
         chatButton.onClick.AddListener(OnChatButtonClicked);
-        Init();
+        InitTabs();
+
         ShowTab(0);
         InitItemIcon();
         InitItemChat();
+        UpdateTabButtonAlpha(0);
     }
    public void OnChatButtonClicked()
     {
         chatInputField.gameObject.SetActive(true); // hiện input
         chatInputField.ActivateInputField();
     }
-    public void Init()
+
+    private void InitTabs()
     {
         for (int i = 0; i < tabButtons.Length; i++)
         {
             int index = i;
-            tabButtons[i].onClick.AddListener(() => ShowTab(index));
+            tabButtons[i].onClick.AddListener(() =>
+            {
+                ShowTab(index);
+                UpdateTabButtonAlpha(index);
+            });
         }
-    }    
+    }
+
+    private void UpdateTabButtonAlpha(int activeIndex)
+    {
+        for (int i = 0; i < tabButtons.Length; i++)
+        {
+            float targetAlpha = (i == activeIndex) ? 1f : 0.35f;
+            Image img = tabButtons[i].GetComponent<Image>();
+            if (img != null)
+            {
+                img.DOFade(targetAlpha, 0.5f);
+            }
+        }
+    }
+
+
     public void ShowTab(int index)
     {
         for (int i = 0; i < tabContents.Length; i++)
@@ -89,8 +112,9 @@ public class TabChatManager : MonoBehaviour
 
         }
     }
-    public void CloseChat()
+        public void CloseChat()
     {
-        panelParent.DOAnchorPos(new Vector2(-354f, 894f), 1f).SetEase(Ease.OutCubic);
+        bntChat.SetActive(true);
+        panelParent.DOAnchorPos(new Vector2(-354f, 894f), 0.01f).SetEase(Ease.OutCubic);
     }
 }

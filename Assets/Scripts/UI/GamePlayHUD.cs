@@ -10,7 +10,7 @@ using UnityEngine;
 public class GamePlayHUD : MonoBehaviour
 {
     [SerializeField] PhomGameManager phomGameManager;
-    [SerializeField] private GameObject btnDanhBai, btnRutBai, btnAnBai, btnChiaBai, btnXepBai, btnHaPhom, btnGuiBai;
+    [SerializeField] private GameObject btnDanhBai, btnRutBai, btnAnBai, btnChiaBai, btnXepBai, btnHaPhom, btnGuiBai,bntChat;
     [SerializeField] GameObject showChat;
     public RectTransform panelParent;
     private void Start()
@@ -142,8 +142,8 @@ public class GamePlayHUD : MonoBehaviour
     }
     public void ShowChat()
     {
+        bntChat.SetActive(false);
         //showChat.SetActive(true);
-
         panelParent.DOAnchorPos(new Vector2 (-1086f, 894f), 1f).SetEase(Ease.OutCubic);
     }
 }

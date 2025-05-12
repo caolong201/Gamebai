@@ -5041,6 +5041,7 @@ MonoBehaviour:
   - {fileID: 534158477}
   - {fileID: 1959920682}
   panelParent: {fileID: 347276328}
+  bntChat: {fileID: 1149112935}
 --- !u!1 &356786275
 GameObject:
   m_ObjectHideFlags: 0
@@ -8100,7 +8101,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 091efde0cda0fea4fa3c4afabb260c81, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 504580fa8a1ee414facdbcda5145eaab, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -12916,12 +12917,12 @@ MonoBehaviour:
     m_Left: 0
     m_Right: 0
     m_Top: 0
-    m_Bottom: 0
+    m_Bottom: 20
   m_ChildAlignment: 1
   m_StartCorner: 0
   m_StartAxis: 1
   m_CellSize: {x: 200, y: 200}
-  m_Spacing: {x: 86.1, y: 75.42}
+  m_Spacing: {x: 86, y: 75}
   m_Constraint: 1
   m_ConstraintCount: 2
 --- !u!1 &1265938245
@@ -16656,6 +16657,7 @@ MonoBehaviour:
   btnXepBai: {fileID: 565119331}
   btnHaPhom: {fileID: 365904383}
   btnGuiBai: {fileID: 627384849}
+  bntChat: {fileID: 1149112935}
   showChat: {fileID: 347276327}
   panelParent: {fileID: 347276328}
 --- !u!1 &1654491547
@@ -18986,7 +18988,7 @@ MonoBehaviour:
     m_Left: 0
     m_Right: 0
     m_Top: 0
-    m_Bottom: 0
+    m_Bottom: 50
   m_ChildAlignment: 1
   m_StartCorner: 0
   m_StartAxis: 1
