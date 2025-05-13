@@ -10,6 +10,8 @@ public enum DialogName
 	None = 0,
 	UIMessageBox = 1,
 	UINotification = 2,
+    UIEntertable= 3,
+    UICreateTable = 4,
 
 }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using BestHTTP.JSON.LitJson;
 using DG.Tweening;
@@ -8,6 +9,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
+using static Unity.Collections.AllocatorManager;
 using Button = UnityEngine.UI.Button;
 
 public class RoomBetLevel : MonoBehaviour
@@ -17,20 +19,22 @@ public class RoomBetLevel : MonoBehaviour
     [SerializeField] RectTransform footer;
     private List<RoomTableInfo> roomDatas;
     RomItem romclick;
+    [SerializeField] GameObject imgTaoban;
+
     void Start()
     {
         roomDatas = NetworkManager.Instance.JoinPhomGame.Value.data.roomList;
-        
+
         footer.anchoredPosition = new Vector2(0, -150);
         footer.DOAnchorPosY(88, .8f).SetEase(Ease.OutCirc);
 
         for (int i = 0; i < roomDatas.Count; i++)
-        {         
+        {
             GameObject btnObj = Instantiate(btnPrefab, content);
             RomItem bet = btnObj.GetComponent<RomItem>();
             if (bet != null)
             {
-                bet.Init(roomDatas[i] ,OnRoomItemClicked);    
+                bet.Init(roomDatas[i], OnRoomItemClicked);
             }
         }
     }
@@ -41,5 +45,35 @@ public class RoomBetLevel : MonoBehaviour
         string json = JsonMapper.ToJson(new EnterGameModel((int)ENetworkHeader.EnterGame, selectedRoom.betAmount));
         NetworkManager.Instance.SendJsonData(json);
     }
+
+    public void bntTaoban()
+    {
+        UIManager.Instance.ShowDialog(DialogName.UICreateTable, new RoomCreatorData(
+               () =>
+               {
+                   Debug.Log("taoban");
+
+               }));
+    }
+
+    public void bntVaoban()
+    {
+        GUIDialogBase dlg = UIManager.Instance.ShowDialog(DialogName.UIEntertable, new EntertableData(() =>
+        {
+            Debug.Log("Voban");
+        }));
+        if (dlg != null)
+        {
+            Transform contentToScale = dlg.transform.Find("dialogContent");
+            if (contentToScale != null)
+            {
+                contentToScale.localScale = Vector3.zero;
+                contentToScale.DOScale(Vector3.one, 0.5f).SetEase(Ease.OutBack);
+            }
+        }
+    }
 }
+
+
+
 

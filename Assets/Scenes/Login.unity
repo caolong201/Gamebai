@@ -4030,17 +4030,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: UI_Manager
       objectReference: {fileID: 0}
-    - target: {fileID: 2456618464706393799, guid: dda6d48d52d1f2942b65a31c9e0dcb77, type: 3}
+    - target: {fileID: 6559000565937467121, guid: dda6d48d52d1f2942b65a31c9e0dcb77, type: 3}
       propertyPath: dialogName
-      value: 2
+      value: 4
       objectReference: {fileID: 0}
-    - target: {fileID: 2456618464706393799, guid: dda6d48d52d1f2942b65a31c9e0dcb77, type: 3}
+    - target: {fileID: 6559000565937467121, guid: dda6d48d52d1f2942b65a31c9e0dcb77, type: 3}
       propertyPath: dialogPrefab
-      value: UIAnonymous
-      objectReference: {fileID: 0}
-    - target: {fileID: 7396455154884567605, guid: dda6d48d52d1f2942b65a31c9e0dcb77, type: 3}
-      propertyPath: m_IsActive
-      value: 1
+      value: UICreateTable
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
