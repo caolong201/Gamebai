@@ -24,6 +24,7 @@ public class PlayerInforUI : MonoBehaviour
 
     //win eff
     [SerializeField] private GameObject winBG;
+    [SerializeField] NicknameScroller nicknameScroller;
 
     private PlayerPosition mInfo;
 
@@ -44,6 +45,8 @@ public class PlayerInforUI : MonoBehaviour
 
         moneyEffectRoot.gameObject.SetActive(false);
         winBG.SetActive(false);
+
+        if (nicknameScroller != null) nicknameScroller.Init();
     }
 
     public void LoadRandomAvatar(string avatar)

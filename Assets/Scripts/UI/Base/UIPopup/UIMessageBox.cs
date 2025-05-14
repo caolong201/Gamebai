@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 public class UIMessageBox : GUIBaseDialogHandler
 {
-    [SerializeField] private GameObject black;
     [SerializeField] private TextMeshProUGUI txtContent;
 
     [SerializeField] private GameObject btnOK;
@@ -17,17 +16,10 @@ public class UIMessageBox : GUIBaseDialogHandler
 
     private Action OnOkClick;
     private Action OnCloseClick;
-
-    public override void OnStart()
-    {
-        base.OnStart();
-        black.SetActive(false);
-    }
-
+    
     public override void OnBeginShow(object parameter)
     {
         base.OnBeginShow(parameter);
-        black.SetActive(true);
         
         MessageBoxData data = (MessageBoxData)parameter;
         UpdateTextContent(data.mContent);
@@ -38,12 +30,7 @@ public class UIMessageBox : GUIBaseDialogHandler
         OnOkClick = data.onOkClick;
         OnCloseClick = data.onCloseClick;
     }
-
-    public override void OnEndHide(bool isDestroy)
-    {
-        base.OnEndHide(isDestroy);
-        black.SetActive(false);
-    }
+    
 
     public void OnbtnOkClicked()
     {

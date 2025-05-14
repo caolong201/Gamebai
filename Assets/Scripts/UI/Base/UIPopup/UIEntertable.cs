@@ -9,34 +9,21 @@ using Suni.Network;
 
 public class UICEntertable : GUIBaseDialogHandler
 {
-    [SerializeField] private GameObject black;
     [SerializeField] private GameObject btnCancel;
     public TMP_InputField ipUsername;
     public TMP_InputField ipPassword;
     private Action OnCloseClick;
     private Action OnoklClick;
-    public override void OnStart()
-    {
-        base.OnStart();
-        black.SetActive(false);
-        ipUsername.text = "";
-        ipPassword.text = "";
-    }
+   
     public override void OnBeginShow(object parameter)
     {
         base.OnBeginShow(parameter);
-        black.SetActive(true);
         EntertableData data = (EntertableData)parameter;
         OnCloseClick = data.onCloseClick;
         ipUsername.text = "";
         ipPassword.text = "";
     }
-
-    public override void OnEndHide(bool isDestroy)
-    {
-        base.OnEndHide(isDestroy);
-        black.SetActive(false);
-    }
+    
     public void OnbtnCloseClicked()
     {
         OnCloseClick?.Invoke();
@@ -48,20 +35,19 @@ public class UICEntertable : GUIBaseDialogHandler
        
         string err = String.Empty;
         if (string.IsNullOrEmpty(ipUsername.text))
-            err = "Mật khẩu bắt buộc";
+            err = "Vui lòng nhập số bàn.";
         if (string.IsNullOrEmpty(ipPassword.text))
-            err = "Mật khẩu bắt buộc";
-        Debug.Log("ipUsername: " + ipUsername.text + ", ipPassword: " + ipPassword.text);
+            err = "Vui lòng nhập mật khẩu.";
+        
         if (!string.IsNullOrEmpty(err))
         {
             UIManager.Instance.ShowDialog(DialogName.UIMessageBox, new MessageBoxData(err));
-            UIManager.Instance.GetDialog(DialogName.UIMessageBox)?.transform.SetAsLastSibling();
             return;
         }
 
         string json = JsonMapper.ToJson(new JoinPrivateTableModel((int)ENetworkHeader.JoinPrivateTable, new JoinPrivateTableModelData()
         {
-            username = ipUsername.text.Trim(),
+            tableId = ipUsername.text.Trim(),
             password = ipPassword.text.Trim(),
 
         }));

@@ -6,6 +6,7 @@ using Suni.Network;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DanielLochner.Assets.SimpleScrollSnap;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,34 +18,16 @@ public class UICreateTable : GUIBaseDialogHandler
     [SerializeField] private Button buttonPlus;
     [SerializeField] GameObject imgTaoban;
     private int[] betLevels = { 100, 500, 1000 }; // Các mức cược
-    private int currentBetIndex = 0;
     private Action onCloseClick;
-    public TextMeshProUGUI[] texts; 
     public TMP_InputField ipPassword;
-    //[SerializeField] private TMP_InputField inputField; 
-    //[SerializeField] private TextMeshProUGUI placeholderText; 
-    private int normalFontSize = 45;
-    private int selectedFontSize = 60;
-    public override void OnStart()
-    { 
-        base.OnStart();
-        imgTaoban.SetActive(false);
-        ipPassword.text = "";
-
-        //if (inputField != null && placeholderText != null)
-        //{
-        //    // Đặt kích thước font ban đầu cho placeholder
-        //    //placeholderText.fontSize = normalFontSize;
-
-        //    //inputField.onSelect.AddListener(OnInputFieldSelect);
-        //    //inputField.onDeselect.AddListener(OnInputFieldDeselect);
-        //}
-    }
+   
+    [SerializeField] SimpleScrollSnap scrollSnap;
 
     public override void OnBeginShow(object parameter)
     {
         base.OnBeginShow(parameter);
         imgTaoban.SetActive(true);
+        ipPassword.text = "";
 
         RoomCreatorData data = parameter as RoomCreatorData;
         if (data != null)
@@ -54,15 +37,10 @@ public class UICreateTable : GUIBaseDialogHandler
         ipPassword.text = "";
      
     }
-    public override void OnEndHide(bool isDestroy)
-    {
-        base.OnEndHide(isDestroy);
-        imgTaoban.SetActive(false);
-    }
 
-    public int GetSelectedBet()
+    public int GetSelectedBet(int index)
     {
-        return betLevels[currentBetIndex];
+        return betLevels[index];
     }
     public void OnBtnCloseClicked()
     {
@@ -78,41 +56,23 @@ public class UICreateTable : GUIBaseDialogHandler
         if (!string.IsNullOrEmpty(err))
         {
             UIManager.Instance.ShowDialog(DialogName.UIMessageBox, new MessageBoxData(err));
-            UIManager.Instance.GetDialog(DialogName.UIMessageBox)?.transform.SetAsLastSibling();
             return;
         }
-        foreach (var text in texts)
-        {
-            RectTransform itemRect = text.GetComponent<RectTransform>();
-            Debug.Log("Đã chọn: " + text.text);
-            break;
-        }
-        int betAmount = GetSelectedBet();
-        int playerCount = 4;
+
+        int betAmount = GetSelectedBet(scrollSnap.SelectedPanel);
         string json = JsonMapper.ToJson(new CreatePrivateTableModel((int)ENetworkHeader.CreatePrivateTable, new CreatePrivateTableModelData()
 
         {
             password = ipPassword.text.Trim(),
             betAmount = betAmount,
-            playerCount = playerCount
+            playerCount = 4
 
         }));
-        Debug.Log("JSON gửi đi: " + json);
+        
         NetworkManager.Instance.SendJsonData(json);
         UIManager.Instance.HideDialog(DialogName.UICreateTable);
     }
 
-    //private void OnInputFieldSelect(string text)
-    //{
-    //    // Thay đổi kích thước font của placeholder khi chọn InputField
-    //    placeholderText.fontSize = selectedFontSize;
-    //}
-
-    //// Khi InputField bị bỏ chọn (khi mất focus)
-    //private void OnInputFieldDeselect(string text)
-    //{
-    //    placeholderText.fontSize = normalFontSize;
-    //}
 }
 
 

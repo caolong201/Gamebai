@@ -15,6 +15,7 @@ public class RoomHUD : MonoBehaviour
     [SerializeField] RectTransform header, footer;
     [SerializeField] GameObject mainObject, roomListObject;
 
+    [SerializeField] NicknameScroller nicknameScroller;
     private void Start()
     {
         LoadAvatar();
@@ -27,6 +28,7 @@ public class RoomHUD : MonoBehaviour
         footer.anchoredPosition = new Vector2(0, -150);
         footer.DOAnchorPosY(119, .8f).SetEase(Ease.OutCirc);
 
+        nicknameScroller.Init();
     }
 
     private void LoadAvatar()

@@ -17,7 +17,7 @@ public class JoinPrivateTableModel : BaseWebsocketRequest
 [Serializable]
 public class JoinPrivateTableModelData
 {
-    public string username { get; set; }
+    public string tableId { get; set; }
     public string password { get; set; }
 }
 

@@ -78,12 +78,6 @@ public class PhomGameManager : MonoBehaviour
         isEndGame = false;
         txtdrawPileCardCount.text = "";
         deckPosition.gameObject.SetActive(false);
-
-        if (tableInfo != null)
-        {
-            float currentBet = GameManager.Instance.Bet;
-            tableInfo.text = "Bàn: VIP - Cược: " + ((int)currentBet).FormatCoins();
-        }
     }
 
     private void OnDestroy()
@@ -134,7 +128,6 @@ public class PhomGameManager : MonoBehaviour
             }
             else
             {
-               
                 var to = FindPlayer(info.toNickname);
                 foreach (var card in info.cards)
                 {
@@ -146,7 +139,7 @@ public class PhomGameManager : MonoBehaviour
 
                     to.AddPhoms(cardObj);
                 }
-                
+
                 to.SortPhoms();
             }
         }
@@ -303,7 +296,7 @@ public class PhomGameManager : MonoBehaviour
                             startY
                         );
                         rt.DOAnchorPos(target, 0.3f);
-                        
+
                         //add phom card to list
                         player.AddPhoms(card);
                     }
@@ -421,6 +414,12 @@ public class PhomGameManager : MonoBehaviour
         GameManager.Instance.RoomMaster = obj.data.master;
         GameManager.Instance.Players = obj.data.position;
         ArrangeSeats();
+
+        if (tableInfo != null)
+        {
+            float currentBet = obj.data.betAmount;
+            tableInfo.text = "Bàn: " + obj.data.id + " - Cược: " + ((int)currentBet).FormatCoins();
+        }
     }
 
     private void StartPlayRespone(StartPlayRespone obj)
@@ -969,7 +968,7 @@ public class PhomGameManager : MonoBehaviour
                         startY
                     );
                     rt.DOAnchorPos(target, 0.3f);
-                    
+
                     //add phom card to list
                     player.AddPhoms(card);
                 }
@@ -1001,8 +1000,7 @@ public class PhomGameManager : MonoBehaviour
                 to.AddPhoms(cardObj);
             }
         }
+
         to.SortPhoms();
-        
-        
     }
 }
