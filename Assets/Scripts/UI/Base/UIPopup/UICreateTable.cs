@@ -97,7 +97,9 @@ public class UICreateTable : GUIBaseDialogHandler
             playerCount = playerCount
 
         }));
-        Debug.Log("[DEBUG] JSON gửi đi: " + json);
+        Debug.Log("JSON gửi đi: " + json);
+        NetworkManager.Instance.SendJsonData(json);
+        UIManager.Instance.HideDialog(DialogName.UICreateTable);
     }
 
     //private void OnInputFieldSelect(string text)

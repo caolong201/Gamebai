@@ -5,6 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine.UI;
 using BestHTTP.JSON.LitJson;
 using Suni.Enum;
+using Suni.Network;
 
 public class UICEntertable : GUIBaseDialogHandler
 {
@@ -65,7 +66,9 @@ public class UICEntertable : GUIBaseDialogHandler
 
         }));
 
-        Debug.Log("[DEBUG] JSON gửi đi: " + json);
+        Debug.Log(" JSON gửi đi: " + json);
+        NetworkManager.Instance.SendJsonData(json);
+        UIManager.Instance.HideDialog(DialogName.UIEntertable);
     }
 }
 public class EntertableData
