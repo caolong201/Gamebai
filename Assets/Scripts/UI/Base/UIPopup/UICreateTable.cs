@@ -53,13 +53,13 @@ public class UICreateTable : GUIBaseDialogHandler
         imgTaoban.SetActive(false);
     }
 
-    private void Update()
-    {
-        if (!isSnapping && scrollRect.velocity.magnitude < 50f)
-        {
-            SnapToBestItem();
-        }
-    }
+    //private void Update()
+    //{
+    //    if (!isSnapping && scrollRect.velocity.magnitude < 50f)
+    //    {
+    //        SnapToBestItem();
+    //    }
+    //}
     private void IncreaseBet()
     {
         if (currentBetIndex < betLevels.Length - 1)
@@ -104,66 +104,66 @@ public class UICreateTable : GUIBaseDialogHandler
         string json = JsonMapper.ToJson(new EnterGameModel((int)ENetworkHeader.EnterGame, selectedBet));
         NetworkManager.Instance.SendJsonData(json);
     }
-    private void SnapToBestItem()
-    {
-        Rect redRect = GetWorldRect(centerZone);
-        float maxOverlap = -1f;
-        RectTransform bestItem = null;
+    //private void SnapToBestItem()
+    //{
+    //    Rect redRect = GetWorldRect(centerZone);
+    //    float maxOverlap = -1f;
+    //    RectTransform bestItem = null;
 
-        foreach (var item in textItems)
-        {
-            Rect itemRect = GetWorldRect(item);
-            float overlap = GetHorizontalOverlap(redRect, itemRect);
+    //    foreach (var item in textItems)
+    //    {
+    //        Rect itemRect = GetWorldRect(item);
+    //        float overlap = GetHorizontalOverlap(redRect, itemRect);
 
-            if (overlap > maxOverlap)
-            {
-                maxOverlap = overlap;
-                bestItem = item;
-            }
-        }
+    //        if (overlap > maxOverlap)
+    //        {
+    //            maxOverlap = overlap;
+    //            bestItem = item;
+    //        }
+    //    }
 
-        if (bestItem != null)
-        {
-            StartCoroutine(SmoothSnap(bestItem));
-        }
-    }
-    IEnumerator SmoothSnap(RectTransform targetItem)
-    {
-        isSnapping = true;
+    //    if (bestItem != null)
+    //    {
+    //        StartCoroutine(SmoothSnap(bestItem));
+    //    }
+    //}
+    //IEnumerator SmoothSnap(RectTransform targetItem)
+    //{
+    //    isSnapping = true;
 
-        Vector3 redCenter = centerZone.position;
-        Vector3 itemCenter = targetItem.position;
-        float diffX = redCenter.x - itemCenter.x;
+    //    Vector3 redCenter = centerZone.position;
+    //    Vector3 itemCenter = targetItem.position;
+    //    float diffX = redCenter.x - itemCenter.x;
 
-        Vector2 startPos = content.anchoredPosition;
-        float elapsed = 0f;
-        float duration = 0.2f;
-        Vector2 targetPos = startPos + new Vector2(diffX, 0);
+    //    Vector2 startPos = content.anchoredPosition;
+    //    float elapsed = 0f;
+    //    float duration = 0.2f;
+    //    Vector2 targetPos = startPos + new Vector2(diffX, 0);
 
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            content.anchoredPosition = Vector2.Lerp(startPos, targetPos, elapsed / duration);
-            yield return null;
-        }
+    //    while (elapsed < duration)
+    //    {
+    //        elapsed += Time.deltaTime;
+    //        content.anchoredPosition = Vector2.Lerp(startPos, targetPos, elapsed / duration);
+    //        yield return null;
+    //    }
 
-        content.anchoredPosition = targetPos;
-        isSnapping = false;
-    }
+    //    content.anchoredPosition = targetPos;
+    //    isSnapping = false;
+    //}
 
-    private Rect GetWorldRect(RectTransform rt)
-    {
-        Vector3[] corners = new Vector3[4];
-        rt.GetWorldCorners(corners);
-        return new Rect(corners[0], corners[2] - corners[0]);
-    }
+    //private Rect GetWorldRect(RectTransform rt)
+    //{
+    //    Vector3[] corners = new Vector3[4];
+    //    rt.GetWorldCorners(corners);
+    //    return new Rect(corners[0], corners[2] - corners[0]);
+    //}
 
-    private float GetHorizontalOverlap(Rect a, Rect b)
-    {
-        float left = Mathf.Max(a.xMin, b.xMin);
-        float right = Mathf.Min(a.xMax, b.xMax);
-        return Mathf.Max(0, right - left);
-    }
+    //private float GetHorizontalOverlap(Rect a, Rect b)
+    //{
+    //    float left = Mathf.Max(a.xMin, b.xMin);
+    //    float right = Mathf.Min(a.xMax, b.xMax);
+    //    return Mathf.Max(0, right - left);
+    //}
 }
 
 public class RoomCreatorData
