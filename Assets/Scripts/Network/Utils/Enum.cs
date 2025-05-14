@@ -20,6 +20,9 @@ namespace Suni.Enum
         Result = 2010,
         DropPhom = 2011,
         GuiBai = 2012,
+        JoinPrivateTable =2014,
+        CreatePrivateTable = 2013,
+
     }
     
     public enum EGameType

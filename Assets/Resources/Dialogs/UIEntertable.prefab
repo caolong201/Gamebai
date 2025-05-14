@@ -138,6 +138,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   black: {fileID: 6796171985986474815}
   btnCancel: {fileID: 4437324477886147518}
+  ipUsername: {fileID: 106216133704440996}
+  ipPassword: {fileID: 7788183159187105289}
 --- !u!1 &1720437418025878874
 GameObject:
   m_ObjectHideFlags: 0
@@ -829,8 +831,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
-  m_fontSizeBase: 40
+  m_fontSize: 45
+  m_fontSizeBase: 45
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1138,8 +1140,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
-  m_fontSizeBase: 40
+  m_fontSize: 45
+  m_fontSizeBase: 45
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1351,7 +1353,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 514, y: 380}
-  m_SizeDelta: {x: 214.995, y: 124}
+  m_SizeDelta: {x: 214, y: 124}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3126482885182152727
 CanvasRenderer:
@@ -2088,7 +2090,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 5486658862812374573}
         m_TargetAssemblyTypeName: UICEntertable, Assembly-CSharp
-        m_MethodName: OnbtnCloseClicked
+        m_MethodName: OnbtOkClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
