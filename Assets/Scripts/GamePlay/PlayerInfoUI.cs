@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
@@ -26,8 +26,21 @@ public class PlayerInforUI : MonoBehaviour
     [SerializeField] private GameObject winBG;
     [SerializeField] NicknameScroller nicknameScroller;
 
-    private PlayerPosition mInfo;
 
+    [SerializeField] private GameObject chatBubble;
+    [SerializeField] private TextMeshProUGUI txtChat;
+    [SerializeField] private Image imgChatIcon;
+    public List<Sprite> iconSprites;
+
+    private PlayerPosition mInfo;
+    private Tween hideChatTween;
+
+
+    private void Awake()
+    {
+        txtChat.gameObject.SetActive(false);
+        imgChatIcon.gameObject.SetActive(false);
+    }
     public void Init(PlayerPosition info)
     {
         mInfo = info;
@@ -47,6 +60,7 @@ public class PlayerInforUI : MonoBehaviour
         winBG.SetActive(false);
 
         if (nicknameScroller != null) nicknameScroller.Init();
+
     }
 
     public void LoadRandomAvatar(string avatar)
@@ -128,4 +142,45 @@ public class PlayerInforUI : MonoBehaviour
 
         DOVirtual.DelayedCall(3f, () => { moneyEffectRoot.gameObject.SetActive(false); });
     }
+
+
+    public void ShowChat(string chatContent)
+    {
+        txtChat.text = "";
+        imgChatIcon.gameObject.SetActive(false);
+        txtChat.gameObject.SetActive(false);
+        chatBubble.SetActive(true);
+        if (string.IsNullOrEmpty(chatContent)) return;
+
+        if (chatContent.StartsWith("@#$%_"))
+        {
+            // Xử lý icon
+            string numberPart = chatContent.Replace("@#$%_", "");
+            if (int.TryParse(numberPart, out int iconIndex))
+            {
+                if (iconIndex >= 0 && iconIndex < iconSprites.Count)
+                {
+                    imgChatIcon.sprite = iconSprites[iconIndex];
+                    imgChatIcon.gameObject.SetActive(true);
+                }
+            }
+        }
+        else
+        {
+            // Chỉ text
+            txtChat.text = chatContent;
+            txtChat.gameObject.SetActive(true);
+            Debug.Log("text" + txtChat);
+        }
+
+        hideChatTween = DOVirtual.DelayedCall(2f, HideChat).SetId(this);
+        Invoke(nameof(HideChat), 2f);
+    }
+
+    private void HideChat()
+    {
+        txtChat.gameObject.SetActive(false);
+        imgChatIcon.gameObject.SetActive(false);
+    }
+
 }

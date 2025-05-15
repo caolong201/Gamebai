@@ -101,8 +101,23 @@ public class PhomGameManager : MonoBehaviour
 
     private void OnChatReceive(ChatContentRespone respone)
     {
-        Debug.Log("data"+ respone.data.nickname);
+        Debug.Log("data" + respone.data.nickname);
+        //var player = FindPlayer(respone.data.nickname);
+        Debug.Log("data" + respone.data.chatContent);
+        //var player1 = FindPlayer(respone.data.chatContent);
         var player = FindPlayer(respone.data.nickname);
+
+        if (player != null)
+        {
+            // Gọi hàm ShowChat để hiển thị nội dung
+            player.inforUI.ShowChat(respone.data.chatContent);
+        }
+        else
+        {
+            Debug.LogWarning("Không tìm thấy player có nickname: " + respone.data.nickname);
+        }
+
+
     }
 
     private void ArrangeSeats(float delay = 0)
