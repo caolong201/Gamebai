@@ -1,4 +1,5 @@
-﻿using BestHTTP.JSON.LitJson;
+﻿using System;
+using BestHTTP.JSON.LitJson;
 using DG.Tweening;
 using Suni.Enum;
 using Suni.Network;
@@ -108,8 +109,8 @@ public class TabChatManager : MonoBehaviour
             }
 
         })) ;
-        Debug.Log(" icon JSON: " + json);
         NetworkManager.Instance.SendJsonData(json);
+        CloseChat();
     }
     public void OnbtnClickchat(int index)
     {
@@ -124,11 +125,30 @@ public class TabChatManager : MonoBehaviour
                     nickname = GameManager.Instance.NickName,
                 }
             }));        
-            Debug.Log(" chat JSON: " + json);
             NetworkManager.Instance.SendJsonData(json);
             CloseChat();
         }
     }
+
+    public void OnEndEdit()
+    {
+        if (chatInputField != null && chatInputField.text != "")
+        {
+            string content = chatInputField.text;
+            string json = JsonMapper.ToJson(new ChatContentModel((int)ENetworkHeader.Chatcontent, new ChatContentModelData()
+            {
+                data = new ChatContentModelData2()
+                {
+                    chatContent = content    ,
+                    nickname = GameManager.Instance.NickName,
+                }
+            }));        
+            NetworkManager.Instance.SendJsonData(json);
+            chatInputField.text = string.Empty;
+            CloseChat();
+        }
+    }
+
     public void CloseChat()
     {
         bntChat.SetActive(true);

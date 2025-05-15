@@ -26,21 +26,16 @@ public class PlayerInforUI : MonoBehaviour
     [SerializeField] private GameObject winBG;
     [SerializeField] NicknameScroller nicknameScroller;
 
-
+    //chat
     [SerializeField] private GameObject chatBubble;
     [SerializeField] private TextMeshProUGUI txtChat;
     [SerializeField] private Image imgChatIcon;
     public List<Sprite> iconSprites;
+    [SerializeField] bool isFlipChatBubble = false;
 
     private PlayerPosition mInfo;
     private Tween hideChatTween;
 
-
-    private void Awake()
-    {
-        txtChat.gameObject.SetActive(false);
-        imgChatIcon.gameObject.SetActive(false);
-    }
     public void Init(PlayerPosition info)
     {
         mInfo = info;
@@ -61,6 +56,7 @@ public class PlayerInforUI : MonoBehaviour
 
         if (nicknameScroller != null) nicknameScroller.Init();
 
+        HideChat();
     }
 
     public void LoadRandomAvatar(string avatar)
@@ -146,10 +142,7 @@ public class PlayerInforUI : MonoBehaviour
 
     public void ShowChat(string chatContent)
     {
-        txtChat.text = "";
-        imgChatIcon.gameObject.SetActive(false);
-        txtChat.gameObject.SetActive(false);
-        chatBubble.SetActive(true);
+        HideChat();
         if (string.IsNullOrEmpty(chatContent)) return;
 
         if (chatContent.StartsWith("@#$%_"))
@@ -162,25 +155,57 @@ public class PlayerInforUI : MonoBehaviour
                 {
                     imgChatIcon.sprite = iconSprites[iconIndex];
                     imgChatIcon.gameObject.SetActive(true);
+                    imgChatIcon.SetNativeSize();
+
+                    // Scale từ nhỏ đến lớn rồi trở lại bình thường
+                    imgChatIcon.transform.DOKill();
+                    imgChatIcon.transform.localScale = Vector3.one * 0.5f;
+                    imgChatIcon.transform.DOScale(Vector3.one, 0.5f)
+                        .SetEase(Ease.OutBounce)
+                        .SetLoops(-1, LoopType.Yoyo);
                 }
             }
         }
         else
         {
-            // Chỉ text
             txtChat.text = chatContent;
-            txtChat.gameObject.SetActive(true);
-            Debug.Log("text" + txtChat);
+            chatBubble.SetActive(true);
+            chatBubble.transform.localScale = Vector3.zero;
+            chatBubble.GetComponent<VerticalLayoutGroup>().enabled = false;
+            DOVirtual.DelayedCall(0.05f, () =>
+            {
+                chatBubble.GetComponent<VerticalLayoutGroup>().enabled = true;
+                chatBubble.transform.DOKill();
+                if (isFlipChatBubble)
+                {
+                    chatBubble.transform.DOScale(new Vector3(-1, 1, 1), 0.5f)
+                        .SetEase(Ease.OutBounce);
+                }
+                else
+                {
+                    chatBubble.transform.DOScale(Vector3.one, 0.5f)
+                        .SetEase(Ease.OutBounce);
+                }
+            });
         }
 
-        hideChatTween = DOVirtual.DelayedCall(2f, HideChat).SetId(this);
-        Invoke(nameof(HideChat), 2f);
+        if (hideChatTween != null) hideChatTween.Kill();
+        hideChatTween = DOVirtual.DelayedCall(3f, HideChat).SetId(this);
     }
 
     private void HideChat()
     {
-        txtChat.gameObject.SetActive(false);
+        if (chatBubble.activeSelf)
+        {
+            chatBubble.transform.DOScale(Vector3.zero, 0.3f)
+                .SetEase(Ease.OutBounce).OnComplete(() =>
+                {
+                    chatBubble.SetActive(false);
+                    txtChat.text = string.Empty;
+                });
+        }
+
+
         imgChatIcon.gameObject.SetActive(false);
     }
-
 }
