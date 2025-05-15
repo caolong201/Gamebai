@@ -69,6 +69,7 @@ public class PhomGameManager : MonoBehaviour
         NetworkManager.Instance.ResultRespone.OnDataUpdated += ResultRespone; //2010
         NetworkManager.Instance.DropPhomRespone.OnDataUpdated += DropPhomRespone; //2011
         NetworkManager.Instance.GuiBaiRespone.OnDataUpdated += GuiBaiRespone; //2012
+        NetworkManager.Instance.OnChatReceive.OnDataUpdated += OnChatReceive; //2015
 
         foreach (var playerHands in playerHands)
         {
@@ -94,7 +95,14 @@ public class PhomGameManager : MonoBehaviour
             NetworkManager.Instance.ResultRespone.OnDataUpdated -= ResultRespone; //2010
             NetworkManager.Instance.DropPhomRespone.OnDataUpdated -= DropPhomRespone; //2011
             NetworkManager.Instance.GuiBaiRespone.OnDataUpdated -= GuiBaiRespone; //2012
+            NetworkManager.Instance.OnChatReceive.OnDataUpdated -= OnChatReceive; //2015
         }
+    }
+
+    private void OnChatReceive(ChatContentRespone respone)
+    {
+        Debug.Log("data"+ respone.data.nickname);
+        var player = FindPlayer(respone.data.nickname);
     }
 
     private void ArrangeSeats(float delay = 0)

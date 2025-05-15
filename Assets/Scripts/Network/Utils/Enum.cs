@@ -22,6 +22,7 @@ namespace Suni.Enum
         GuiBai = 2012,
         CreatePrivateTable = 2013,
         JoinPrivateTable =2014,
+        Chatcontent= 2015,
        
     }
     

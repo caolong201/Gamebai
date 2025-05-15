@@ -1,4 +1,7 @@
-﻿using DG.Tweening;
+﻿using BestHTTP.JSON.LitJson;
+using DG.Tweening;
+using Suni.Enum;
+using Suni.Network;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -95,21 +98,42 @@ public class TabChatManager : MonoBehaviour
 
     public void OnIconClicked(int index)
     {
-        Debug.Log(index);
-    }
+        string iconId = $"@#$%_{index}";
+        string json = JsonMapper.ToJson(new ChatContentModel((int)ENetworkHeader.Chatcontent, new ChatContentModelData()
+        {
+            data = new ChatContentModelData2()
+            {
+                chatContent = iconId    ,
+                nickname = GameManager.Instance.NickName ,
+            }
 
+        })) ;
+        Debug.Log(" icon JSON: " + json);
+        NetworkManager.Instance.SendJsonData(json);
+    }
     public void OnbtnClickchat(int index)
     {
         if (index >= 0 && index < chatContents.Length)
-        {
-            Debug.Log(chatContents[index]);
-            CloseChat();        
+        {       
+            string content = chatContents[index];
+            string json = JsonMapper.ToJson(new ChatContentModel((int)ENetworkHeader.Chatcontent, new ChatContentModelData()
+            {
+                data = new ChatContentModelData2()
+                {
+                    chatContent = content    ,
+                    nickname = GameManager.Instance.NickName,
+                }
+            }));        
+            Debug.Log(" chat JSON: " + json);
+            NetworkManager.Instance.SendJsonData(json);
+            CloseChat();
         }
     }
-
     public void CloseChat()
     {
         bntChat.SetActive(true);
         panelParent.anchoredPosition = new Vector2(500, 625);
     }
+
+
 }

@@ -64,6 +64,9 @@ namespace Suni.Network
         public ObservableProperty<GuiBaiRespone> GuiBaiRespone = new ObservableProperty<GuiBaiRespone>();
 
 
+        //long
+        public ObservableProperty<ChatContentRespone> OnChatReceive = new ObservableProperty<ChatContentRespone>();
+
         public ENetworkStatus networkStatus = ENetworkStatus.None;
         private WebSocket m_webSocket = null;
 
@@ -191,6 +194,14 @@ namespace Suni.Network
                     Debug.LogError("GuiBai");
                     GuiBaiRespone.Value = JsonMapper.ToObject<GuiBaiRespone>(_receivedMessage);
                     break;
+
+
+                //long
+                case (int)ENetworkHeader.Chatcontent:
+                    OnChatReceive.Value = JsonMapper.ToObject<ChatContentRespone>(_receivedMessage);
+
+                    break;
+
             }
         }
 
