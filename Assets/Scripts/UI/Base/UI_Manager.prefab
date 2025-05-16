@@ -225,6 +225,7 @@ RectTransform:
   - {fileID: 1012815557859901473}
   - {fileID: 6068182174503954239}
   - {fileID: 1611930727941855843}
+  - {fileID: 1549100476554647050}
   m_Father: {fileID: 1066857645269095616}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -511,6 +512,97 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!1 &2002061645989238682
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1549100476554647050}
+  - component: {fileID: 6339718461715487416}
+  m_Layer: 5
+  m_Name: UIContentSettings
+  m_TagString: UI
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1549100476554647050
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2002061645989238682}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1066857645196941779}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &6339718461715487416
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2002061645989238682}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 010ddc30f05f440b98b467f6a5acfb30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dialogName: 1
+  dialogPrefab: UIMessageBox
+  locationName: UIContent
+  layer: 2
+  hideAction: 0
+  destroyTimeout: 120
+  showDelay: 0
+  useBlackBackground: 0
+  status: 0
+  isSetupLocation: 0
+  vectorSetupLocation: {x: 0, y: 0}
+  isFullScreen: 1
+  guiControlDlg: {fileID: 0}
+  guiControlLocation: {fileID: 0}
+  isMathHeight: 1
+  moveShow:
+    move: 0
+    ease: 1
+    time: 0.3
+  scaleShow:
+    isScale: 1
+    from: 0
+    to: 1
+    time: 0.2
+    ease: 3
+  fadeShow:
+    isFade: 0
+    ease: 1
+    time: 0.3
+  moveHide:
+    move: 0
+    ease: 1
+    time: 0.3
+  scaleHide:
+    isScale: 1
+    from: 1
+    to: 0
+    time: 0.2
+    ease: 3
+  fadeHide:
+    isFade: 0
+    ease: 1
+    time: 0.3
 --- !u!1 &5714338577602983821
 GameObject:
   m_ObjectHideFlags: 0

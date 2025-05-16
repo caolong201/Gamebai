@@ -12,6 +12,7 @@ public enum DialogName
 	UINotification = 2,
     UIEntertable= 3,
     UICreateTable = 4,
+    UIContentSettings = 5,
 
 }
 

@@ -16,8 +16,20 @@ public class RoomHUD : MonoBehaviour
     [SerializeField] GameObject mainObject, roomListObject;
 
     [SerializeField] NicknameScroller nicknameScroller;
+    [SerializeField] GameObject bntBack;
     private void Start()
     {
+        bntBack.SetActive(false);
+        string returnAction = PlayerPrefs.GetString("ReturnAction", "");
+        if (returnAction == "ShowRoomBetLevel")
+        {
+            mainObject.SetActive(false);        
+            roomListObject.SetActive(true);     
+            footer.gameObject.SetActive(false); 
+            PlayerPrefs.DeleteKey("ReturnAction");
+            return; 
+        }
+
         LoadAvatar();
         txtCoin.text = ((int)GameManager.Instance.Coin).FormatCoins();
         txtNickname.text = GameManager.Instance.NickName;
@@ -48,7 +60,7 @@ public class RoomHUD : MonoBehaviour
     }
 
     public void OnbtnPhomClicked()
-    {
+    { 
         SceneFader.Instance.FadeIn(() =>
         {
             roomListObject.SetActive(true);
@@ -58,5 +70,11 @@ public class RoomHUD : MonoBehaviour
         });
        
        
+    }
+    public void ShowMainUI()
+    {
+        mainObject.SetActive(true);
+        roomListObject.SetActive(false);
+        footer.gameObject.SetActive(true);
     }
 }

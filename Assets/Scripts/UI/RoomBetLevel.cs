@@ -20,10 +20,20 @@ public class RoomBetLevel : MonoBehaviour
     private List<RoomTableInfo> roomDatas;
     RomItem romclick;
     [SerializeField] GameObject imgTaoban;
+    [SerializeField] GameObject bntBack;
+    private RoomHUD roomHUD;
 
     void Start()
     {
+        bntBack.SetActive(true);
         roomDatas = NetworkManager.Instance.JoinPhomGame.Value.data.roomList;
+
+        roomHUD = FindObjectOfType<RoomHUD>();
+        if (roomHUD == null)
+        {
+            Debug.LogError("RoomHUD not found!");
+        }
+
 
         footer.anchoredPosition = new Vector2(0, -150);
         footer.DOAnchorPosY(88, .8f).SetEase(Ease.OutCirc);
@@ -41,9 +51,12 @@ public class RoomBetLevel : MonoBehaviour
     private void OnRoomItemClicked(RoomTableInfo selectedRoom)
     {
         Debug.Log("Clicked room with bet amount: " + selectedRoom.betAmount);
+
+
         GameManager.Instance.Bet = selectedRoom.betAmount;
         string json = JsonMapper.ToJson(new EnterGameModel((int)ENetworkHeader.EnterGame, selectedRoom.betAmount));
         NetworkManager.Instance.SendJsonData(json);
+
     }
 
     public void bntTaoban()
@@ -71,6 +84,18 @@ public class RoomBetLevel : MonoBehaviour
                 contentToScale.DOScale(Vector3.one, 0.5f).SetEase(Ease.OutBack);
             }
         }
+    }
+
+    public void OnbtBackLogin()
+    {
+
+        this.gameObject.SetActive(false);
+        if (roomHUD != null)
+        {
+            roomHUD.ShowMainUI();
+        }
+        bntBack.SetActive(false);
+
     }
 }
 
