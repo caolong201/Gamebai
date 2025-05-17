@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static UIRulesBox;
 
 public class SettingsGamePlayController : MonoBehaviour
 {
@@ -15,18 +16,19 @@ public class SettingsGamePlayController : MonoBehaviour
     {
         btnSetting.SetActive(false);
         panelParent.anchoredPosition = new Vector2(-317, -69);
-        panelParent.DOAnchorPosX(287, .8f).SetEase(Ease.OutCirc);
+        panelParent.DOAnchorPosX(287, 0.3f).SetEase(Ease.OutCirc);
     }
     public void OnCloseSettingClick()
     {
+        btnSetting.SetActive(false);
         panelParent.anchoredPosition = new Vector2(287, -69);
-        panelParent.DOAnchorPosX(-317, .8f).SetEase(Ease.OutCirc);
+        panelParent.DOAnchorPosX(-317, 0.3f).SetEase(Ease.OutCirc);
         btnSetting.SetActive(true);
     }
     public void OnBackButtonClick()
-    {
+    {     
         panelParent.anchoredPosition = new Vector2(287, -69);
-        panelParent.DOAnchorPosY(191, .8f).SetEase(Ease.OutCirc);
+        panelParent.DOAnchorPosY(191, 0.3f).SetEase(Ease.OutCirc);
         PlayerPrefs.SetString("ReturnAction", "ShowRoomBetLevel");
         SceneFader.Instance.LoadScene(ESceneName.Room, () =>
         {
@@ -40,6 +42,16 @@ public class SettingsGamePlayController : MonoBehaviour
                 {
                     Debug.Log("Onsetting");
                 }));
+    }
+
+    public void OnbtRules()
+    {
+        settingPanel.SetActive(false);
+        btnSetting.SetActive(true );
+        UIManager.Instance.ShowDialog(DialogName.UIRulesBox, new UIRulesBoxData(() =>
+        {
+            Debug.Log("UIRulesBox");
+        }));
     }
 }
    

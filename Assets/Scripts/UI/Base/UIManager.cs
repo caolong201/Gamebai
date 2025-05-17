@@ -13,6 +13,7 @@ public enum DialogName
     UIEntertable= 3,
     UICreateTable = 4,
     UIContentSettings = 5,
+    UIRulesBox = 6,
 
 }
 
