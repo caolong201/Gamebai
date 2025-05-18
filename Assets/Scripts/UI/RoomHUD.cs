@@ -20,15 +20,6 @@ public class RoomHUD : MonoBehaviour
     private void Start()
     {
         bntBack.SetActive(false);
-        string returnAction = PlayerPrefs.GetString("ReturnAction", "");
-        if (returnAction == "ShowRoomBetLevel")
-        {
-            mainObject.SetActive(false);        
-            roomListObject.SetActive(true);     
-            footer.gameObject.SetActive(false); 
-            PlayerPrefs.DeleteKey("ReturnAction");
-            return; 
-        }
 
         LoadAvatar();
         txtCoin.text = ((int)GameManager.Instance.Coin).FormatCoins();
@@ -41,6 +32,15 @@ public class RoomHUD : MonoBehaviour
         footer.DOAnchorPosY(119, .8f).SetEase(Ease.OutCirc);
 
         nicknameScroller.Init();
+        
+        string returnAction = PlayerPrefs.GetString("ReturnAction", "");
+        if (returnAction == "ShowRoomBetLevel")
+        {
+            mainObject.SetActive(false);        
+            roomListObject.SetActive(true);     
+            footer.gameObject.SetActive(false); 
+            PlayerPrefs.DeleteKey("ReturnAction");
+        }
     }
 
     private void LoadAvatar()

@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using BestHTTP.JSON.LitJson;
 using UnityEngine;
 using DG.Tweening;
@@ -10,7 +9,13 @@ using Suni.Network;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine.UI;
-using Random = UnityEngine.Random;
+
+public enum PhomStage
+{
+    InRoom = 0,
+    Playing,
+    ShowingResult
+}
 
 public class PhomGameManager : MonoBehaviour
 {
@@ -54,9 +59,9 @@ public class PhomGameManager : MonoBehaviour
     [SerializeField] private GameObject arrowPointCardDeck;
 
     private List<List<Card>> myPhoms = null;
-    private bool isEndGame = false;
     [SerializeField] TextMeshProUGUI tableInfo;
 
+    private PhomStage stage = PhomStage.InRoom;
     private void Start()
     {
         NetworkManager.Instance.EnterGameRespone.OnDataUpdated += EnterGameRespone; //2000
@@ -76,7 +81,6 @@ public class PhomGameManager : MonoBehaviour
             playerHands.gameObject.SetActive(false);
         }
 
-        isEndGame = false;
         txtdrawPileCardCount.text = "";
         deckPosition.gameObject.SetActive(false);
     }
@@ -163,9 +167,9 @@ public class PhomGameManager : MonoBehaviour
 
     private void ResultRespone(ResultRespone obj)
     {
-        if (isEndGame) return;
+        if (stage != PhomStage.Playing) return;
+        stage = PhomStage.ShowingResult;
 
-        myPhoms = null;
         DOVirtual.DelayedCall(1, () =>
         {
             for (int i = 0; i < obj.data.winArray.Count; i++)
@@ -209,7 +213,6 @@ public class PhomGameManager : MonoBehaviour
                 showAllCardsPositions[player.seatInfo.position].GetComponent<LayoutGroup>().enabled = true;
             }
 
-            isEndGame = true;
             gamePlayHUD.ShowXepBai(false);
 
 
@@ -231,7 +234,6 @@ public class PhomGameManager : MonoBehaviour
                 deck.Clear();
                 discardPiles.Clear();
                 myCardValues.Clear();
-                isEndGame = false;
                 gamePlayHUD.ResetUI();
                 deckPosition.gameObject.SetActive(false);
 
@@ -241,6 +243,8 @@ public class PhomGameManager : MonoBehaviour
                 {
                     gamePlayHUD.ShowChiaBai(true);
                 }
+                
+                stage = PhomStage.InRoom;
             });
         });
     }
@@ -440,6 +444,10 @@ public class PhomGameManager : MonoBehaviour
 
     private void StartPlayRespone(StartPlayRespone obj)
     {
+        stage = PhomStage.Playing;
+        myPhoms = null;
+        haPhomData = null;
+        
         drawPileCardCount = obj.data.drawPileCardCount;
         isFirstRound = true;
         myCardValues = obj.data.playerCards;
@@ -504,6 +512,7 @@ public class PhomGameManager : MonoBehaviour
         }
 
         ChiaBai();
+        
     }
 
     private void PlayerReadyRespone(OtherPlayerReadyRespone obj)
@@ -539,18 +548,6 @@ public class PhomGameManager : MonoBehaviour
             deckCardCountObject.SetAsLastSibling();
             StartTurn();
 
-
-            // GameObject cardObj = Instantiate(cardPrefab, deckPosition.position, Quaternion.identity);
-            // Card card = cardObj.GetComponent<Card>();
-            // card.SetCard(3, suits[1 - 1]);
-            // if (PhomChecker.CanFormPhom(playerHands[0].GetHand(), card))
-            // {
-            //     gamePlayHUD.ShowAnBai(true);
-            // }
-            // else
-            // {
-            //     Debug.LogError("k the tao phom");
-            // }
         }));
     }
 
@@ -926,7 +923,7 @@ public class PhomGameManager : MonoBehaviour
 
     private void OnCardClicked(Card card)
     {
-        if (currentPlayerIndex != 0 || !isCanSelectCard || isEndGame || myPhoms != null) return;
+        if (currentPlayerIndex != 0 || !isCanSelectCard || stage != PhomStage.Playing || myPhoms != null) return;
 
         Debug.Log("OnCardClicked: " + card.value);
         OnCardSelected(card);
@@ -995,9 +992,9 @@ public class PhomGameManager : MonoBehaviour
 
             string json = JsonMapper.ToJson(new DropPhomModel((int)ENetworkHeader.DropPhom, haPhomData.data.cards));
             NetworkManager.Instance.SendJsonData(json);
-
-            myPhoms = null;
         }
+        
+        myPhoms = null;
     }
 
     public void GuiBai()
