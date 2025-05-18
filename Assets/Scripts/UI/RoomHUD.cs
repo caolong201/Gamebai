@@ -63,6 +63,7 @@ public class RoomHUD : MonoBehaviour
     { 
         SceneFader.Instance.FadeIn(() =>
         {
+            bntBack.SetActive(true);
             roomListObject.SetActive(true);
             mainObject.SetActive(false);
             footer.gameObject.SetActive(false);
@@ -73,6 +74,7 @@ public class RoomHUD : MonoBehaviour
     }
     public void ShowMainUI()
     {
+        bntBack.SetActive(false);
         mainObject.SetActive(true);
         roomListObject.SetActive(false);
         footer.gameObject.SetActive(true);

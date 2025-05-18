@@ -5487,7 +5487,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 872874158}
         m_TargetAssemblyTypeName: RoomBetLevel, Assembly-CSharp
-        m_MethodName: OnbtBackLogin
+        m_MethodName: OnbtnBackClicked
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

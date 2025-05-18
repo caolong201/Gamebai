@@ -86,16 +86,12 @@ public class RoomBetLevel : MonoBehaviour
         }
     }
 
-    public void OnbtBackLogin()
+    public void OnbtnBackClicked()
     {
-
-        this.gameObject.SetActive(false);
         if (roomHUD != null)
         {
             roomHUD.ShowMainUI();
         }
-        bntBack.SetActive(false);
-
     }
 }
 
