@@ -2665,6 +2665,7 @@ GameObject:
   - component: {fileID: 1135523383371700646}
   - component: {fileID: 4041852213998892244}
   - component: {fileID: 1468124157274431520}
+  - component: {fileID: 8779174008388493235}
   m_Layer: 5
   m_Name: Close
   m_TagString: Untagged
@@ -2786,6 +2787,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &8779174008388493235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7574781007804812290}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c47264f86c3024b45af4fd681c6fd343, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundType: 1
 --- !u!1 &7721949474965321638
 GameObject:
   m_ObjectHideFlags: 0
@@ -3484,6 +3498,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   black: {fileID: 5334787631555699621}
+  sliderNhacNen: {fileID: 7917050336196345152}
+  sliderAmThanhUI: {fileID: 4976164746199647570}
 --- !u!1 &9183242797753348622
 GameObject:
   m_ObjectHideFlags: 0
