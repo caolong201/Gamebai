@@ -614,6 +614,7 @@ GameObject:
   - component: {fileID: 157808611}
   - component: {fileID: 157808610}
   - component: {fileID: 157808609}
+  - component: {fileID: 157808612}
   m_Layer: 5
   m_Name: btnPhom
   m_TagString: Untagged
@@ -735,6 +736,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 157808607}
   m_CullTransparentMesh: 1
+--- !u!114 &157808612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 157808607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c47264f86c3024b45af4fd681c6fd343, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundType: 0
 --- !u!1 &160486776
 GameObject:
   m_ObjectHideFlags: 0
@@ -4960,6 +4974,7 @@ GameObject:
   - component: {fileID: 1859790697}
   - component: {fileID: 1859790696}
   - component: {fileID: 1859790695}
+  - component: {fileID: 1859790698}
   m_Layer: 5
   m_Name: bntVaoban
   m_TagString: Untagged
@@ -5081,6 +5096,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1859790693}
   m_CullTransparentMesh: 1
+--- !u!114 &1859790698
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1859790693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c47264f86c3024b45af4fd681c6fd343, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundType: 0
 --- !u!1 &1891704410
 GameObject:
   m_ObjectHideFlags: 0
@@ -5414,6 +5442,7 @@ GameObject:
   - component: {fileID: 1953068881}
   - component: {fileID: 1953068880}
   - component: {fileID: 1953068879}
+  - component: {fileID: 1953068882}
   m_Layer: 5
   m_Name: btnBack
   m_TagString: Untagged
@@ -5535,6 +5564,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1953068877}
   m_CullTransparentMesh: 1
+--- !u!114 &1953068882
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1953068877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c47264f86c3024b45af4fd681c6fd343, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundType: 1
 --- !u!1 &1990271582
 GameObject:
   m_ObjectHideFlags: 0
@@ -6268,6 +6310,7 @@ GameObject:
   - component: {fileID: 2081266752}
   - component: {fileID: 2081266751}
   - component: {fileID: 2081266750}
+  - component: {fileID: 2081266753}
   m_Layer: 5
   m_Name: bntTaoban
   m_TagString: Untagged
@@ -6389,6 +6432,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2081266748}
   m_CullTransparentMesh: 1
+--- !u!114 &2081266753
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2081266748}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c47264f86c3024b45af4fd681c6fd343, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundType: 0
 --- !u!1 &2102888886
 GameObject:
   m_ObjectHideFlags: 0
