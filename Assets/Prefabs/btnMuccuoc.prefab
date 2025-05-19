@@ -147,6 +147,7 @@ GameObject:
   - component: {fileID: 8713128403354351902}
   - component: {fileID: 5402395558776949069}
   - component: {fileID: 4066394540985813570}
+  - component: {fileID: 2322641044006734323}
   m_Layer: 5
   m_Name: btnMuccuoc
   m_TagString: Untagged
@@ -283,6 +284,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   priceText: {fileID: 7976874851951799638}
   textperson: {fileID: 2310692006417047883}
+--- !u!114 &2322641044006734323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3728825460777915369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c47264f86c3024b45af4fd681c6fd343, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundType: 0
 --- !u!1 &5765714889490758561
 GameObject:
   m_ObjectHideFlags: 0

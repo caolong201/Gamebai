@@ -131,6 +131,11 @@ public class GamePlayHUD : MonoBehaviour
         string json = JsonMapper.ToJson(new BaseWebsocketRequest((int)ENetworkHeader.StartGame));
         NetworkManager.Instance.SendJsonData(json);
         btnChiaBai.SetActive(false);
+
+        DOVirtual.DelayedCall(0.1f, () =>
+        {
+            AudioManager.Instance.DealCards();
+        });
     }
 
     public void OnbtnHaPhomClick()

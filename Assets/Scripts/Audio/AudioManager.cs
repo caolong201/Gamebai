@@ -9,6 +9,10 @@ public class AudioManager : SingletonMonoAwake<AudioManager>
     public AudioSource GameAudioSource;
     public AudioClip clickSound;
     public AudioClip errorSound;
+    public AudioClip Dealcards;
+    public AudioClip gambling;
+   
+
     public float fadeDuration = 2f;
     public bool IsUIAudioOn { get; private set; } = true;
     public bool IsGameAudioOn { get; private set; } = true;
@@ -38,6 +42,16 @@ public class AudioManager : SingletonMonoAwake<AudioManager>
         if (!IsUIAudioOn) return;
         uiAudioSource.PlayOneShot(errorSound);
     }
+    public void DealCards()             // chiabai
+    {
+        if (!IsUIAudioOn) return;
+        uiAudioSource.PlayOneShot(Dealcards);
+    }
+    public void Gambling()           // danhbai
+    {
+        if (!IsUIAudioOn) return;
+        uiAudioSource.PlayOneShot(gambling);
+    } 
     public void SetGameAudio(bool on)
     {
         if (fadeCoroutine != null)
