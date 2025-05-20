@@ -15,24 +15,32 @@ public class UIContentSettings : GUIBaseDialogHandler
         base.OnBeginShow(parameter);
         UIContentSettingsData data = (UIContentSettingsData)parameter;
         OnCloseClick = data.onCloseClick;
+
         sliderNhacNen.onValueChanged.RemoveAllListeners();
         sliderNhacNen.onValueChanged.AddListener(OnSliderNhacNenChanged);
-        sliderNhacNen.SetValueWithoutNotify(AudioManager.Instance.GameAudioSource.isPlaying ? 0f : 1f);
+
+        bool isMusicOn = PlayerPrefs.GetInt("MusicOn", 1) == 1;
+        sliderNhacNen.SetValueWithoutNotify(isMusicOn ? 0f : 1f); 
 
         sliderAmThanhUI.onValueChanged.RemoveAllListeners();
-        sliderAmThanhUI.onValueChanged.AddListener(OnSliderAmThanhUIChanged);     
-        sliderAmThanhUI.SetValueWithoutNotify(AudioManager.Instance.IsUIAudioOn ? 0f : 1f);
+        sliderAmThanhUI.onValueChanged.AddListener(OnSliderAmThanhUIChanged);
+
+        bool isUIAudioOn = PlayerPrefs.GetInt("UIAudioOn", 1) == 1;
+        sliderAmThanhUI.SetValueWithoutNotify(isUIAudioOn ? 0f : 1f);
     }
     public void OnSliderNhacNenChanged(float value)
     {
         bool isOn = value <= 0.5f;
         AudioManager.Instance.SetGameAudio(isOn);
+        PlayerPrefs.SetInt("MusicOn", isOn ? 1 : 0);
+        PlayerPrefs.Save();
     }
     public void OnSliderAmThanhUIChanged(float value)
     {
-        // value thấp (gần 0) = ON, value cao (gần 1) = OFF
         bool isOn = value <= 0.5f;
         AudioManager.Instance.SetUIAudio(isOn);
+        PlayerPrefs.SetInt("UIAudioOn", isOn ? 1 : 0);
+        PlayerPrefs.Save(); 
     }
     public void OnbtnCloseClicked()
     {

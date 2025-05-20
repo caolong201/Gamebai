@@ -19,16 +19,18 @@ public class AudioManager : SingletonMonoAwake<AudioManager>
     private Coroutine fadeCoroutine;
     private void Start()
     {
+        
+        IsGameAudioOn = PlayerPrefs.GetInt("MusicOn", 1) == 1;
+        IsUIAudioOn = PlayerPrefs.GetInt("UIAudioOn", 1) == 1;
+
         if (GameAudioSource.clip != null)
         {
             GameAudioSource.volume = 0f;
-            GameAudioSource.Play();
-            IsGameAudioOn = true;
-            fadeCoroutine = StartCoroutine(FadeInAudio());
-        }
-        else
-        {
-            IsGameAudioOn = false;
+            if (IsGameAudioOn)
+            {
+                GameAudioSource.Play();
+                fadeCoroutine = StartCoroutine(FadeInAudio());
+            }
         }
     }
     public void PlayClick()
