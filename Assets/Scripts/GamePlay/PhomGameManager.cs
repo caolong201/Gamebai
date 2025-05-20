@@ -968,7 +968,7 @@ public class PhomGameManager : MonoBehaviour
                     if (card == null)
                     {
                         Debug.LogError("could not found: " + phom[i].value + " : " + phom[i].type);
-                        return;
+                        continue;
                     }
 
                     rt = card.GetComponent<RectTransform>();
