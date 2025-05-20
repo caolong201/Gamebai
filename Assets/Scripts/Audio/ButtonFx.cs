@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class ButtonFx : MonoBehaviour
 {
-    public enum SoundType { Click, Error, Dealcards, Gambling, flipCard }
+    public enum SoundType { Click, Error, Dealcards, Gambling, flipCard, Chatsound }
     [Header("Loại âm thanh cho button")]
     public SoundType soundType = SoundType.Click;
     private Button button;
@@ -36,6 +36,9 @@ public class ButtonFx : MonoBehaviour
                 break;
             case SoundType.flipCard:
                 AudioManager.Instance.Gambling();
+                break;
+            case SoundType.Chatsound:
+                AudioManager.Instance.Chatsound();
                 break;
         }
     }

@@ -110,6 +110,7 @@ public class PhomGameManager : MonoBehaviour
         {
             // Gọi hàm ShowChat để hiển thị nội dung
             player.inforUI.ShowChat(respone.data.chatContent);
+            AudioManager.Instance.Chatsound();
         }
         else
         {
@@ -374,14 +375,32 @@ public class PhomGameManager : MonoBehaviour
     {
         if (obj == null || obj.data == null) return;
         //money effects
+
+        //longthay
         if (obj.data.coinAmount != 0)
         {
             var player = FindPlayer(obj.data.nickname);
-            player.inforUI.ShowMoneyEffect(obj.data.coinAmount);
+            if (player != null && player.inforUI != null)
+            {
+                player.inforUI.ShowMoneyEffect(obj.data.coinAmount, isLocal: GameManager.Instance.IsMyself(obj.data.nickname));
+            }
 
-            player = FindPlayer(obj.data.fromNickname);
-            player.inforUI.ShowMoneyEffect(-obj.data.coinAmount);
+            var fromPlayer = FindPlayer(obj.data.fromNickname);
+            if (fromPlayer != null && fromPlayer.inforUI != null)
+            {
+                fromPlayer.inforUI.ShowMoneyEffect(-obj.data.coinAmount, isLocal: GameManager.Instance.IsMyself(obj.data.fromNickname));
+            }
         }
+        //ll
+
+        //if (obj.data.coinAmount != 0)
+        //{
+        //    var player = FindPlayer(obj.data.nickname);
+        //    player.inforUI.ShowMoneyEffect(obj.data.coinAmount);
+
+        //    player = FindPlayer(obj.data.fromNickname);
+        //    player.inforUI.ShowMoneyEffect(-obj.data.coinAmount);
+        //}
 
         if (GameManager.Instance.IsMyself(obj.data.nickname)) return;
 

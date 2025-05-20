@@ -113,14 +113,13 @@ public class AudioManager : SingletonMonoAwake<AudioManager>
         uiAudioSource.PlayOneShot(addMoney);
     }
 
-    public void Deductmoney()
+    public void Deductmoney()      // trừ tiền
     {
         if (!IsUIAudioOn) return;
         uiAudioSource.PlayOneShot(deductmoney);
     }
-    public void Chatsound()     // trừ tien
-    {
-       
+    public void Chatsound()     // Chatsound
+    { 
         if (!IsUIAudioOn) return;
         uiAudioSource.PlayOneShot(chat);
     }

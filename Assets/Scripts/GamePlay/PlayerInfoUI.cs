@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
 
 public class PlayerInforUI : MonoBehaviour
@@ -119,25 +120,44 @@ public class PlayerInforUI : MonoBehaviour
         txtCoin.text = mInfo.coin.FormatCoins();
     }
 
-    public void ShowMoneyEffect(int money)
+    public void ShowMoneyEffect(int money,bool isLocal = true)
     {
         moneyEffectRoot.DOKill();
         moneyEffectRoot.gameObject.SetActive(true);
         moneyEffectRoot.DOPunchScale(new Vector3(0.5f, 0.5f, 0.5f), 0.2f).SetEase(Ease.OutQuad);
+
+
         if (money > 0)
         {
             bgWin.SetActive(true);
             bgLose.SetActive(false);
             txtMoneyEffect.text = money.FormatCoins();
-            AudioManager.Instance.AddMoneyCoin();
+            if (isLocal)
+                AudioManager.Instance.AddMoneyCoin();
         }
         else
         {
             bgWin.SetActive(false);
             bgLose.SetActive(true);
-            txtMoneyEffect.text = "-" + (Mathf.Abs(money).FormatCoins());
-            AudioManager.Instance.Deductmoney();
+            txtMoneyEffect.text = "-" + Mathf.Abs(money).FormatCoins();
+            if (isLocal)
+                AudioManager.Instance.Deductmoney();
         }
+
+        //if (money > 0)
+        //{
+        //    bgWin.SetActive(true);
+        //    bgLose.SetActive(false);
+        //    txtMoneyEffect.text = money.FormatCoins();
+        //    AudioManager.Instance.AddMoneyCoin();
+        //}
+        //else
+        //{
+        //    bgWin.SetActive(false);
+        //    bgLose.SetActive(true);
+        //    txtMoneyEffect.text = "-" + (Mathf.Abs(money).FormatCoins());
+        //    AudioManager.Instance.Deductmoney();
+        //}
 
         DOVirtual.DelayedCall(3f, () => { moneyEffectRoot.gameObject.SetActive(false); });
     }

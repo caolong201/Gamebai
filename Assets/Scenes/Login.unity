@@ -1763,6 +1763,7 @@ MonoBehaviour:
   Dealcards: {fileID: 8300000, guid: d372c3c1265b3428b93b791dd44035a1, type: 3}
   gambling: {fileID: 8300000, guid: 04fcd84edabbc436a95c0c81bc66b2b9, type: 3}
   addMoney: {fileID: 8300000, guid: b69e3a9cafbc18744b06f50a8c12407f, type: 3}
+  chat: {fileID: 8300000, guid: 93d29db24b97dd740a027c8f02d063df, type: 3}
   deductmoney: {fileID: 8300000, guid: 275afbdad85ab084b87f9f276ce58cdb, type: 3}
   flipCard: {fileID: 8300000, guid: 34c3d572bbb4e64449881b4ce10a5a32, type: 3}
   fadeDuration: 2
