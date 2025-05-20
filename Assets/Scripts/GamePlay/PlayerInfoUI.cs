@@ -97,6 +97,7 @@ public class PlayerInforUI : MonoBehaviour
             imgMom.gameObject.SetActive(true);
             imgMom.transform.DOPunchScale(Vector3.one * 0.5f, 0.2f).SetEase(Ease.OutQuad);
         }
+        
     }
 
     public void ShowRank(int rank, int winAmout)
@@ -128,12 +129,14 @@ public class PlayerInforUI : MonoBehaviour
             bgWin.SetActive(true);
             bgLose.SetActive(false);
             txtMoneyEffect.text = money.FormatCoins();
+            AudioManager.Instance.AddMoneyCoin();
         }
         else
         {
             bgWin.SetActive(false);
             bgLose.SetActive(true);
             txtMoneyEffect.text = "-" + (Mathf.Abs(money).FormatCoins());
+            AudioManager.Instance.Deductmoney();
         }
 
         DOVirtual.DelayedCall(3f, () => { moneyEffectRoot.gameObject.SetActive(false); });

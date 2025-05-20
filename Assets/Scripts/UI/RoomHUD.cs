@@ -17,10 +17,11 @@ public class RoomHUD : MonoBehaviour
 
     [SerializeField] NicknameScroller nicknameScroller;
     [SerializeField] GameObject bntBack;
+
     private void Start()
     {
         bntBack.SetActive(false);
-
+       
         LoadAvatar();
         txtCoin.text = ((int)GameManager.Instance.Coin).FormatCoins();
         txtNickname.text = GameManager.Instance.NickName;
@@ -68,9 +69,14 @@ public class RoomHUD : MonoBehaviour
             mainObject.SetActive(false);
             footer.gameObject.SetActive(false);
             SceneFader.Instance.FadeOut();
-        });
-       
-       
+        });    
+    }
+
+
+    public void OnbtSettingsRom()
+    {
+        UIManager.Instance.ShowDialog(DialogName.UIContentSettings,
+        new UIContentSettingsData(() => { Debug.Log("Onsetting"); }));
     }
     public void ShowMainUI()
     {

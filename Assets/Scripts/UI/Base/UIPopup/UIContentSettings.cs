@@ -20,24 +20,24 @@ public class UIContentSettings : GUIBaseDialogHandler
         sliderNhacNen.onValueChanged.AddListener(OnSliderNhacNenChanged);
 
         bool isMusicOn = PlayerPrefs.GetInt("MusicOn", 1) == 1;
-        sliderNhacNen.SetValueWithoutNotify(isMusicOn ? 0f : 1f); 
+        sliderNhacNen.SetValueWithoutNotify(isMusicOn ? 1f : 0f);
 
         sliderAmThanhUI.onValueChanged.RemoveAllListeners();
         sliderAmThanhUI.onValueChanged.AddListener(OnSliderAmThanhUIChanged);
 
         bool isUIAudioOn = PlayerPrefs.GetInt("UIAudioOn", 1) == 1;
-        sliderAmThanhUI.SetValueWithoutNotify(isUIAudioOn ? 0f : 1f);
+        sliderAmThanhUI.SetValueWithoutNotify(isUIAudioOn ? 1f : 0f);
     }
     public void OnSliderNhacNenChanged(float value)
     {
-        bool isOn = value <= 0.5f;
+        bool isOn = value >= 0.5f;
         AudioManager.Instance.SetGameAudio(isOn);
         PlayerPrefs.SetInt("MusicOn", isOn ? 1 : 0);
         PlayerPrefs.Save();
     }
     public void OnSliderAmThanhUIChanged(float value)
     {
-        bool isOn = value <= 0.5f;
+        bool isOn = value >= 0.5f;
         AudioManager.Instance.SetUIAudio(isOn);
         PlayerPrefs.SetInt("UIAudioOn", isOn ? 1 : 0);
         PlayerPrefs.Save(); 

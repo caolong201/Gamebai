@@ -1759,9 +1759,11 @@ MonoBehaviour:
   uiAudioSource: {fileID: 468506078}
   GameAudioSource: {fileID: 468506079}
   clickSound: {fileID: 8300000, guid: 4f04d64ef7fdf435ba5cc38007e010bc, type: 3}
-  errorSound: {fileID: 8300000, guid: b320b8fdf55d9ac4caf2f388b02cf1fc, type: 3}
+  errorSound: {fileID: 8300000, guid: 37855c09718cac749ad61fd57d4f892d, type: 3}
   Dealcards: {fileID: 8300000, guid: d372c3c1265b3428b93b791dd44035a1, type: 3}
   gambling: {fileID: 8300000, guid: 04fcd84edabbc436a95c0c81bc66b2b9, type: 3}
+  addMoney: {fileID: 8300000, guid: b69e3a9cafbc18744b06f50a8c12407f, type: 3}
+  deductmoney: {fileID: 8300000, guid: 275afbdad85ab084b87f9f276ce58cdb, type: 3}
   fadeDuration: 2
 --- !u!82 &468506078
 AudioSource:
