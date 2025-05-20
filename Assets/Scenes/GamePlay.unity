@@ -8356,7 +8356,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 232.16, y: -1045}
+  m_AnchoredPosition: {x: 232.16, y: -500.98132}
   m_SizeDelta: {x: 346, y: 128}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &565119333
@@ -8465,7 +8465,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c47264f86c3024b45af4fd681c6fd343, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  soundType: 2
+  soundType: 4
 --- !u!1 &587559121
 GameObject:
   m_ObjectHideFlags: 0
@@ -14052,7 +14052,6 @@ GameObject:
   - component: {fileID: 1037498477}
   - component: {fileID: 1037498476}
   - component: {fileID: 1037498479}
-  - component: {fileID: 1037498480}
   m_Layer: 5
   m_Name: btnRutBai
   m_TagString: Untagged
@@ -14175,19 +14174,6 @@ CanvasRenderer:
   m_GameObject: {fileID: 1037498474}
   m_CullTransparentMesh: 1
 --- !u!114 &1037498479
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1037498474}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c47264f86c3024b45af4fd681c6fd343, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  soundType: 3
---- !u!114 &1037498480
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -24348,7 +24334,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 232.16, y: -496}
+  m_AnchoredPosition: {x: 232.16, y: -500.98132}
   m_SizeDelta: {x: 346, y: 128}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2055132670

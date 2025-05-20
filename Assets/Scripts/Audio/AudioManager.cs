@@ -13,7 +13,9 @@ public class AudioManager : SingletonMonoAwake<AudioManager>
     public AudioClip Dealcards; //chiabai
     public AudioClip gambling; // danh bai
     public AudioClip addMoney; //cong tien
-    public AudioClip deductmoney; // trưtien   
+    public AudioClip chat;
+    public AudioClip deductmoney;// trưtien  
+    public AudioClip flipCard;
 
     public float fadeDuration = 2f;
     public bool IsUIAudioOn { get; private set; } = true;
@@ -78,7 +80,11 @@ public class AudioManager : SingletonMonoAwake<AudioManager>
     {
         GameAudioSource.volume = 0f;
     }
-
+    public void FlipCard()
+    {
+        if (!IsUIAudioOn) return;
+        uiAudioSource.PlayOneShot(flipCard);
+    }
     public void PlayClick()
     {
         if (!IsUIAudioOn) return;
@@ -102,15 +108,21 @@ public class AudioManager : SingletonMonoAwake<AudioManager>
     }
     public void AddMoneyCoin()       // congtien
     {
+        Debug.Log("Sound: AddMoneyCoin");
         if (!IsUIAudioOn) return;
         uiAudioSource.PlayOneShot(addMoney);
     }
-
 
     public void Deductmoney()
     {
         if (!IsUIAudioOn) return;
         uiAudioSource.PlayOneShot(deductmoney);
+    }
+    public void Chatsound()     // trừ tien
+    {
+       
+        if (!IsUIAudioOn) return;
+        uiAudioSource.PlayOneShot(chat);
     }
     public void SetGameAudio(bool on)
     {
