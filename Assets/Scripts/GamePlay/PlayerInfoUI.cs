@@ -97,6 +97,7 @@ public class PlayerInforUI : MonoBehaviour
         {
             imgMom.gameObject.SetActive(true);
             imgMom.transform.DOPunchScale(Vector3.one * 0.5f, 0.2f).SetEase(Ease.OutQuad);
+            AudioManager.Instance.MomClip();
         }
         
     }
@@ -113,6 +114,7 @@ public class PlayerInforUI : MonoBehaviour
         else
         {
             winBG.SetActive(false);
+            AudioManager.Instance.WinClip();
         }
 
         ShowMoneyEffect(winAmout);
@@ -125,8 +127,6 @@ public class PlayerInforUI : MonoBehaviour
         moneyEffectRoot.DOKill();
         moneyEffectRoot.gameObject.SetActive(true);
         moneyEffectRoot.DOPunchScale(new Vector3(0.5f, 0.5f, 0.5f), 0.2f).SetEase(Ease.OutQuad);
-
-
         if (money > 0)
         {
             bgWin.SetActive(true);
@@ -143,7 +143,7 @@ public class PlayerInforUI : MonoBehaviour
             if (isLocal)
                 AudioManager.Instance.Deductmoney();
         }
-
+        //
         //if (money > 0)
         //{
         //    bgWin.SetActive(true);
@@ -161,8 +161,6 @@ public class PlayerInforUI : MonoBehaviour
 
         DOVirtual.DelayedCall(3f, () => { moneyEffectRoot.gameObject.SetActive(false); });
     }
-
-
     public void ShowChat(string chatContent)
     {
         HideChat();

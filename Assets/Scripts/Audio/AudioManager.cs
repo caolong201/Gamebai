@@ -16,11 +16,15 @@ public class AudioManager : SingletonMonoAwake<AudioManager>
     public AudioClip chat;
     public AudioClip deductmoney;// trưtien  
     public AudioClip flipCard;
-
+    public AudioClip winClip;
+    public AudioClip momClip;
     public float fadeDuration = 2f;
     public bool IsUIAudioOn { get; private set; } = true;
     public bool IsGameAudioOn { get; private set; } = true;
     private Coroutine fadeCoroutine;
+    // xử lý âm thanh theo trình tự
+    private Queue<AudioClip> moneySoundQueue = new Queue<AudioClip>();
+    private bool isPlayingMoneySound = false;
     private void Start()
     {
         IsGameAudioOn = PlayerPrefs.GetInt("MusicOn", 1) == 1;
@@ -29,7 +33,6 @@ public class AudioManager : SingletonMonoAwake<AudioManager>
         SceneManager.sceneLoaded += OnSceneLoaded;
         CheckSceneAndPlayAudio();
     }
-
     private void OnDestroy()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
@@ -108,21 +111,59 @@ public class AudioManager : SingletonMonoAwake<AudioManager>
     }
     public void AddMoneyCoin()       // congtien
     {
-        Debug.Log("Sound: AddMoneyCoin");
-        if (!IsUIAudioOn) return;
-        uiAudioSource.PlayOneShot(addMoney);
-    }
+        if (!IsUIAudioOn || deductmoney == null) return;
+        EnqueueMoneySound(addMoney);
 
+        //Debug.Log("Sound: AddMoneyCoin");
+        //if (!IsUIAudioOn) return;
+        //uiAudioSource.PlayOneShot(addMoney);
+    }
     public void Deductmoney()      // trừ tiền
     {
-        if (!IsUIAudioOn) return;
-        uiAudioSource.PlayOneShot(deductmoney);
+        if (!IsUIAudioOn || deductmoney == null) return;
+        EnqueueMoneySound(deductmoney);
+        //if (!IsUIAudioOn) return;
+        //uiAudioSource.PlayOneShot(deductmoney);
+    }
+    private void EnqueueMoneySound(AudioClip clip)
+    {
+        moneySoundQueue.Enqueue(clip);
+
+        if (!isPlayingMoneySound)
+        {
+            StartCoroutine(PlayMoneySoundQueue());
+        }
+    }
+    private IEnumerator PlayMoneySoundQueue()
+    {
+        isPlayingMoneySound = true;
+
+        while (moneySoundQueue.Count > 0)
+        {
+            AudioClip clip = moneySoundQueue.Dequeue();
+            uiAudioSource.clip = clip;
+            uiAudioSource.Play();
+
+            yield return new WaitForSeconds(clip.length + 0.05f);
+        }
+        isPlayingMoneySound = false;
     }
     public void Chatsound()     // Chatsound
     { 
         if (!IsUIAudioOn) return;
         uiAudioSource.PlayOneShot(chat);
     }
+    public void WinClip()
+    {
+        if (!IsUIAudioOn) return;
+        uiAudioSource.PlayOneShot(winClip);
+    }
+    public void MomClip() 
+    {
+        if (!IsUIAudioOn) return;
+        uiAudioSource.PlayOneShot(momClip);
+    }
+
     public void SetGameAudio(bool on)
     {
         if (fadeCoroutine != null)
@@ -159,7 +200,6 @@ public class AudioManager : SingletonMonoAwake<AudioManager>
         }
         GameAudioSource.volume = 1f; // Đảm bảo max volume sau khi kết thúc
     }
-
     private IEnumerator FadeOutAudio()
     {
         float startVolume = GameAudioSource.volume;
@@ -175,6 +215,4 @@ public class AudioManager : SingletonMonoAwake<AudioManager>
         GameAudioSource.Stop();
         IsGameAudioOn = false;
     }
-
-
 }

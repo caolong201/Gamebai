@@ -1766,6 +1766,8 @@ MonoBehaviour:
   chat: {fileID: 8300000, guid: 93d29db24b97dd740a027c8f02d063df, type: 3}
   deductmoney: {fileID: 8300000, guid: 275afbdad85ab084b87f9f276ce58cdb, type: 3}
   flipCard: {fileID: 8300000, guid: 34c3d572bbb4e64449881b4ce10a5a32, type: 3}
+  winClip: {fileID: 8300000, guid: 0dcc99055fd654945b14c81ea3996fd0, type: 3}
+  momClip: {fileID: 8300000, guid: bde5956f886cde647b22dc095e905550, type: 3}
   fadeDuration: 2
 --- !u!82 &468506078
 AudioSource:
