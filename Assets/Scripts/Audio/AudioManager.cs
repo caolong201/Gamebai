@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using DG.Tweening;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -7,16 +8,16 @@ public class AudioManager : SingletonMonoAwake<AudioManager>
 {
     [Header("Audio Source")]
     public AudioSource uiAudioSource;
-    public AudioSource GameAudioSource;
+    public AudioSource GameAudioSource;   //nhac nen
     public AudioClip clickSound;
     public AudioClip errorSound;
-    public AudioClip Dealcards; //chiabai
-    public AudioClip gambling; // danh bai
-    public AudioClip addMoney; //cong tien
+    public AudioClip Dealcards;           //chiabai
+    public AudioClip gambling;           // danh bai
+    public AudioClip addMoney;           //cong tien
     public AudioClip chat;
-    public AudioClip deductmoney;// trưtien  
+    public AudioClip deductmoney;       // trưtien  
     public AudioClip flipCard;
-    public AudioClip winClip;
+    public AudioClip winClip;    
     public AudioClip momClip;
     public float fadeDuration = 2f;
     public bool IsUIAudioOn { get; private set; } = true;
@@ -50,7 +51,6 @@ public class AudioManager : SingletonMonoAwake<AudioManager>
         }
         CheckSceneAndPlayAudio();
     }
-
     private void CheckSceneAndPlayAudio()
     {
         ESceneName sceneID = SceneFader.Instance.CurrentScene;
@@ -58,11 +58,13 @@ public class AudioManager : SingletonMonoAwake<AudioManager>
         if (sceneID == ESceneName.Login)
         {
             // Tắt nhạc nền
-            if (fadeCoroutine != null)
-                StopCoroutine(fadeCoroutine);
+            GameAudioSource.DOKill(); // Hủy tween cũ nếu có
+            GameAudioSource.DOFade(0f, 2f).OnComplete(() => GameAudioSource.Stop());
+            //if (fadeCoroutine != null)
+            //    StopCoroutine(fadeCoroutine);
 
-            if (GameAudioSource.isPlaying)
-                fadeCoroutine = StartCoroutine(FadeOutAudio());
+            //if (GameAudioSource.isPlaying)
+            //    fadeCoroutine = StartCoroutine(FadeOutAudio());
         }
         else if (sceneID == ESceneName.Room || sceneID == ESceneName.GamePlay)
         {
@@ -70,19 +72,10 @@ public class AudioManager : SingletonMonoAwake<AudioManager>
             {
                 GameAudioSource.volume = 0f;
                 GameAudioSource.Play();
-
-                if (fadeCoroutine != null)
-                    StopCoroutine(fadeCoroutine);
-
-                fadeCoroutine = StartCoroutine(FadeInAudio());
+                GameAudioSource.DOFade(1, 2f);  
             }
         }
-    }
-   
-    public void Nhacneen()
-    {
-        GameAudioSource.volume = 0f;
-    }
+    }  
     public void FlipCard()
     {
         if (!IsUIAudioOn) return;
@@ -93,7 +86,6 @@ public class AudioManager : SingletonMonoAwake<AudioManager>
         if (!IsUIAudioOn) return;
         uiAudioSource.PlayOneShot(clickSound);
     }
-
     public void PlayError()
     {
         if (!IsUIAudioOn) return;
@@ -113,17 +105,11 @@ public class AudioManager : SingletonMonoAwake<AudioManager>
     {
         if (!IsUIAudioOn || deductmoney == null) return;
         EnqueueMoneySound(addMoney);
-
-        //Debug.Log("Sound: AddMoneyCoin");
-        //if (!IsUIAudioOn) return;
-        //uiAudioSource.PlayOneShot(addMoney);
     }
     public void Deductmoney()      // trừ tiền
     {
         if (!IsUIAudioOn || deductmoney == null) return;
         EnqueueMoneySound(deductmoney);
-        //if (!IsUIAudioOn) return;
-        //uiAudioSource.PlayOneShot(deductmoney);
     }
     private void EnqueueMoneySound(AudioClip clip)
     {
@@ -137,7 +123,6 @@ public class AudioManager : SingletonMonoAwake<AudioManager>
     private IEnumerator PlayMoneySoundQueue()
     {
         isPlayingMoneySound = true;
-
         while (moneySoundQueue.Count > 0)
         {
             AudioClip clip = moneySoundQueue.Dequeue();
@@ -163,56 +148,29 @@ public class AudioManager : SingletonMonoAwake<AudioManager>
         if (!IsUIAudioOn) return;
         uiAudioSource.PlayOneShot(momClip);
     }
-
     public void SetGameAudio(bool on)
     {
-        if (fadeCoroutine != null)
-            StopCoroutine(fadeCoroutine);
-        if (fadeCoroutine != null)
-            StopCoroutine(fadeCoroutine);
+        GameAudioSource.DOKill();
 
         if (on && !GameAudioSource.isPlaying)
         {
             GameAudioSource.volume = 0f;
             GameAudioSource.Play();
             IsGameAudioOn = true;
-            fadeCoroutine = StartCoroutine(FadeInAudio());
+            GameAudioSource.DOFade(1f, fadeDuration);
         }
         else if (!on && GameAudioSource.isPlaying)
         {
-            fadeCoroutine = StartCoroutine(FadeOutAudio());
+            GameAudioSource.DOFade(0f, fadeDuration).OnComplete(() =>
+            {
+                GameAudioSource.Stop();
+                IsGameAudioOn = false;
+            });
         }
     }
     public void SetUIAudio(bool on)
     {
         IsUIAudioOn = on;
     }
-    IEnumerator FadeInAudio()
-    {
-        GameAudioSource.volume = 0f;
-
-        float elapsed = 0f;
-        while (elapsed < fadeDuration)
-        {
-            elapsed += Time.deltaTime;
-            GameAudioSource.volume = Mathf.Clamp01(elapsed / fadeDuration);
-            yield return null;
-        }
-        GameAudioSource.volume = 1f; // Đảm bảo max volume sau khi kết thúc
-    }
-    private IEnumerator FadeOutAudio()
-    {
-        float startVolume = GameAudioSource.volume;
-        float elapsed = 0f;
-
-        while (elapsed < fadeDuration)
-        {
-            elapsed += Time.deltaTime;
-            GameAudioSource.volume = Mathf.Lerp(startVolume, 0f, elapsed / fadeDuration);
-            yield return null;
-        }
-        GameAudioSource.volume = 0f;
-        GameAudioSource.Stop();
-        IsGameAudioOn = false;
-    }
+   
 }
