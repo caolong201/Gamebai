@@ -26,6 +26,7 @@ public class AudioManager : SingletonMonoAwake<AudioManager>
     // xử lý âm thanh theo trình tự
     private Queue<AudioClip> moneySoundQueue = new Queue<AudioClip>();
     private bool isPlayingMoneySound = false;
+   private bool isPlayingWinClip = false;
     private void Start()
     {
         IsGameAudioOn = PlayerPrefs.GetInt("MusicOn", 1) == 1;
@@ -102,9 +103,16 @@ public class AudioManager : SingletonMonoAwake<AudioManager>
         uiAudioSource.PlayOneShot(gambling);
     }
     public void AddMoneyCoin()       // congtien
+
     {
-        if (!IsUIAudioOn || deductmoney == null) return;
+        if (!IsUIAudioOn || addMoney == null || isPlayingWinClip) return;
+
         EnqueueMoneySound(addMoney);
+
+
+
+        //if (!IsUIAudioOn || deductmoney == null) return;
+        //EnqueueMoneySound(addMoney);
     }
     public void Deductmoney()      // trừ tiền
     {
@@ -140,11 +148,21 @@ public class AudioManager : SingletonMonoAwake<AudioManager>
     }
     public void WinClip()
     {
-        if (!IsUIAudioOn) return;
+        if (!IsUIAudioOn || winClip == null) return;
+
+        isPlayingWinClip = true;
         uiAudioSource.PlayOneShot(winClip);
+
+        DOVirtual.DelayedCall(winClip.length + 0.1f, () =>
+        {
+            isPlayingWinClip = false;
+        });
+        //if (!IsUIAudioOn) return;
+        //uiAudioSource.PlayOneShot(winClip);
     }
     public void MomClip() 
     {
+
         if (!IsUIAudioOn) return;
         uiAudioSource.PlayOneShot(momClip);
     }

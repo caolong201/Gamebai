@@ -76,14 +76,27 @@ public class PlayerInforUI : MonoBehaviour
         }
     }
 
+    //public void StartTimer()
+    //{
+    //    imgTimer.enabled = true;
+    //    imgTimer.DOKill();
+    //    imgTimer.fillAmount = 1;
+    //    imgTimer.DOFillAmount(0, duration).SetEase(Ease.Linear);
+
     public void StartTimer()
     {
+        if (imgTimer == null) return;
+
         imgTimer.enabled = true;
         imgTimer.DOKill();
         imgTimer.fillAmount = 1;
         imgTimer.DOFillAmount(0, duration).SetEase(Ease.Linear);
     }
-
+    //private void OnDisable()
+    //{
+    //    DOTween.Kill(this); // Dọn các tween dùng SetId(this) như hideChatTween
+    //    DOTween.Kill(moneyEffectRoot); // Dọn tween liên quan đến moneyEffectRoot
+    //}
     public void StopTimer()
     {
         imgTimer.DOKill();
@@ -109,19 +122,20 @@ public class PlayerInforUI : MonoBehaviour
 
         rankUIs[rank].SetActive(true);
         rankUIs[rank].transform.DOPunchScale(Vector3.one * 0.5f, 0.2f).SetEase(Ease.OutQuad);
-
-        if (winAmout > 0) winBG.SetActive(true);
-        else
+        if (winAmout > 0)
         {
-            winBG.SetActive(false);
+            winBG.SetActive(true);
             AudioManager.Instance.WinClip();
         }
-
+        else
+        {
+            winBG.SetActive(false);          
+        }
         ShowMoneyEffect(winAmout);
         mInfo.coin += winAmout;
         txtCoin.text = mInfo.coin.FormatCoins();
     }
-
+    //ll
     public void ShowMoneyEffect(int money,bool isLocal = true)
     {
         moneyEffectRoot.DOKill();
@@ -140,9 +154,10 @@ public class PlayerInforUI : MonoBehaviour
             bgWin.SetActive(false);
             bgLose.SetActive(true);
             txtMoneyEffect.text = "-" + Mathf.Abs(money).FormatCoins();
-            if (isLocal)
-                AudioManager.Instance.Deductmoney();
+            //if (isLocal)
+            //    AudioManager.Instance.Deductmoney();
         }
+        ///lll
         //
         //if (money > 0)
         //{
@@ -158,7 +173,6 @@ public class PlayerInforUI : MonoBehaviour
         //    txtMoneyEffect.text = "-" + (Mathf.Abs(money).FormatCoins());
         //    AudioManager.Instance.Deductmoney();
         //}
-
         DOVirtual.DelayedCall(3f, () => { moneyEffectRoot.gameObject.SetActive(false); });
     }
     public void ShowChat(string chatContent)

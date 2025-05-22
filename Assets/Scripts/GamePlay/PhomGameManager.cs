@@ -9,6 +9,7 @@ using Suni.Network;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine.UI;
+using UnityEngine.SocialPlatforms;
 
 public enum PhomStage
 {
@@ -231,7 +232,6 @@ public class PhomGameManager : MonoBehaviour
                             DestroyImmediate(cards[i].gameObject);
                     }
                 }
-
                 deck.Clear();
                 discardPiles.Clear();
                 myCardValues.Clear();
@@ -373,39 +373,82 @@ public class PhomGameManager : MonoBehaviour
 
     private void DrawFromDiscardRespone(PlayCardModelRespone obj)
     {
-        if (obj == null || obj.data == null) return;
-        //money effects
+      
 
-        //longthay
-        if (obj.data.coinAmount != 0)
+        //thay toi
+        if (obj?.data == null) return;
+
+        // Người nhận bài
+        if (!string.IsNullOrEmpty(obj.data.nickname))
         {
             var player = FindPlayer(obj.data.nickname);
-            if (player != null && player.inforUI != null)
+            if (player?.inforUI != null)
             {
-                player.inforUI.ShowMoneyEffect(obj.data.coinAmount, isLocal: GameManager.Instance.IsMyself(obj.data.nickname));
-            }
-
-            var fromPlayer = FindPlayer(obj.data.fromNickname);
-            if (fromPlayer != null && fromPlayer.inforUI != null)
-            {
-                fromPlayer.inforUI.ShowMoneyEffect(-obj.data.coinAmount, isLocal: GameManager.Instance.IsMyself(obj.data.fromNickname));
+                bool isLocal = GameManager.Instance.IsMyself(obj.data.nickname);
+                player.inforUI.ShowMoneyEffect(obj.data.coinAmount, isLocal);
             }
         }
-        //ll
 
+        // Người bị lấy bài
+        if (!string.IsNullOrEmpty(obj.data.fromNickname))
+        {
+            var fromPlayer = FindPlayer(obj.data.fromNickname);
+            if (fromPlayer?.inforUI != null)
+            {
+                bool isLocal = GameManager.Instance.IsMyself(obj.data.fromNickname);
+                fromPlayer.inforUI.ShowMoneyEffect(-obj.data.coinAmount, isLocal);
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //if (obj == null || obj.data == null) return;
+
+        //money effects
+        //longthaycomitr
+        //if (obj.data.coinAmount != 0)
+        //{
+        //    var player = FindPlayer(obj.data.nickname);
+        //    if (player != null && player.inforUI != null)
+        //    {
+        //        player.inforUI.ShowMoneyEffect(obj.data.coinAmount, isLocal: GameManager.Instance.IsMyself(obj.data.nickname));         
+        //    }
+        //    var fromPlayer = FindPlayer(obj.data.fromNickname);
+        //    if (fromPlayer != null && fromPlayer.inforUI != null)
+        //    {
+        //        fromPlayer.inforUI.ShowMoneyEffect(-obj.data.coinAmount, isLocal: GameManager.Instance.IsMyself(obj.data.fromNickname));
+
+        //    }
+        //}
+
+
+
+
+
+
+
+        //ll
+        //goc
         //if (obj.data.coinAmount != 0)
         //{
         //    var player = FindPlayer(obj.data.nickname);
         //    player.inforUI.ShowMoneyEffect(obj.data.coinAmount);
-
         //    player = FindPlayer(obj.data.fromNickname);
         //    player.inforUI.ShowMoneyEffect(-obj.data.coinAmount);
         //}
 
         if (GameManager.Instance.IsMyself(obj.data.nickname)) return;
-
         int previousPlayerIndex = GetPreviousPlayerIndex(currentPlayerIndex);
-
         Debug.Log("previousPlayerIndex: " + previousPlayerIndex + " # currentPlayerIndex: " + currentPlayerIndex);
         Stack<Card> previousDiscardPile = discardPiles[previousPlayerIndex];
 
