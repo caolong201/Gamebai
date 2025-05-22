@@ -51,7 +51,6 @@ public class PlayerInforUI : MonoBehaviour
         {
             if (rank != null) rank.SetActive(false);
         }
-
         moneyEffectRoot.gameObject.SetActive(false);
         winBG.SetActive(false);
 
@@ -76,27 +75,14 @@ public class PlayerInforUI : MonoBehaviour
         }
     }
 
-    //public void StartTimer()
-    //{
-    //    imgTimer.enabled = true;
-    //    imgTimer.DOKill();
-    //    imgTimer.fillAmount = 1;
-    //    imgTimer.DOFillAmount(0, duration).SetEase(Ease.Linear);
-
     public void StartTimer()
     {
-        if (imgTimer == null) return;
-
         imgTimer.enabled = true;
         imgTimer.DOKill();
         imgTimer.fillAmount = 1;
         imgTimer.DOFillAmount(0, duration).SetEase(Ease.Linear);
     }
-    //private void OnDisable()
-    //{
-    //    DOTween.Kill(this); // Dọn các tween dùng SetId(this) như hideChatTween
-    //    DOTween.Kill(moneyEffectRoot); // Dọn tween liên quan đến moneyEffectRoot
-    //}
+
     public void StopTimer()
     {
         imgTimer.DOKill();
@@ -111,10 +97,8 @@ public class PlayerInforUI : MonoBehaviour
             imgMom.gameObject.SetActive(true);
             imgMom.transform.DOPunchScale(Vector3.one * 0.5f, 0.2f).SetEase(Ease.OutQuad);
             AudioManager.Instance.MomClip();
-        }
-        
+        }      
     }
-
     public void ShowRank(int rank, int winAmout)
     {
         if (imgMom.gameObject.activeSelf) return;
@@ -136,7 +120,7 @@ public class PlayerInforUI : MonoBehaviour
         txtCoin.text = mInfo.coin.FormatCoins();
     }
     //ll
-    public void ShowMoneyEffect(int money,bool isLocal = true)
+    public void ShowMoneyEffect(int money)
     {
         moneyEffectRoot.DOKill();
         moneyEffectRoot.gameObject.SetActive(true);
@@ -146,33 +130,15 @@ public class PlayerInforUI : MonoBehaviour
             bgWin.SetActive(true);
             bgLose.SetActive(false);
             txtMoneyEffect.text = money.FormatCoins();
-            if (isLocal)
-                AudioManager.Instance.AddMoneyCoin();
+            AudioManager.Instance.AddMoneyCoin();
         }
         else
         {
             bgWin.SetActive(false);
             bgLose.SetActive(true);
-            txtMoneyEffect.text = "-" + Mathf.Abs(money).FormatCoins();
-            //if (isLocal)
-            //    AudioManager.Instance.Deductmoney();
+            txtMoneyEffect.text = "-" + (Mathf.Abs(money).FormatCoins());
+            //AudioManager.Instance.Deductmoney();
         }
-        ///lll
-        //
-        //if (money > 0)
-        //{
-        //    bgWin.SetActive(true);
-        //    bgLose.SetActive(false);
-        //    txtMoneyEffect.text = money.FormatCoins();
-        //    AudioManager.Instance.AddMoneyCoin();
-        //}
-        //else
-        //{
-        //    bgWin.SetActive(false);
-        //    bgLose.SetActive(true);
-        //    txtMoneyEffect.text = "-" + (Mathf.Abs(money).FormatCoins());
-        //    AudioManager.Instance.Deductmoney();
-        //}
         DOVirtual.DelayedCall(3f, () => { moneyEffectRoot.gameObject.SetActive(false); });
     }
     public void ShowChat(string chatContent)

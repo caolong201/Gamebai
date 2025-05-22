@@ -232,6 +232,7 @@ public class PhomGameManager : MonoBehaviour
                             DestroyImmediate(cards[i].gameObject);
                     }
                 }
+
                 deck.Clear();
                 discardPiles.Clear();
                 myCardValues.Clear();
@@ -372,80 +373,16 @@ public class PhomGameManager : MonoBehaviour
     }
 
     private void DrawFromDiscardRespone(PlayCardModelRespone obj)
-    {
-      
-
-        //thay toi
-        if (obj?.data == null) return;
-
-        // Người nhận bài
-        if (!string.IsNullOrEmpty(obj.data.nickname))
+    {  
+        if (obj == null || obj.data == null) return;
+        //goc
+        if (obj.data.coinAmount != 0)
         {
             var player = FindPlayer(obj.data.nickname);
-            if (player?.inforUI != null)
-            {
-                bool isLocal = GameManager.Instance.IsMyself(obj.data.nickname);
-                player.inforUI.ShowMoneyEffect(obj.data.coinAmount, isLocal);
-            }
+            player.inforUI.ShowMoneyEffect(obj.data.coinAmount);
+            player = FindPlayer(obj.data.fromNickname);
+            player.inforUI.ShowMoneyEffect(-obj.data.coinAmount);
         }
-
-        // Người bị lấy bài
-        if (!string.IsNullOrEmpty(obj.data.fromNickname))
-        {
-            var fromPlayer = FindPlayer(obj.data.fromNickname);
-            if (fromPlayer?.inforUI != null)
-            {
-                bool isLocal = GameManager.Instance.IsMyself(obj.data.fromNickname);
-                fromPlayer.inforUI.ShowMoneyEffect(-obj.data.coinAmount, isLocal);
-            }
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-        //if (obj == null || obj.data == null) return;
-
-        //money effects
-        //longthaycomitr
-        //if (obj.data.coinAmount != 0)
-        //{
-        //    var player = FindPlayer(obj.data.nickname);
-        //    if (player != null && player.inforUI != null)
-        //    {
-        //        player.inforUI.ShowMoneyEffect(obj.data.coinAmount, isLocal: GameManager.Instance.IsMyself(obj.data.nickname));         
-        //    }
-        //    var fromPlayer = FindPlayer(obj.data.fromNickname);
-        //    if (fromPlayer != null && fromPlayer.inforUI != null)
-        //    {
-        //        fromPlayer.inforUI.ShowMoneyEffect(-obj.data.coinAmount, isLocal: GameManager.Instance.IsMyself(obj.data.fromNickname));
-
-        //    }
-        //}
-
-
-
-
-
-
-
-        //ll
-        //goc
-        //if (obj.data.coinAmount != 0)
-        //{
-        //    var player = FindPlayer(obj.data.nickname);
-        //    player.inforUI.ShowMoneyEffect(obj.data.coinAmount);
-        //    player = FindPlayer(obj.data.fromNickname);
-        //    player.inforUI.ShowMoneyEffect(-obj.data.coinAmount);
-        //}
 
         if (GameManager.Instance.IsMyself(obj.data.nickname)) return;
         int previousPlayerIndex = GetPreviousPlayerIndex(currentPlayerIndex);

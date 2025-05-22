@@ -17,21 +17,22 @@ public class AudioManager : SingletonMonoAwake<AudioManager>
     public AudioClip chat;
     public AudioClip deductmoney;       // trưtien  
     public AudioClip flipCard;
-    public AudioClip winClip;    
+    public AudioClip winClip;
     public AudioClip momClip;
     public float fadeDuration = 2f;
     public bool IsUIAudioOn { get; private set; } = true;
     public bool IsGameAudioOn { get; private set; } = true;
-    private Coroutine fadeCoroutine;
     // xử lý âm thanh theo trình tự
-    private Queue<AudioClip> moneySoundQueue = new Queue<AudioClip>();
+    //private Queue<AudioClip> moneySoundQueue = new Queue<AudioClip>();
     private bool isPlayingMoneySound = false;
-   private bool isPlayingWinClip = false;
+    private bool isPlayingWinClip = false;
+    private enum MoneySoundType { Add, Deduct }
+    private Queue<(MoneySoundType type, AudioClip clip)> moneySoundQueue = new Queue<(MoneySoundType, AudioClip)>();
+    private MoneySoundType? currentMoneySoundType = null;
     private void Start()
     {
         IsGameAudioOn = PlayerPrefs.GetInt("MusicOn", 1) == 1;
         IsUIAudioOn = PlayerPrefs.GetInt("UIAudioOn", 1) == 1;
-
         SceneManager.sceneLoaded += OnSceneLoaded;
         CheckSceneAndPlayAudio();
     }
@@ -59,13 +60,8 @@ public class AudioManager : SingletonMonoAwake<AudioManager>
         if (sceneID == ESceneName.Login)
         {
             // Tắt nhạc nền
-            GameAudioSource.DOKill(); // Hủy tween cũ nếu có
+            GameAudioSource.DOKill();
             GameAudioSource.DOFade(0f, 2f).OnComplete(() => GameAudioSource.Stop());
-            //if (fadeCoroutine != null)
-            //    StopCoroutine(fadeCoroutine);
-
-            //if (GameAudioSource.isPlaying)
-            //    fadeCoroutine = StartCoroutine(FadeOutAudio());
         }
         else if (sceneID == ESceneName.Room || sceneID == ESceneName.GamePlay)
         {
@@ -73,10 +69,10 @@ public class AudioManager : SingletonMonoAwake<AudioManager>
             {
                 GameAudioSource.volume = 0f;
                 GameAudioSource.Play();
-                GameAudioSource.DOFade(1, 2f);  
+                GameAudioSource.DOFade(1, 2f);
             }
         }
-    }  
+    }
     public void FlipCard()
     {
         if (!IsUIAudioOn) return;
@@ -103,26 +99,23 @@ public class AudioManager : SingletonMonoAwake<AudioManager>
         uiAudioSource.PlayOneShot(gambling);
     }
     public void AddMoneyCoin()       // congtien
-
     {
-        if (!IsUIAudioOn || addMoney == null || isPlayingWinClip) return;
-
-        EnqueueMoneySound(addMoney);
-
-
-
-        //if (!IsUIAudioOn || deductmoney == null) return;
-        //EnqueueMoneySound(addMoney);
+        if (!IsUIAudioOn || deductmoney == null) return;
+        EnqueueMoneySound(MoneySoundType.Add, addMoney);
     }
     public void Deductmoney()      // trừ tiền
     {
         if (!IsUIAudioOn || deductmoney == null) return;
-        EnqueueMoneySound(deductmoney);
+        EnqueueMoneySound(MoneySoundType.Deduct, deductmoney);
     }
-    private void EnqueueMoneySound(AudioClip clip)
-    {
-        moneySoundQueue.Enqueue(clip);
 
+    private void EnqueueMoneySound(MoneySoundType type, AudioClip clip)
+    {
+
+        if (isPlayingMoneySound && currentMoneySoundType != type)
+            return;
+
+        moneySoundQueue.Enqueue((type, clip));
         if (!isPlayingMoneySound)
         {
             StartCoroutine(PlayMoneySoundQueue());
@@ -131,38 +124,34 @@ public class AudioManager : SingletonMonoAwake<AudioManager>
     private IEnumerator PlayMoneySoundQueue()
     {
         isPlayingMoneySound = true;
+
+        if (moneySoundQueue.Count > 0)
+            currentMoneySoundType = moneySoundQueue.Peek().type;
+
         while (moneySoundQueue.Count > 0)
         {
-            AudioClip clip = moneySoundQueue.Dequeue();
-            uiAudioSource.clip = clip;
+            var item = moneySoundQueue.Dequeue();
+            uiAudioSource.clip = item.clip;
             uiAudioSource.Play();
 
-            yield return new WaitForSeconds(clip.length + 0.05f);
+            yield return new WaitForSeconds(item.clip.length + 0.05f);
         }
+
+        currentMoneySoundType = null;
         isPlayingMoneySound = false;
     }
     public void Chatsound()     // Chatsound
-    { 
+    {
         if (!IsUIAudioOn) return;
         uiAudioSource.PlayOneShot(chat);
     }
     public void WinClip()
     {
-        if (!IsUIAudioOn || winClip == null) return;
-
-        isPlayingWinClip = true;
+        if (!IsUIAudioOn) return;
         uiAudioSource.PlayOneShot(winClip);
-
-        DOVirtual.DelayedCall(winClip.length + 0.1f, () =>
-        {
-            isPlayingWinClip = false;
-        });
-        //if (!IsUIAudioOn) return;
-        //uiAudioSource.PlayOneShot(winClip);
     }
-    public void MomClip() 
+    public void MomClip()
     {
-
         if (!IsUIAudioOn) return;
         uiAudioSource.PlayOneShot(momClip);
     }
@@ -190,5 +179,5 @@ public class AudioManager : SingletonMonoAwake<AudioManager>
     {
         IsUIAudioOn = on;
     }
-   
+
 }
