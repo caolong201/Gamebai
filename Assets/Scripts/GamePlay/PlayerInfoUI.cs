@@ -96,7 +96,7 @@ public class PlayerInforUI : MonoBehaviour
         {
             imgMom.gameObject.SetActive(true);
             imgMom.transform.DOPunchScale(Vector3.one * 0.5f, 0.2f).SetEase(Ease.OutQuad);
-            AudioManager.Instance.MomClip();
+            AudioManager.Instance.PlayUIAudio(AudioManager.UIAudioType.Mom);
         }
     }
     public void ShowRank(int rank, int winAmout)
@@ -111,14 +111,12 @@ public class PlayerInforUI : MonoBehaviour
             winBG.SetActive(true);
             DOVirtual.DelayedCall(0.8f, () =>
             {
-                AudioManager.Instance.WinClip();
+                AudioManager.Instance.PlayUIAudio(AudioManager.UIAudioType.Win);
             });
-            //AudioManager.Instance.WinClip();
         }
         else
         {       
             winBG.SetActive(false);
-
         }
         bool isMe = GameManager.Instance.IsMyself(mInfo.nickname);
         ShowMoneyEffect(winAmout, isMe);
@@ -137,8 +135,7 @@ public class PlayerInforUI : MonoBehaviour
             bgLose.SetActive(false);
             txtMoneyEffect.text = money.FormatCoins();
             if (isMe)
-                AudioManager.Instance.AddMoneyCoin();
-            //AudioManager.Instance.AddMoneyCoin();
+                AudioManager.Instance.PlayUIAudio(AudioManager.UIAudioType.AddMoney);
         }
         else
         {
@@ -146,7 +143,7 @@ public class PlayerInforUI : MonoBehaviour
             bgLose.SetActive(true);
             txtMoneyEffect.text = "-" + (Mathf.Abs(money).FormatCoins());
             if (isMe)
-                AudioManager.Instance.Deductmoney();
+                AudioManager.Instance.PlayUIAudio(AudioManager.UIAudioType.DeductMoney);
         }
         DOVirtual.DelayedCall(3f, () => { moneyEffectRoot.gameObject.SetActive(false); });
     }

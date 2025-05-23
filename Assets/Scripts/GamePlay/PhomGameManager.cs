@@ -111,7 +111,7 @@ public class PhomGameManager : MonoBehaviour
         {
             // Gọi hàm ShowChat để hiển thị nội dung
             player.inforUI.ShowChat(respone.data.chatContent);
-            AudioManager.Instance.Chatsound();
+            AudioManager.Instance.PlayUIAudio(AudioManager.UIAudioType.Chat);
         }
         else
         {

@@ -18,16 +18,30 @@ public class AudioManager : SingletonMonoAwake<AudioManager>
     public AudioClip deductmoney;       // trưtien  
     public AudioClip flipCard;
     public AudioClip winClip;
+    public AudioClip loseClipp;
     public AudioClip momClip;
     public float fadeDuration = 2f;
     public bool IsUIAudioOn { get; private set; } = true;
     public bool IsGameAudioOn { get; private set; } = true;
-    //private Queue<AudioClip> moneySoundQueue = new Queue<AudioClip>();
     private bool isPlayingMoneySound = false;
-    private bool isPlayingWinClip = false;
     private enum MoneySoundType { Add, Deduct }
     private Queue<(MoneySoundType type, AudioClip clip)> moneySoundQueue = new Queue<(MoneySoundType, AudioClip)>();
     private MoneySoundType? currentMoneySoundType = null;
+
+    public enum UIAudioType
+    {
+        Click,
+        Error,
+        DealCards,
+        Gambling,
+        AddMoney,
+        DeductMoney,
+        Chat,
+        FlipCard,
+        Win,
+        Lose,
+        Mom
+    }
     private void Start()
     {
         IsGameAudioOn = PlayerPrefs.GetInt("MusicOn", 1) == 1;
@@ -72,42 +86,6 @@ public class AudioManager : SingletonMonoAwake<AudioManager>
             }
         }
     }
-    public void FlipCard()
-    {
-        if (!IsUIAudioOn) return;
-        uiAudioSource.PlayOneShot(flipCard);
-    }
-    public void PlayClick()
-    {
-        if (!IsUIAudioOn) return;
-        uiAudioSource.PlayOneShot(clickSound);
-    }
-    public void PlayError()
-    {
-        if (!IsUIAudioOn) return;
-        uiAudioSource.PlayOneShot(errorSound);
-    }
-    public void DealCards()             // chiabai
-    {
-        if (!IsUIAudioOn) return;
-        uiAudioSource.PlayOneShot(Dealcards);
-    }
-    public void Gambling()           // danhbai
-    {
-        if (!IsUIAudioOn) return;
-        uiAudioSource.PlayOneShot(gambling);
-    }
-    public void AddMoneyCoin()       // congtien
-    {
-        if (!IsUIAudioOn || deductmoney == null) return;
-        EnqueueMoneySound(MoneySoundType.Add, addMoney);
-    }
-    public void Deductmoney()      // trừ tiền
-    {
-        if (!IsUIAudioOn || deductmoney == null) return;
-        EnqueueMoneySound(MoneySoundType.Deduct, deductmoney);
-    }
-
     private void EnqueueMoneySound(MoneySoundType type, AudioClip clip)
     {
 
@@ -139,21 +117,94 @@ public class AudioManager : SingletonMonoAwake<AudioManager>
         currentMoneySoundType = null;
         isPlayingMoneySound = false;
     }
-    public void Chatsound()     // Chatsound
+    public void PlayUIAudio(UIAudioType type)
     {
         if (!IsUIAudioOn) return;
-        uiAudioSource.PlayOneShot(chat);
+
+        AudioClip clipToPlay = null;
+
+        switch (type)
+        {
+            case UIAudioType.Click:
+                clipToPlay = clickSound;
+                break;
+            case UIAudioType.Error:
+                clipToPlay = errorSound;
+                break;
+            case UIAudioType.DealCards:
+                clipToPlay = Dealcards;
+                break;
+            case UIAudioType.Gambling:
+                clipToPlay = gambling;
+                break;
+            case UIAudioType.AddMoney:
+                EnqueueMoneySound(MoneySoundType.Add, addMoney);
+                return; 
+            case UIAudioType.DeductMoney:
+                EnqueueMoneySound(MoneySoundType.Deduct, deductmoney);
+                return; 
+            case UIAudioType.Chat:
+                clipToPlay = chat;
+                break;
+            case UIAudioType.FlipCard:
+                clipToPlay = flipCard;
+                break;
+            case UIAudioType.Win:
+                clipToPlay = winClip;
+                break;
+            case UIAudioType.Lose:
+                clipToPlay = loseClipp;
+                break;
+            case UIAudioType.Mom:
+                clipToPlay = momClip;
+                break;
+            default:
+                Debug.LogWarning("UIAudioType không hợp lệ: " + type);
+                return;
+        }
+
+        if (clipToPlay != null)
+        {
+            uiAudioSource.PlayOneShot(clipToPlay);
+        }
     }
-    public void WinClip()
-    {
-        if (!IsUIAudioOn) return;
-        uiAudioSource.PlayOneShot(winClip);
-    }
-    public void MomClip()
-    {
-        if (!IsUIAudioOn) return;
-        uiAudioSource.PlayOneShot(momClip);
-    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public void SetGameAudio(bool on)
     {
         GameAudioSource.DOKill();

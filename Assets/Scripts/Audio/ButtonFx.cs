@@ -23,22 +23,22 @@ public class ButtonFx : MonoBehaviour
         switch (soundType)
         {
             case SoundType.Click:
-                AudioManager.Instance.PlayClick();
+                AudioManager.Instance.PlayUIAudio(AudioManager.UIAudioType.Click);
                 break;
             case SoundType.Error:
-                AudioManager.Instance.PlayError();
+                AudioManager.Instance.PlayUIAudio(AudioManager.UIAudioType.Error);
                 break;
             case SoundType.Dealcards:
-                AudioManager.Instance.DealCards();
+                AudioManager.Instance.PlayUIAudio(AudioManager.UIAudioType.DealCards);
                 break;
             case SoundType.Gambling:
-                AudioManager.Instance.Gambling();
+                AudioManager.Instance.PlayUIAudio(AudioManager.UIAudioType.Gambling);
                 break;
             case SoundType.flipCard:
-                AudioManager.Instance.Gambling();
+                AudioManager.Instance.PlayUIAudio(AudioManager.UIAudioType.FlipCard);
                 break;
             case SoundType.Chatsound:
-                AudioManager.Instance.Chatsound();
+                AudioManager.Instance.PlayUIAudio(AudioManager.UIAudioType.Chat);
                 break;
         }
     }

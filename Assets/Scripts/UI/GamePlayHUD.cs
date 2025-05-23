@@ -134,7 +134,7 @@ public class GamePlayHUD : MonoBehaviour
 
         DOVirtual.DelayedCall(0.1f, () =>
         {
-            AudioManager.Instance.DealCards();
+            AudioManager.Instance.PlayUIAudio(AudioManager.UIAudioType.DealCards);
         });
     }
 

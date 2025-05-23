@@ -38,7 +38,7 @@ public class RomItem : MonoBehaviour
 
     public void OnItemClicked()
     {
-        AudioManager.Instance.PlayClick();
+        AudioManager.Instance.PlayUIAudio(AudioManager.UIAudioType.Click);
         onClickedCallback?.Invoke(mData);
     }
 }
