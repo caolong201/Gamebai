@@ -176,13 +176,22 @@ public class PhomGameManager : MonoBehaviour
         {
             for (int i = 0; i < obj.data.winArray.Count; i++)
             {
-                var player = FindPlayer(obj.data.winArray[i].nickname);
-                if (player == null || obj.data.winArray[i].cards == null || obj.data.winArray[i].cards.Count == 0)
-                {
-                    continue;
-                }
+                //goc
+                //var player = FindPlayer(obj.data.winArray[i].nickname);
+                //if (player == null || obj.data.winArray[i].cards == null || obj.data.winArray[i].cards.Count == 0 )
+                //{
+                //    continue;
+                //}
+                //player.inforUI.ShowRank(i, obj.data.winArray[i].winAmount);
+                //goc
 
-                player.inforUI.ShowRank(i, obj.data.winArray[i].winAmount);
+                //ll
+                var winData = obj.data.winArray[i];
+                var player = FindPlayer(winData.nickname);
+                if (player == null || winData.cards == null || winData.cards.Count == 0)
+                    continue;
+                bool isMe = GameManager.Instance.IsMyself(winData.nickname);//ll
+                player.inforUI.ShowRank(i, winData.winAmount, isMe);//ll
 
                 if (GameManager.Instance.IsMyself(obj.data.winArray[i].nickname))
                     continue;
@@ -245,7 +254,7 @@ public class PhomGameManager : MonoBehaviour
                 {
                     gamePlayHUD.ShowChiaBai(true);
                 }
-                
+
                 stage = PhomStage.InRoom;
             });
         });
@@ -272,6 +281,7 @@ public class PhomGameManager : MonoBehaviour
             DOVirtual.DelayedCall(0.4f, () =>
             {
                 var myCards = playerHands[0].GetHand();
+
                 var phoms = PhomChecker.FindPhoms(myCards);
                 foreach (var cards in phoms)
                 {
@@ -305,9 +315,11 @@ public class PhomGameManager : MonoBehaviour
                     // Tạo từng lá bài trong phỏm
                     for (int i = 0; i < phom.Count; i++)
                     {
+                        Debug.LogError(" đứng game");
+
                         Card card = player.GetHand()[0];
                         rt = card.GetComponent<RectTransform>();
-                        card.SetCard(phom[i].value, suits[phom[i].type - 1]);
+                        card.SetCard(phom[i].value, suits[phom[i].type - 1]);          
                         card.Up();
                         player.GetHand().Remove(card);
                         card.transform.SetParent(dropPhomPositions[player.seatInfo.position]);
@@ -373,19 +385,19 @@ public class PhomGameManager : MonoBehaviour
     }
 
     private void DrawFromDiscardRespone(PlayCardModelRespone obj)
-    {  
+    {
         if (obj == null || obj.data == null) return;
         //goc
         if (obj.data.coinAmount != 0)
         {
             var player = FindPlayer(obj.data.nickname);
             bool isMe = GameManager.Instance.IsMyself(obj.data.nickname);
-            player.inforUI.ShowMoneyEffect(obj.data.coinAmount,isMe);
-           
+            player.inforUI.ShowMoneyEffect(obj.data.coinAmount, isMe);
+
             player = FindPlayer(obj.data.fromNickname);
             bool isFromMe = GameManager.Instance.IsMyself(obj.data.fromNickname);
             player.inforUI.ShowMoneyEffect(-obj.data.coinAmount, isFromMe);
-        
+
         }
         if (GameManager.Instance.IsMyself(obj.data.nickname)) return;
         int previousPlayerIndex = GetPreviousPlayerIndex(currentPlayerIndex);
@@ -403,8 +415,6 @@ public class PhomGameManager : MonoBehaviour
             playerHands[currentPlayerIndex].AddCardToHand(topDiscard);
         }
     }
-
-
 
     private void PlayCardModelRespone(PlayCardModelRespone obj)
     {
@@ -426,7 +436,6 @@ public class PhomGameManager : MonoBehaviour
             {
                 card = player.GetHand()[0];
             }
-
             card.SetCard(obj.data.card.value, suits[obj.data.card.type - 1]);
             DiscardCard(player, card);
             NextTurn();
@@ -451,7 +460,7 @@ public class PhomGameManager : MonoBehaviour
         stage = PhomStage.Playing;
         myPhoms = null;
         haPhomData = null;
-        
+
         drawPileCardCount = obj.data.drawPileCardCount;
         isFirstRound = true;
         myCardValues = obj.data.playerCards;
@@ -516,7 +525,7 @@ public class PhomGameManager : MonoBehaviour
         }
 
         ChiaBai();
-        
+
     }
 
     private void PlayerReadyRespone(OtherPlayerReadyRespone obj)
@@ -997,7 +1006,7 @@ public class PhomGameManager : MonoBehaviour
             string json = JsonMapper.ToJson(new DropPhomModel((int)ENetworkHeader.DropPhom, haPhomData.data.cards));
             NetworkManager.Instance.SendJsonData(json);
         }
-        
+
         myPhoms = null;
     }
 

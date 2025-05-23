@@ -27,7 +27,6 @@ public class Player : MonoBehaviour
         this.seatInfo = info;
         inforUI.Init(info);
         hand.Clear();
-
         if (info.position == 0)
         {
             inforUI.transform.position = new Vector2(Screen.width / 2, inforUI.transform.position.y);

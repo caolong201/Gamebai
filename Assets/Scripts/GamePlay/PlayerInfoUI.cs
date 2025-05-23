@@ -99,7 +99,7 @@ public class PlayerInforUI : MonoBehaviour
             AudioManager.Instance.PlayUIAudio(AudioManager.UIAudioType.Mom);
         }
     }
-    public void ShowRank(int rank, int winAmout)
+    public void ShowRank(int rank, int winAmout, bool playSound = true)
     {
         if (imgMom.gameObject.activeSelf) return;
         if (rank >= rankUIs.Count) return;
@@ -109,14 +109,30 @@ public class PlayerInforUI : MonoBehaviour
         if (winAmout > 0)
         {
             winBG.SetActive(true);
-            DOVirtual.DelayedCall(0.8f, () =>
+
+            if (playSound)
             {
-                AudioManager.Instance.PlayUIAudio(AudioManager.UIAudioType.Win);
-            });
+                DOVirtual.DelayedCall(0.8f, () =>
+                {
+                    AudioManager.Instance.PlayUIAudio(AudioManager.UIAudioType.Win);
+                });
+            }
+            //DOVirtual.DelayedCall(0.8f, () =>
+            //{
+            //    AudioManager.Instance.PlayUIAudio(AudioManager.UIAudioType.Win);
+            //});
         }
         else
         {       
             winBG.SetActive(false);
+
+            if (playSound)
+            {
+                DOVirtual.DelayedCall(0.8f, () =>
+                {
+                    AudioManager.Instance.PlayUIAudio(AudioManager.UIAudioType.Lose);
+                });
+            }
         }
         bool isMe = GameManager.Instance.IsMyself(mInfo.nickname);
         ShowMoneyEffect(winAmout, isMe);
