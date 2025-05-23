@@ -379,11 +379,14 @@ public class PhomGameManager : MonoBehaviour
         if (obj.data.coinAmount != 0)
         {
             var player = FindPlayer(obj.data.nickname);
-            player.inforUI.ShowMoneyEffect(obj.data.coinAmount);
+            bool isMe = GameManager.Instance.IsMyself(obj.data.nickname);
+            player.inforUI.ShowMoneyEffect(obj.data.coinAmount,isMe);
+           
             player = FindPlayer(obj.data.fromNickname);
-            player.inforUI.ShowMoneyEffect(-obj.data.coinAmount);
+            bool isFromMe = GameManager.Instance.IsMyself(obj.data.fromNickname);
+            player.inforUI.ShowMoneyEffect(-obj.data.coinAmount, isFromMe);
+        
         }
-
         if (GameManager.Instance.IsMyself(obj.data.nickname)) return;
         int previousPlayerIndex = GetPreviousPlayerIndex(currentPlayerIndex);
         Debug.Log("previousPlayerIndex: " + previousPlayerIndex + " # currentPlayerIndex: " + currentPlayerIndex);
@@ -400,6 +403,8 @@ public class PhomGameManager : MonoBehaviour
             playerHands[currentPlayerIndex].AddCardToHand(topDiscard);
         }
     }
+
+
 
     private void PlayCardModelRespone(PlayCardModelRespone obj)
     {

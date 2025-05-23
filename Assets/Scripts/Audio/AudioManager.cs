@@ -22,7 +22,6 @@ public class AudioManager : SingletonMonoAwake<AudioManager>
     public float fadeDuration = 2f;
     public bool IsUIAudioOn { get; private set; } = true;
     public bool IsGameAudioOn { get; private set; } = true;
-    // xử lý âm thanh theo trình tự
     //private Queue<AudioClip> moneySoundQueue = new Queue<AudioClip>();
     private bool isPlayingMoneySound = false;
     private bool isPlayingWinClip = false;
@@ -179,5 +178,6 @@ public class AudioManager : SingletonMonoAwake<AudioManager>
     {
         IsUIAudioOn = on;
     }
+   
 
 }

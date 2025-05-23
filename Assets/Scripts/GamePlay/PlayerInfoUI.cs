@@ -97,7 +97,7 @@ public class PlayerInforUI : MonoBehaviour
             imgMom.gameObject.SetActive(true);
             imgMom.transform.DOPunchScale(Vector3.one * 0.5f, 0.2f).SetEase(Ease.OutQuad);
             AudioManager.Instance.MomClip();
-        }      
+        }
     }
     public void ShowRank(int rank, int winAmout)
     {
@@ -109,18 +109,24 @@ public class PlayerInforUI : MonoBehaviour
         if (winAmout > 0)
         {
             winBG.SetActive(true);
-            AudioManager.Instance.WinClip();
+            DOVirtual.DelayedCall(0.8f, () =>
+            {
+                AudioManager.Instance.WinClip();
+            });
+            //AudioManager.Instance.WinClip();
         }
         else
-        {
-            winBG.SetActive(false);          
+        {       
+            winBG.SetActive(false);
+
         }
-        ShowMoneyEffect(winAmout);
+        bool isMe = GameManager.Instance.IsMyself(mInfo.nickname);
+        ShowMoneyEffect(winAmout, isMe);
         mInfo.coin += winAmout;
         txtCoin.text = mInfo.coin.FormatCoins();
     }
-    //ll
-    public void ShowMoneyEffect(int money)
+
+    public void ShowMoneyEffect(int money, bool isMe)
     {
         moneyEffectRoot.DOKill();
         moneyEffectRoot.gameObject.SetActive(true);
@@ -130,14 +136,17 @@ public class PlayerInforUI : MonoBehaviour
             bgWin.SetActive(true);
             bgLose.SetActive(false);
             txtMoneyEffect.text = money.FormatCoins();
-            AudioManager.Instance.AddMoneyCoin();
+            if (isMe)
+                AudioManager.Instance.AddMoneyCoin();
+            //AudioManager.Instance.AddMoneyCoin();
         }
         else
         {
             bgWin.SetActive(false);
             bgLose.SetActive(true);
             txtMoneyEffect.text = "-" + (Mathf.Abs(money).FormatCoins());
-            //AudioManager.Instance.Deductmoney();
+            if (isMe)
+                AudioManager.Instance.Deductmoney();
         }
         DOVirtual.DelayedCall(3f, () => { moneyEffectRoot.gameObject.SetActive(false); });
     }
@@ -209,4 +218,5 @@ public class PlayerInforUI : MonoBehaviour
 
         imgChatIcon.gameObject.SetActive(false);
     }
+
 }
