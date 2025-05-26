@@ -388,8 +388,8 @@ public class PhomGameManager : MonoBehaviour
             bool isMe = GameManager.Instance.IsMyself(obj.data.nickname);
             player.inforUI.ShowMoneyEffect(obj.data.coinAmount, isMe);
 
-            player = FindPlayer(obj.data.toNickname);
-            bool isFromMe = GameManager.Instance.IsMyself(obj.data./*fromNickname*/toNickname);
+            player = FindPlayer(obj.data.fromNickname);
+            bool isFromMe = GameManager.Instance.IsMyself(obj.data.fromNickname);
             player.inforUI.ShowMoneyEffect(-obj.data.coinAmount, isFromMe);
 
         }
