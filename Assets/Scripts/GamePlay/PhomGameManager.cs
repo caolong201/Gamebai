@@ -64,7 +64,6 @@ public class PhomGameManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI tableInfo;
 
     private PhomStage stage = PhomStage.InRoom;
-
     private void Start()
     {
         NetworkManager.Instance.EnterGameRespone.OnDataUpdated += EnterGameRespone; //2000
@@ -274,11 +273,13 @@ public class PhomGameManager : MonoBehaviour
             DOVirtual.DelayedCall(0.4f, () =>
             {
                 var myCards = playerHands[0].GetHand();
+
                 var phoms = PhomChecker.FindPhoms(myCards);
                 foreach (var cards in phoms)
                 {
                     foreach (var c in cards)
                     {
+                        Debug.Log(c.value + " # " + c.suit);
                         c.transform.DOLocalMoveY(c.transform.localPosition.y + 50, 0.1f).SetEase(Ease.OutQuad);
                     }
                 }
@@ -309,7 +310,7 @@ public class PhomGameManager : MonoBehaviour
                     {
                         if (player.GetHand().Count <= 0)
                             continue;
-
+                        
                         Card card = player.GetHand()[0];
                         rt = card.GetComponent<RectTransform>();
                         card.SetCard(phom[i].value, suits[phom[i].type - 1]);
@@ -387,11 +388,11 @@ public class PhomGameManager : MonoBehaviour
             bool isMe = GameManager.Instance.IsMyself(obj.data.nickname);
             player.inforUI.ShowMoneyEffect(obj.data.coinAmount, isMe);
 
-            player = FindPlayer(obj.data.fromNickname);
-            bool isFromMe = GameManager.Instance.IsMyself(obj.data.fromNickname);
+            player = FindPlayer(obj.data.toNickname);
+            bool isFromMe = GameManager.Instance.IsMyself(obj.data./*fromNickname*/toNickname);
             player.inforUI.ShowMoneyEffect(-obj.data.coinAmount, isFromMe);
-        }
 
+        }
         if (GameManager.Instance.IsMyself(obj.data.nickname)) return;
         int previousPlayerIndex = GetPreviousPlayerIndex(currentPlayerIndex);
         Debug.Log("previousPlayerIndex: " + previousPlayerIndex + " # currentPlayerIndex: " + currentPlayerIndex);
@@ -421,7 +422,7 @@ public class PhomGameManager : MonoBehaviour
             if (player.GetHand().Count <= 0)
             {
                 GameObject cardObj = Instantiate(cardPrefab,
-                    playerHands[player.seatInfo.position].transform.position, Quaternion.identity);
+                playerHands[player.seatInfo.position].transform.position, Quaternion.identity);
                 card = cardObj.GetComponent<Card>();
                 card.transform.localScale = Vector3.one;
             }
@@ -519,6 +520,7 @@ public class PhomGameManager : MonoBehaviour
         }
 
         ChiaBai();
+
     }
 
     private void PlayerReadyRespone(OtherPlayerReadyRespone obj)
@@ -553,6 +555,7 @@ public class PhomGameManager : MonoBehaviour
             isCanSelectCard = true;
             deckCardCountObject.SetAsLastSibling();
             StartTurn();
+
         }));
     }
 
@@ -778,10 +781,13 @@ public class PhomGameManager : MonoBehaviour
 
     public void SortPlayerCards()
     {
-        if(isAnimShowPhom) return;
-        
         Player myPlayer = playerHands[0];
         var sortedCards = PhomChecker.SortCards(myPlayer.GetHand());
+        // foreach (var card in sortedCards)
+        // {
+        //     Debug.Log(card.value + " : " + card.suit + " pos: ");
+        // }
+
         myPlayer.SetHand(sortedCards);
         SapXepViTriBai();
     }
