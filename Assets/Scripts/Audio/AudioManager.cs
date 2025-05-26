@@ -74,7 +74,7 @@ public class AudioManager : SingletonMonoAwake<AudioManager>
         {
             // Tắt nhạc nền
             GameAudioSource.DOKill();
-            GameAudioSource.DOFade(0f, 2f).OnComplete(() => GameAudioSource.Stop());
+            //GameAudioSource.DOFade(0f, 2f).OnComplete(() => GameAudioSource.Stop());
         }
         else if (sceneID == ESceneName.Room || sceneID == ESceneName.GamePlay)
         {

@@ -316,7 +316,7 @@ public class PhomGameManager : MonoBehaviour
                     for (int i = 0; i < phom.Count; i++)
                     {
                         Debug.LogError(" đứng game");
-
+    
                         Card card = player.GetHand()[0];
                         rt = card.GetComponent<RectTransform>();
                         card.SetCard(phom[i].value, suits[phom[i].type - 1]);          
@@ -394,8 +394,8 @@ public class PhomGameManager : MonoBehaviour
             bool isMe = GameManager.Instance.IsMyself(obj.data.nickname);
             player.inforUI.ShowMoneyEffect(obj.data.coinAmount, isMe);
 
-            player = FindPlayer(obj.data.fromNickname);
-            bool isFromMe = GameManager.Instance.IsMyself(obj.data.fromNickname);
+            player = FindPlayer(obj.data./*fromNickname*/ toNickname);
+            bool isFromMe = GameManager.Instance.IsMyself(obj.data./*fromNickname*/toNickname);
             player.inforUI.ShowMoneyEffect(-obj.data.coinAmount, isFromMe);
 
         }
@@ -428,7 +428,7 @@ public class PhomGameManager : MonoBehaviour
             if (player.GetHand().Count <= 0)
             {
                 GameObject cardObj = Instantiate(cardPrefab,
-                    playerHands[player.seatInfo.position].transform.position, Quaternion.identity);
+                playerHands[player.seatInfo.position].transform.position, Quaternion.identity);
                 card = cardObj.GetComponent<Card>();
                 card.transform.localScale = Vector3.one;
             }
