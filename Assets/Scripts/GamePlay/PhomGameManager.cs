@@ -47,6 +47,7 @@ public class PhomGameManager : MonoBehaviour
     //drop phom
     public Transform[] dropPhomPositions;
     private DropPhomRespone haPhomData;
+    private bool isAnimShowPhom = false;
 
     //result - show all cards
     public Transform[] showAllCardsPositions;
@@ -63,6 +64,7 @@ public class PhomGameManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI tableInfo;
 
     private PhomStage stage = PhomStage.InRoom;
+
     private void Start()
     {
         NetworkManager.Instance.EnterGameRespone.OnDataUpdated += EnterGameRespone; //2000
@@ -176,24 +178,14 @@ public class PhomGameManager : MonoBehaviour
         {
             for (int i = 0; i < obj.data.winArray.Count; i++)
             {
-                //goc
-                //var player = FindPlayer(obj.data.winArray[i].nickname);
-                //if (player == null || obj.data.winArray[i].cards == null || obj.data.winArray[i].cards.Count == 0 )
-                //{
-                //    continue;
-                //}
-                //player.inforUI.ShowRank(i, obj.data.winArray[i].winAmount);
-                //goc
-
-                //ll
                 var winData = obj.data.winArray[i];
                 var player = FindPlayer(winData.nickname);
                 if (player == null || winData.cards == null || winData.cards.Count == 0)
                     continue;
-                bool isMe = GameManager.Instance.IsMyself(winData.nickname);//ll
-                player.inforUI.ShowRank(i, winData.winAmount, isMe);//ll
+                bool isMe = GameManager.Instance.IsMyself(winData.nickname); //ll
+                player.inforUI.ShowRank(i, winData.winAmount, isMe); //ll
 
-                if (GameManager.Instance.IsMyself(obj.data.winArray[i].nickname))
+                if (isMe)
                     continue;
 
                 var listCards = obj.data.winArray[i].cards;
@@ -278,21 +270,21 @@ public class PhomGameManager : MonoBehaviour
             gamePlayHUD.ShowHaPhom(true);
 
             //show phom
+            isAnimShowPhom = true;
             DOVirtual.DelayedCall(0.4f, () =>
             {
                 var myCards = playerHands[0].GetHand();
-
                 var phoms = PhomChecker.FindPhoms(myCards);
                 foreach (var cards in phoms)
                 {
                     foreach (var c in cards)
                     {
-                        Debug.Log(c.value + " # " + c.suit);
                         c.transform.DOLocalMoveY(c.transform.localPosition.y + 50, 0.1f).SetEase(Ease.OutQuad);
                     }
                 }
 
                 myPhoms = phoms;
+                isAnimShowPhom = false;
             });
         }
         else
@@ -315,11 +307,12 @@ public class PhomGameManager : MonoBehaviour
                     // Tạo từng lá bài trong phỏm
                     for (int i = 0; i < phom.Count; i++)
                     {
-                        Debug.LogError(" đứng game");
+                        if (player.GetHand().Count <= 0)
+                            continue;
 
                         Card card = player.GetHand()[0];
                         rt = card.GetComponent<RectTransform>();
-                        card.SetCard(phom[i].value, suits[phom[i].type - 1]);          
+                        card.SetCard(phom[i].value, suits[phom[i].type - 1]);
                         card.Up();
                         player.GetHand().Remove(card);
                         card.transform.SetParent(dropPhomPositions[player.seatInfo.position]);
@@ -397,8 +390,8 @@ public class PhomGameManager : MonoBehaviour
             player = FindPlayer(obj.data.fromNickname);
             bool isFromMe = GameManager.Instance.IsMyself(obj.data.fromNickname);
             player.inforUI.ShowMoneyEffect(-obj.data.coinAmount, isFromMe);
-
         }
+
         if (GameManager.Instance.IsMyself(obj.data.nickname)) return;
         int previousPlayerIndex = GetPreviousPlayerIndex(currentPlayerIndex);
         Debug.Log("previousPlayerIndex: " + previousPlayerIndex + " # currentPlayerIndex: " + currentPlayerIndex);
@@ -436,6 +429,7 @@ public class PhomGameManager : MonoBehaviour
             {
                 card = player.GetHand()[0];
             }
+
             card.SetCard(obj.data.card.value, suits[obj.data.card.type - 1]);
             DiscardCard(player, card);
             NextTurn();
@@ -525,7 +519,6 @@ public class PhomGameManager : MonoBehaviour
         }
 
         ChiaBai();
-
     }
 
     private void PlayerReadyRespone(OtherPlayerReadyRespone obj)
@@ -560,7 +553,6 @@ public class PhomGameManager : MonoBehaviour
             isCanSelectCard = true;
             deckCardCountObject.SetAsLastSibling();
             StartTurn();
-
         }));
     }
 
@@ -786,13 +778,10 @@ public class PhomGameManager : MonoBehaviour
 
     public void SortPlayerCards()
     {
+        if(isAnimShowPhom) return;
+        
         Player myPlayer = playerHands[0];
         var sortedCards = PhomChecker.SortCards(myPlayer.GetHand());
-        // foreach (var card in sortedCards)
-        // {
-        //     Debug.Log(card.value + " : " + card.suit + " pos: ");
-        // }
-
         myPlayer.SetHand(sortedCards);
         SapXepViTriBai();
     }

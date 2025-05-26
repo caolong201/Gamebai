@@ -75,27 +75,54 @@ public class PhomChecker
             .GroupBy(c => c.type)
             .Where(g => g.Count() >= 3);
 
+        // foreach (var suitGroup in suitedGroups)
+        // {
+        //     var sortedCards = suitGroup.OrderBy(c => c.value).ToList();
+        //
+        //     // Find all possible sequences of length 3 or more
+        //     for (int sequenceLength = sortedCards.Count; sequenceLength >= 3; sequenceLength--)
+        //     {
+        //         for (int startIndex = 0; startIndex <= sortedCards.Count - sequenceLength; startIndex++)
+        //         {
+        //             if (IsConsecutive(sortedCards, startIndex, sequenceLength))
+        //             {
+        //                 var phom = sortedCards.GetRange(startIndex, sequenceLength);
+        //                 phoms.Add(phom);
+        //
+        //                 // Remove these cards from further consideration
+        //                 for (int i = startIndex; i < startIndex + sequenceLength; i++)
+        //                 {
+        //                     remainingCards.Remove(sortedCards[i]);
+        //                 }
+        //
+        //                 break; // Move to next suit group after finding a sequence
+        //             }
+        //         }
+        //     }
+        // }
         foreach (var suitGroup in suitedGroups)
         {
-            var sortedCards = suitGroup.OrderBy(c => c.value).ToList();
+            // Lọc lại sortedCards từ remainingCards để tránh bị duplicate
+            var filtered = suitGroup.Where(c => remainingCards.Contains(c)).OrderBy(c => c.value).ToList();
 
-            // Find all possible sequences of length 3 or more
-            for (int sequenceLength = sortedCards.Count; sequenceLength >= 3; sequenceLength--)
+            // Tìm tất cả các chuỗi có độ dài từ lớn tới nhỏ (>=3)
+            for (int sequenceLength = filtered.Count; sequenceLength >= 3; sequenceLength--)
             {
-                for (int startIndex = 0; startIndex <= sortedCards.Count - sequenceLength; startIndex++)
+                for (int startIndex = 0; startIndex <= filtered.Count - sequenceLength; startIndex++)
                 {
-                    if (IsConsecutive(sortedCards, startIndex, sequenceLength))
+                    if (IsConsecutive(filtered, startIndex, sequenceLength))
                     {
-                        var phom = sortedCards.GetRange(startIndex, sequenceLength);
+                        var phom = filtered.GetRange(startIndex, sequenceLength);
                         phoms.Add(phom);
 
-                        // Remove these cards from further consideration
-                        for (int i = startIndex; i < startIndex + sequenceLength; i++)
+                        // Xóa những lá đã dùng
+                        foreach (var card in phom)
                         {
-                            remainingCards.Remove(sortedCards[i]);
+                            remainingCards.Remove(card);
                         }
 
-                        break; // Move to next suit group after finding a sequence
+                        // Sau khi tạo phỏm, break để tránh overlap
+                        break;
                     }
                 }
             }
