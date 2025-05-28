@@ -104,7 +104,6 @@ public class PhomGameManager : MonoBehaviour
             NetworkManager.Instance.OnChatReceive.OnDataUpdated -= OnChatReceive; //2015
         }
     }
-
     private void OnChatReceive(ChatContentRespone respone)
     {
         var player = FindPlayer(respone.data.nickname);
@@ -175,15 +174,18 @@ public class PhomGameManager : MonoBehaviour
 
         DOVirtual.DelayedCall(1, () =>
         {
+            obj.data.winArray.Sort((a, b) => b.winAmount.CompareTo(a.winAmount));
+
             for (int i = 0; i < obj.data.winArray.Count; i++)
             {
                 var winData = obj.data.winArray[i];
+                Debug.Log($"Rank {i}: Nick = {winData.nickname}, winAmount = {winData.winAmount}");
+
                 var player = FindPlayer(winData.nickname);
                 if (player == null || winData.cards == null || winData.cards.Count == 0)
                     continue;
                 bool isMe = GameManager.Instance.IsMyself(winData.nickname); //ll
                 player.inforUI.ShowRank(i, winData.winAmount, isMe); //ll
-
                 if (isMe)
                     continue;
 
@@ -214,10 +216,7 @@ public class PhomGameManager : MonoBehaviour
 
                 showAllCardsPositions[player.seatInfo.position].GetComponent<LayoutGroup>().enabled = true;
             }
-
             gamePlayHUD.ShowXepBai(false);
-
-
             DOVirtual.DelayedCall(5, () =>
             {
                 //Clear all
@@ -232,7 +231,6 @@ public class PhomGameManager : MonoBehaviour
                             DestroyImmediate(cards[i].gameObject);
                     }
                 }
-
                 deck.Clear();
                 discardPiles.Clear();
                 myCardValues.Clear();
@@ -250,7 +248,6 @@ public class PhomGameManager : MonoBehaviour
             });
         });
     }
-
     private void DropPhomRespone(DropPhomRespone obj)
     {
         haPhomData = obj;
@@ -265,7 +262,6 @@ public class PhomGameManager : MonoBehaviour
                     return;
                 }
             }
-
             gamePlayHUD.ShowHaPhom(true);
 
             //show phom
@@ -283,7 +279,6 @@ public class PhomGameManager : MonoBehaviour
                         c.transform.DOLocalMoveY(c.transform.localPosition.y + 50, 0.1f).SetEase(Ease.OutQuad);
                     }
                 }
-
                 myPhoms = phoms;
                 isAnimShowPhom = false;
             });
@@ -297,7 +292,6 @@ public class PhomGameManager : MonoBehaviour
                     player.inforUI.ShowMom();
                     return;
                 }
-
                 var phoms = PhomChecker.FindPhoms(haPhomData.data.cards);
                 float startY = 0f;
                 RectTransform rt;
@@ -372,7 +366,6 @@ public class PhomGameManager : MonoBehaviour
                 drawnCard.transform.localScale = Vector3.one;
             }
         }
-
         drawPileCardCount -= 1;
         txtdrawPileCardCount.text = drawPileCardCount + "";
         if (drawPileCardCount <= 0) deckPosition.gameObject.SetActive(false);
@@ -410,6 +403,7 @@ public class PhomGameManager : MonoBehaviour
         }
     }
 
+   
     private void PlayCardModelRespone(PlayCardModelRespone obj)
     {
         if (GameManager.Instance.IsMyself(obj.data.nickname)) return;
@@ -808,7 +802,7 @@ public class PhomGameManager : MonoBehaviour
         NetworkManager.Instance.SendJsonData(json);
     }
 
-    // Xử lý khi người chơi rút bài từ discard pile
+ 
     public void OnDrawFromDiscard()
     {
         arrowPointCard.SetActive(false);
@@ -827,7 +821,13 @@ public class PhomGameManager : MonoBehaviour
             playerTargetPosition += new Vector3(cardSpacing, 0, 0);
             topDiscard.transform.DOLocalMove(playerTargetPosition, 0.3f).SetEase(Ease.OutQuad);
             topDiscard.transform.localScale = Vector3.one;
-            topDiscard.AddComponent<Button>().onClick.AddListener(() => OnCardClicked(topDiscard));
+          
+            Button cardButton = topDiscard.GetComponent<Button>();
+            if (cardButton == null)
+            {
+                topDiscard.AddComponent<Button>().onClick.AddListener(() => OnCardClicked(topDiscard));               
+            }
+
             topDiscard.ShowEffect(true);
 
             string json = JsonMapper.ToJson(new PlayCardModel((int)ENetworkHeader.DrawFromDiscard, new CardValue()
@@ -854,7 +854,6 @@ public class PhomGameManager : MonoBehaviour
                 return;
             }
         }
-
         // Chọn lá bài mới và di chuyển nó lên trên
         selectedCard = card;
         selectedCard.transform.DOLocalMoveY(selectedCard.transform.localPosition.y + 50, 0.1f).SetEase(Ease.OutQuad);
