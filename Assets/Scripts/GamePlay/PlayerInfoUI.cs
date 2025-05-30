@@ -33,10 +33,9 @@ public class PlayerInforUI : MonoBehaviour
     [SerializeField] private Image imgChatIcon;
     public List<Sprite> iconSprites;
     [SerializeField] bool isFlipChatBubble = false;
-
     private PlayerPosition mInfo;
     private Tween hideChatTween;
-
+  
     public void Init(PlayerPosition info)
     {
         mInfo = info;
@@ -74,7 +73,6 @@ public class PlayerInforUI : MonoBehaviour
             Debug.LogError("Failed to load avatar: " + avatarName);
         }
     }
-
     public void StartTimer()
     {
         imgTimer.enabled = true;
@@ -82,7 +80,6 @@ public class PlayerInforUI : MonoBehaviour
         imgTimer.fillAmount = 1;
         imgTimer.DOFillAmount(0, duration).SetEase(Ease.Linear);
     }
-
     public void StopTimer()
     {
         imgTimer.DOKill();
@@ -101,7 +98,20 @@ public class PlayerInforUI : MonoBehaviour
     }
     public void ShowRank(int rank, int winAmout, bool playSound = true)
     {
-        if (imgMom.gameObject.activeSelf) return;
+        bool isMe = GameManager.Instance.IsMyself(mInfo.nickname);
+        if (imgMom.gameObject.activeSelf)
+        {
+            if (winAmout <= 0 && playSound && isMe)
+            {
+                DOVirtual.DelayedCall(0.8f, () =>
+                {
+                    AudioManager.Instance.PlayUIAudio(AudioManager.UIAudioType.Lose);
+                });
+            }
+
+            return;
+        }
+        //if (imgMom.gameObject.activeSelf) return;
         if (rank >= rankUIs.Count) return;
 
         rankUIs[rank].SetActive(true);
@@ -117,10 +127,6 @@ public class PlayerInforUI : MonoBehaviour
                     AudioManager.Instance.PlayUIAudio(AudioManager.UIAudioType.Win);
                 });
             }
-            //DOVirtual.DelayedCall(0.8f, () =>
-            //{
-            //    AudioManager.Instance.PlayUIAudio(AudioManager.UIAudioType.Win);
-            //});
         }
         else
         {       
@@ -134,7 +140,7 @@ public class PlayerInforUI : MonoBehaviour
                 });
             }
         }
-        bool isMe = GameManager.Instance.IsMyself(mInfo.nickname);
+        //bool isMe = GameManager.Instance.IsMyself(mInfo.nickname);
         ShowMoneyEffect(winAmout, isMe);
         mInfo.coin += winAmout;
         txtCoin.text = mInfo.coin.FormatCoins();
@@ -149,7 +155,7 @@ public class PlayerInforUI : MonoBehaviour
         {
             bgWin.SetActive(true);
             bgLose.SetActive(false);
-            txtMoneyEffect.text = money.FormatCoins();
+            txtMoneyEffect.text = "+"+ money.FormatCoins();
             if (isMe)
                 AudioManager.Instance.PlayUIAudio(AudioManager.UIAudioType.AddMoney);
         }
@@ -160,7 +166,7 @@ public class PlayerInforUI : MonoBehaviour
             txtMoneyEffect.text = "-" + (Mathf.Abs(money).FormatCoins());
             if (isMe)
                 AudioManager.Instance.PlayUIAudio(AudioManager.UIAudioType.DeductMoney);
-        }
+        }    
         DOVirtual.DelayedCall(3f, () => { moneyEffectRoot.gameObject.SetActive(false); });
     }
     public void ShowChat(string chatContent)

@@ -174,12 +174,11 @@ public class PhomGameManager : MonoBehaviour
 
         DOVirtual.DelayedCall(1, () =>
         {
-            obj.data.winArray.Sort((a, b) => b.winAmount.CompareTo(a.winAmount));
-
             for (int i = 0; i < obj.data.winArray.Count; i++)
             {
                 var winData = obj.data.winArray[i];
-                Debug.Log($"Rank {i}: Nick = {winData.nickname}, winAmount = {winData.winAmount}");
+                
+                Debug.Log($"Rank {i}: Nick = {winData.nickname}, winAmount = {winData.winAmount}, point = {winData.point}");
 
                 var player = FindPlayer(winData.nickname);
                 if (player == null || winData.cards == null || winData.cards.Count == 0)
@@ -243,7 +242,6 @@ public class PhomGameManager : MonoBehaviour
                 {
                     gamePlayHUD.ShowChiaBai(true);
                 }
-
                 stage = PhomStage.InRoom;
             });
         });
@@ -797,12 +795,9 @@ public class PhomGameManager : MonoBehaviour
     {
         arrowPointCardDeck.SetActive(false);
         arrowPointCard.SetActive(false);
-
         string json = JsonMapper.ToJson(new BaseWebsocketRequest((int)ENetworkHeader.DrawFromDeck));
         NetworkManager.Instance.SendJsonData(json);
     }
-
- 
     public void OnDrawFromDiscard()
     {
         arrowPointCard.SetActive(false);
